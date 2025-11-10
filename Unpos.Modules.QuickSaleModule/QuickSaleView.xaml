@@ -1,0 +1,47 @@
+﻿<UserControl x:Class="Unpos.Modules.QuickSaleModule.QuickSaleModuleView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             d:DesignHeight="600" d:DesignWidth="900">
+
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="60"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="HIZLI SATIŞ"
+                   FontSize="22"
+                   FontWeight="Bold"
+                   Foreground="SteelBlue"
+                   Margin="0,0,0,10"/>
+
+        <ScrollViewer Grid.Row="1">
+            <WrapPanel ItemWidth="150" ItemHeight="100" Orientation="Horizontal">
+                <ItemsControl ItemsSource="{Binding Urunler}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Button Content="{Binding Name}" 
+                                    Margin="5"
+                                    Background="#0078D7" 
+                                    Foreground="White"
+                                    FontWeight="Bold"
+                                    FontSize="16"
+                                    Height="90"
+                                    Width="140"/>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </WrapPanel>
+        </ScrollViewer>
+
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
+            <Button Content="💵 Nakit" Width="120" Height="40" Background="Green" Foreground="White" Margin="5,0,0,0"/>
+            <Button Content="💳 Kart" Width="120" Height="40" Background="DodgerBlue" Foreground="White" Margin="5,0,0,0"/>
+        </StackPanel>
+
+    </Grid>
+</UserControl>
