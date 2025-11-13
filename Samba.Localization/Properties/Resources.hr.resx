@@ -915,8 +915,8 @@ Will Trigger after {1} days, {2} hours, {3} minutes</value>
   <data name="OrderTagGroup" xml:space="preserve">
     <value>Order Tag Group</value>
   </data>
-  <data name="SambaMarket" xml:space="preserve">
-    <value>Samba Market</value>
+  <data name="FastPay" xml:space="preserve">
+    <value>FastPay</value>
   </data>
   <data name="DateRangeIsNotActiveWorkPeriod" xml:space="preserve">
     <value>Period nije u aktivnom radnom periodu</value>
@@ -2394,8 +2394,8 @@ Greška:
   <data name="Unpaid" xml:space="preserve">
     <value>Unpaid</value>
   </data>
-  <data name="Market" xml:space="preserve">
-    <value>Market</value>
+  <data name="FastPay" xml:space="preserve">
+    <value>FastPay</value>
   </data>
   <data name="TotalTaxableAmount" xml:space="preserve">
     <value>Total Taxable Amount</value>

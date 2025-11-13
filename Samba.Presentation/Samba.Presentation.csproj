@@ -235,6 +235,10 @@
       <Project>{534CEC53-1EBC-4386-95E3-0E451FCB388A}</Project>
       <Name>Samba.Modules.LoginModule</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Samba.Modules.FastPay\Samba.Modules.FastpayModule.csproj">
+      <Project>{6B09228C-C411-4E88-A8FE-A2E2C4D513F7}</Project>
+      <Name>Samba.Modules.FastPay</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Samba.Modules.ManagementModule\Samba.Modules.ManagementModule.csproj">
       <Project>{F7FB0F2D-DBD6-4C97-AC45-CE4DC5F2FBD6}</Project>
       <Name>Samba.Modules.ManagementModule</Name>
@@ -352,10 +356,11 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="apple.ico" />
+    <Resource Include="Images\MyIcon.png" />
     <Content Include="Images\empty.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Resource Include="Images\unpos-bilisim.png" />
+    <Resource Include="Images\apple-icon.png" />
     <Content Include="Imports\menu.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -365,6 +370,23 @@
     <Content Include="migrate.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.Practices.Prism.Interactivity">
+      <HintPath>..\Lib\Microsoft.Practices.Prism.Interactivity.dll</HintPath>
+      <Private>True</Private>
+      <!-- Copy Local = True -->
+    </Reference>
+    <Reference Include="Microsoft.Practices.Prism.MefExtensions">
+      <HintPath>..\Lib\Microsoft.Practices.Prism.MefExtensions.dll</HintPath>
+      <Private>True</Private>
+      <!-- Copy Local = True -->
+    </Reference>
+    <Reference Include="FastButton">
+      <HintPath>..\Lib\FastButton\FastButton.dll</HintPath>
+      <Private>True</Private>
+      <!-- Copy Local = True -->
+    </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

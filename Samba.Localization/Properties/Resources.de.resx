@@ -917,7 +917,7 @@ Trigger ausführen nach {1} Tage, {2} Stunden, {3} Minuten</value>
   <data name="OrderTagGroup" xml:space="preserve">
     <value>Bestellungs Taggruppe</value>
   </data>
-  <data name="SambaMarket" xml:space="preserve">
+  <data name="FastPay" xml:space="preserve">
     <value>Samba Markt</value>
   </data>
   <data name="DateRangeIsNotActiveWorkPeriod" xml:space="preserve">
@@ -2408,8 +2408,8 @@ Fehlernachricht:
   <data name="Unpaid" xml:space="preserve">
     <value>unbezahlt</value>
   </data>
-  <data name="Market" xml:space="preserve">
-    <value>Markt</value>
+  <data name="FastPay" xml:space="preserve">
+    <value>FastPay</value>
   </data>
   <data name="TotalTaxableAmount" xml:space="preserve">
     <value>Summe Nettopreis</value>

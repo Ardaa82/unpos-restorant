@@ -29,7 +29,7 @@ namespace Samba.Modules.PosModule
             MenuItemSelectorView menuItemSelectorView, TicketEntityListView ticketEntityListView, TicketTypeListView ticketTypeListView)
             : base(regionManager, AppScreens.TicketView)
         {
-            SetNavigationCommand(Resources.POS, Resources.Common, "Images/masaMavi24.png", 10);
+            SetNavigationCommand(Resources.POS, Resources.Common, "Images/pos.png", 10);
 
             _posView = posView;
             _menuItemSelectorView = menuItemSelectorView;

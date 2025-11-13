@@ -917,7 +917,7 @@ Spustí za {1} dny, {2} hodiny, {3} minut</value>
   <data name="OrderTagGroup" xml:space="preserve">
     <value>Order Tag Group</value>
   </data>
-  <data name="SambaMarket" xml:space="preserve">
+  <data name="FastPay" xml:space="preserve">
     <value>Samba Obchod</value>
   </data>
   <data name="DateRangeIsNotActiveWorkPeriod" xml:space="preserve">
@@ -2398,7 +2398,7 @@ Error Message:
   <data name="Unpaid" xml:space="preserve">
     <value>Unpaid</value>
   </data>
-  <data name="Market" xml:space="preserve">
+  <data name="FastPay" xml:space="preserve">
     <value>Obchod</value>
   </data>
   <data name="TotalTaxableAmount" xml:space="preserve">

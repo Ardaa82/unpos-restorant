@@ -47,6 +47,11 @@
 
     public static class EventTopicNames
     {
+        // FastPay related events
+        public const string ActivateFastPayView = "ActivateFastPayView";
+
+
+        // General events
         public const string Changed = "Changed";
         public const string OrderTagRemoved = "Order Tag Removed";
         public const string BatchDocumentsCreated = "Batch Documents Created";

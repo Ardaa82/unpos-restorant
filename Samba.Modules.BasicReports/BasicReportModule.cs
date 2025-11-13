@@ -37,7 +37,7 @@ namespace Samba.Modules.BasicReports
 
             _regionManager = regionManager;
             _basicReportView = basicReportView;
-            SetNavigationCommand(Resources.Reports, Resources.Common, "Images/raporMavi24.png", 60);
+            SetNavigationCommand(Resources.Reports, Resources.Common, "Images/raporlar.png", 60);
 
             PermissionRegistry.RegisterPermission(PermissionNames.OpenReports, PermissionCategories.Navigation, Resources.CanDisplayReports);
             PermissionRegistry.RegisterPermission(PermissionNames.ChangeReportDate, PermissionCategories.Report, Resources.CanChangeReportFilter);

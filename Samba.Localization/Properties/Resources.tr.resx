@@ -130,7 +130,7 @@
     <value>Düğme Başlığı</value>
   </data>
   <data name="POS" xml:space="preserve">
-    <value>Masalar</value>
+    <value>POS</value>
   </data>
   <data name="DisplayTicket" xml:space="preserve">
     <value>Adisyonu Görüntüle</value>
@@ -919,8 +919,8 @@ Mesaj:
   <data name="OrderTagGroup" xml:space="preserve">
     <value>Sipariş Etiketi Grubu</value>
   </data>
-  <data name="SambaMarket" xml:space="preserve">
-    <value>Samba Market</value>
+  <data name="FastPay" xml:space="preserve">
+    <value>Deneme</value>
   </data>
   <data name="DateRangeIsNotActiveWorkPeriod" xml:space="preserve">
     <value>Tarih aralığı aktif çalışma dönemi değil.</value>
@@ -2398,8 +2398,8 @@ Hata Mesajı:
   <data name="Unpaid" xml:space="preserve">
     <value>Ödenmedi</value>
   </data>
-  <data name="Market" xml:space="preserve">
-    <value>Market</value>
+  <data name="FastPay" xml:space="preserve">
+    <value>Hızlı Satış</value>
   </data>
   <data name="TotalTaxableAmount" xml:space="preserve">
     <value>Toplam Vergiye tabi Tutar</value>

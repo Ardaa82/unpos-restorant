@@ -917,8 +917,8 @@
   <data name="OrderTagGroup" xml:space="preserve">
     <value>Тег группы заказов</value>
   </data>
-  <data name="SambaMarket" xml:space="preserve">
-    <value>Samba Market</value>
+  <data name="FastPay" xml:space="preserve">
+    <value>FastPay</value>
   </data>
   <data name="DateRangeIsNotActiveWorkPeriod" xml:space="preserve">
     <value>Диапазон дат выходит за рамки текущей смены</value>
@@ -2398,7 +2398,7 @@
   <data name="Unpaid" xml:space="preserve">
     <value>Неоплачен</value>
   </data>
-  <data name="Market" xml:space="preserve">
+  <data name="FastPay" xml:space="preserve">
     <value>Рынок</value>
   </data>
   <data name="TotalTaxableAmount" xml:space="preserve">

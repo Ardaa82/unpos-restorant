@@ -41,6 +41,7 @@ namespace Samba.Modules.PosModule
         private readonly TicketViewModel _ticketViewModel;
         private readonly TicketOrdersViewModel _ticketOrdersViewModel;
 
+
         private Entity _lastSelectedEntity;
         protected Action ExpectedAction { get; set; }
 
@@ -220,8 +221,11 @@ namespace Samba.Modules.PosModule
                             _applicationStateSetter.SetCurrentTicketType(_applicationState.TempTicketType);
                             _applicationState.TempTicketType = null;
                         }
+                        
 
                         OpenTicket(0);
+                        _applicationStateSetter.SetFastPayTicket(SelectedTicket, true);
+
                         _ticketService.UpdateEntity(SelectedTicket, eventParameters.Value.SelectedItem);
                     }
                     else if (openTickets.Count > 1)
@@ -233,6 +237,7 @@ namespace Samba.Modules.PosModule
                     }
                     else
                     {
+                        _applicationStateSetter.SetFastPayTicket(SelectedTicket, true);
                         OpenTicket(openTickets.ElementAt(0));
                     }
                     EventServiceFactory.EventService.PublishEvent(EventTopicNames.ActivatePosView);
@@ -304,7 +309,9 @@ namespace Samba.Modules.PosModule
                         x => x.CopyToNewTickets && x.EntityTypeId == ticketEntity.EntityTypeId))
                 {
                     var entity = _cacheService.GetEntityById(ticketEntity.EntityId);
-                    _ticketService.UpdateEntity(SelectedTicket, entity, ticketEntity.AccountTypeId, ticketEntity.AccountId, ticketEntity.EntityCustomData);
+                    if (entity == null) _applicationStateSetter.SetFastPayTicket(SelectedTicket, true);
+                    else;
+                        _ticketService.UpdateEntity(SelectedTicket, entity, ticketEntity.AccountTypeId, ticketEntity.AccountId, ticketEntity.EntityCustomData);
                 }
             }
         }
@@ -482,6 +489,7 @@ namespace Samba.Modules.PosModule
             {
                 InteractionService.UserIntraction.GiveFeedback(result.ErrorMessage);
             }
+            var isFastPay = SelectedTicket?.IsFastPay ?? false;
 
             SelectedTicket = null;
 
@@ -495,7 +503,16 @@ namespace Samba.Modules.PosModule
                 {
                     ExpectedAction.Invoke();
                 }
-                else EventServiceFactory.EventService.PublishEvent(EventTopicNames.ActivatePosView);
+                else
+                {   
+                    if (_applicationState.IsFastPayMode)
+
+                    {
+                        EventServiceFactory.EventService.PublishEvent(EventTopicNames.ActivateFastPayView);
+                        _applicationState.IsFastPayMode = false;
+                    }
+                     else EventServiceFactory.EventService.PublishEvent(EventTopicNames.ActivatePosView);
+                }
             }
             ExpectedAction = null;
             _messagingService.SendMessage(Messages.TicketRefreshMessage, result.TicketId.ToString(CultureInfo.InvariantCulture));

@@ -101,6 +101,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Images\Ppt.png" />
+  </ItemGroup>
+  <ItemGroup>
     <Resource Include="Images\Network.png" />
   </ItemGroup>
   <ItemGroup>
@@ -139,8 +142,17 @@
     <Resource Include="Images\note.png" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Images\masaMavi24.png" />
-    <Content Include="Images\raporMavi24.png" />
+    <Resource Include="Images\hizli_satis.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\adisyonlar.png" />
+    <Resource Include="Images\cikis.png" />
+    <Resource Include="Images\depo.png" />
+    <Resource Include="Images\gun_islemleri.png" />
+    <Resource Include="Images\hesaplar.png" />
+    <Resource Include="Images\pos.png" />
+    <Resource Include="Images\raporlar.png" />
+    <Resource Include="Images\yonetim.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

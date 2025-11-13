@@ -72,6 +72,7 @@ namespace Samba.Domain.Models.Tickets
         public DateTime LastOrderDate { get; set; }
         public DateTime LastPaymentDate { get; set; }
 
+        public bool IsFastPay { get; set; } = false;  // default false
         public bool IsClosed { get; set; }
         public bool IsLocked { get; set; }
         public void UnLock() { if (!IsClosed) IsLocked = false; }

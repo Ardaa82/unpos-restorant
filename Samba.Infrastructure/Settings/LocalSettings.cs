@@ -217,7 +217,7 @@ html
         public static string CurrencySymbol { get { return CultureInfo.CurrentCulture.NumberFormat.CurrencySymbol; } }
 
         private static int DefaultDbVersion { get { return 24; } }
-        private static string DefaultAppVersion { get { return "0.0.1"; } }
+        private static string DefaultAppVersion { get { return "0.0.01"; } }
 
         public static int DbVersion { get { return CanReadVersionFromFile() ? Convert.ToInt32(GetVersionDat("DbVersion")) : DefaultDbVersion; } }
         public static string AppVersion { get { return CanReadVersionFromFile() ? GetVersionDat("AppVersion") : DefaultAppVersion; } }
@@ -239,7 +239,6 @@ html
             }
         }
 
-        //İlk girişte oluşturduğu database
         public static string AppName { get { return "UnposV1"; } }
 
         private static IList<string> _supportedLanguages;

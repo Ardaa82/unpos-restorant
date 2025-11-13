@@ -3046,11 +3046,11 @@ Error Message:
   <data name="Consumption" xml:space="preserve">
     <value>Consumption</value>
   </data>
-  <data name="Market" xml:space="preserve">
-    <value>Market</value>
+  <data name="FastPay" xml:space="preserve">
+    <value>FastPay</value>
   </data>
-  <data name="SambaMarket" xml:space="preserve">
-    <value>Samba Market</value>
+  <data name="FastPay" xml:space="preserve">
+    <value>FastPay</value>
   </data>
   <data name="Source" xml:space="preserve">
     <value>Source</value>

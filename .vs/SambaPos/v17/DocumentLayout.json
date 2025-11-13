@@ -1,22 +1,26 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "D:\\Arda\\projeler\\unpos\\",
+  "WorkspaceRootPath": "C:\\Users\\Admin\\Desktop\\UNPOS_V01\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{9497C48E-B9B5-4869-820E-09ECE4347632}|Samba.Modules.NavigationModule\\Samba.Modules.NavigationModule.csproj|D:\\Arda\\projeler\\unpos\\samba.modules.navigationmodule\\navigationview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
-      "RelativeMoniker": "D:0:0:{9497C48E-B9B5-4869-820E-09ECE4347632}|Samba.Modules.NavigationModule\\Samba.Modules.NavigationModule.csproj|solutionrelative:samba.modules.navigationmodule\\navigationview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+      "AbsoluteMoniker": "D:0:0:{434D497A-D439-44C8-84A5-5301B572708F}|Lib\\FlexButton\\FlexButton.csproj|c:\\users\\admin\\desktop\\unpos_v01\\lib\\flexbutton\\themes\\resxsbutton.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{434D497A-D439-44C8-84A5-5301B572708F}|Lib\\FlexButton\\FlexButton.csproj|solutionrelative:lib\\flexbutton\\themes\\resxsbutton.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{406B96A6-C886-4149-AD88-A2402EDB2B90}|Samba.Localization\\Samba.Localization.csproj|D:\\Arda\\projeler\\unpos\\samba.localization\\properties\\resources.tr.resx||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "AbsoluteMoniker": "D:0:0:{406B96A6-C886-4149-AD88-A2402EDB2B90}|Samba.Localization\\Samba.Localization.csproj|C:\\Users\\Admin\\Desktop\\UNPOS_V01\\samba.localization\\properties\\resources.tr.resx||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
       "RelativeMoniker": "D:0:0:{406B96A6-C886-4149-AD88-A2402EDB2B90}|Samba.Localization\\Samba.Localization.csproj|solutionrelative:samba.localization\\properties\\resources.tr.resx||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{4F2C080C-FF9C-4604-8DAF-C5732BC17A05}|Samba.Modules.BasicReports\\Samba.Modules.BasicReports.csproj|D:\\Arda\\projeler\\unpos\\samba.modules.basicreports\\basicreportmodule.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{4F2C080C-FF9C-4604-8DAF-C5732BC17A05}|Samba.Modules.BasicReports\\Samba.Modules.BasicReports.csproj|solutionrelative:samba.modules.basicreports\\basicreportmodule.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{6B09228C-C411-4E88-A8FE-A2E2C4D513F7}|Samba.Modules.FastPay\\Samba.Modules.FastpayModule.csproj|C:\\Users\\Admin\\Desktop\\UNPOS_V01\\samba.modules.fastpay\\fastpaymodule.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6B09228C-C411-4E88-A8FE-A2E2C4D513F7}|Samba.Modules.FastPay\\Samba.Modules.FastpayModule.csproj|solutionrelative:samba.modules.fastpay\\fastpaymodule.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{B75C6387-9855-44BF-886E-5BB60D643AD2}|Samba.Modules.PosModule\\Samba.Modules.PosModule.csproj|D:\\Arda\\projeler\\unpos\\samba.modules.posmodule\\posmodule.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{B75C6387-9855-44BF-886E-5BB60D643AD2}|Samba.Modules.PosModule\\Samba.Modules.PosModule.csproj|C:\\Users\\Admin\\Desktop\\UNPOS_V01\\samba.modules.posmodule\\posmodule.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{B75C6387-9855-44BF-886E-5BB60D643AD2}|Samba.Modules.PosModule\\Samba.Modules.PosModule.csproj|solutionrelative:samba.modules.posmodule\\posmodule.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B75C6387-9855-44BF-886E-5BB60D643AD2}|Samba.Modules.PosModule\\Samba.Modules.PosModule.csproj|C:\\Users\\Admin\\Desktop\\UNPOS_V01\\samba.modules.posmodule\\ticketordersview.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B75C6387-9855-44BF-886E-5BB60D643AD2}|Samba.Modules.PosModule\\Samba.Modules.PosModule.csproj|solutionrelative:samba.modules.posmodule\\ticketordersview.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -26,63 +30,67 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 0,
           "Children": [
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{b1e99781-ab81-11d0-b683-00aa00a3ee26}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
-            },
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "NavigationView.xaml",
-              "DocumentMoniker": "D:\\Arda\\projeler\\unpos\\Samba.Modules.NavigationModule\\NavigationView.xaml",
-              "RelativeDocumentMoniker": "Samba.Modules.NavigationModule\\NavigationView.xaml",
-              "ToolTip": "D:\\Arda\\projeler\\unpos\\Samba.Modules.NavigationModule\\NavigationView.xaml",
-              "RelativeToolTip": "Samba.Modules.NavigationModule\\NavigationView.xaml",
+              "Title": "resXSButton.xaml",
+              "DocumentMoniker": "C:\\Users\\Admin\\Desktop\\UNPOS_V01\\Lib\\FlexButton\\Themes\\resXSButton.xaml",
+              "RelativeDocumentMoniker": "Lib\\FlexButton\\Themes\\resXSButton.xaml",
+              "ToolTip": "C:\\Users\\Admin\\Desktop\\UNPOS_V01\\Lib\\FlexButton\\Themes\\resXSButton.xaml",
+              "RelativeToolTip": "Lib\\FlexButton\\Themes\\resXSButton.xaml",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2025-11-10T12:34:33.087Z",
+              "WhenOpened": "2025-11-13T10:13:00.648Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
               "Title": "Resources.tr.resx",
-              "DocumentMoniker": "D:\\Arda\\projeler\\unpos\\Samba.Localization\\Properties\\Resources.tr.resx",
+              "DocumentMoniker": "C:\\Users\\Admin\\Desktop\\UNPOS_V01\\Samba.Localization\\Properties\\Resources.tr.resx",
               "RelativeDocumentMoniker": "Samba.Localization\\Properties\\Resources.tr.resx",
-              "ToolTip": "D:\\Arda\\projeler\\unpos\\Samba.Localization\\Properties\\Resources.tr.resx",
+              "ToolTip": "C:\\Users\\Admin\\Desktop\\UNPOS_V01\\Samba.Localization\\Properties\\Resources.tr.resx",
               "RelativeToolTip": "Samba.Localization\\Properties\\Resources.tr.resx",
-              "ViewState": "AgIAAGAEAAAAAAAAAAAtwJ8AAAAtAAAAAAAAAA==",
+              "ViewState": "AgIAAIMDAAAAAAAAAAAEwJoDAAAZAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001005|",
-              "WhenOpened": "2025-11-10T12:22:27.695Z"
+              "WhenOpened": "2025-11-13T10:12:02.581Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "FastPayModule.cs",
+              "DocumentMoniker": "C:\\Users\\Admin\\Desktop\\UNPOS_V01\\Samba.Modules.FastPay\\FastPayModule.cs",
+              "RelativeDocumentMoniker": "Samba.Modules.FastPay\\FastPayModule.cs",
+              "ToolTip": "C:\\Users\\Admin\\Desktop\\UNPOS_V01\\Samba.Modules.FastPay\\FastPayModule.cs",
+              "RelativeToolTip": "Samba.Modules.FastPay\\FastPayModule.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACQAAAAyAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-13T10:10:58.84Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 3,
               "Title": "PosModule.cs",
-              "DocumentMoniker": "D:\\Arda\\projeler\\unpos\\Samba.Modules.PosModule\\PosModule.cs",
+              "DocumentMoniker": "C:\\Users\\Admin\\Desktop\\UNPOS_V01\\Samba.Modules.PosModule\\PosModule.cs",
               "RelativeDocumentMoniker": "Samba.Modules.PosModule\\PosModule.cs",
-              "ToolTip": "D:\\Arda\\projeler\\unpos\\Samba.Modules.PosModule\\PosModule.cs",
+              "ToolTip": "C:\\Users\\Admin\\Desktop\\UNPOS_V01\\Samba.Modules.PosModule\\PosModule.cs",
               "RelativeToolTip": "Samba.Modules.PosModule\\PosModule.cs",
-              "ViewState": "AgIAAAwAAAAAAAAAAAAAACAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABcAAAA+AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-10T12:18:31.337Z"
+              "WhenOpened": "2025-11-13T10:09:32.453Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "BasicReportModule.cs",
-              "DocumentMoniker": "D:\\Arda\\projeler\\unpos\\Samba.Modules.BasicReports\\BasicReportModule.cs",
-              "RelativeDocumentMoniker": "Samba.Modules.BasicReports\\BasicReportModule.cs",
-              "ToolTip": "D:\\Arda\\projeler\\unpos\\Samba.Modules.BasicReports\\BasicReportModule.cs",
-              "RelativeToolTip": "Samba.Modules.BasicReports\\BasicReportModule.cs",
-              "ViewState": "AgIAABQAAAAAAAAAAAA0wCQAAAAAAAAAAAAAAA==",
+              "DocumentIndex": 4,
+              "Title": "TicketOrdersView.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\Admin\\Desktop\\UNPOS_V01\\Samba.Modules.PosModule\\TicketOrdersView.xaml.cs",
+              "RelativeDocumentMoniker": "Samba.Modules.PosModule\\TicketOrdersView.xaml.cs",
+              "ToolTip": "C:\\Users\\Admin\\Desktop\\UNPOS_V01\\Samba.Modules.PosModule\\TicketOrdersView.xaml.cs",
+              "RelativeToolTip": "Samba.Modules.PosModule\\TicketOrdersView.xaml.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-10T12:09:46.835Z"
+              "WhenOpened": "2025-11-13T10:09:04.77Z"
             }
           ]
         }

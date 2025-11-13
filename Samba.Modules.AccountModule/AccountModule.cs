@@ -54,7 +54,7 @@ namespace Samba.Modules.AccountModule
             PermissionRegistry.RegisterPermission(PermissionNames.NavigateAccountView, PermissionCategories.Navigation, Resources.CanNavigateCash);
             PermissionRegistry.RegisterPermission(PermissionNames.CreateAccount, PermissionCategories.Account, Resources.CanCreateAccount);
 
-            SetNavigationCommand(Resources.Accounts, Resources.Common, "Images/Xls.png", 30);
+            SetNavigationCommand(Resources.Accounts, Resources.Common, "Images/hesaplar.png", 30);
         }
 
         protected override void OnInitialization()

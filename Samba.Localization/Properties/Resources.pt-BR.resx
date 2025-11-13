@@ -917,8 +917,8 @@ Irá disparar após {1} dias, {2} horas, {3} minutos </value>
   <data name="OrderTagGroup" xml:space="preserve">
     <value>Order Tag Group</value>
   </data>
-  <data name="SambaMarket" xml:space="preserve">
-    <value>Samba Market</value>
+  <data name="FastPay" xml:space="preserve">
+    <value>FastPay</value>
   </data>
   <data name="DateRangeIsNotActiveWorkPeriod" xml:space="preserve">
     <value>Intervalo de data não está em período de trabalho ativo</value>
@@ -2398,7 +2398,7 @@ Error Message:
   <data name="Unpaid" xml:space="preserve">
     <value>Falta Pagamento</value>
   </data>
-  <data name="Market" xml:space="preserve">
+  <data name="FastPay" xml:space="preserve">
     <value>Mercado</value>
   </data>
   <data name="TotalTaxableAmount" xml:space="preserve">

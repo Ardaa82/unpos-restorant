@@ -51,7 +51,7 @@ namespace Samba.Modules.InventoryModule
             AddDashboardCommand<RecipeListViewModel>(Resources.Recipes, Resources.Inventory, 35);
             AddDashboardCommand<PeriodicConsumptionListViewModel>(Resources.EndOfDayRecords, Resources.Inventory, 36);
 
-            SetNavigationCommand(Resources.Warehouses, Resources.Common, "Images/box.png", 40);
+            SetNavigationCommand(Resources.Warehouses, Resources.Common, "Images/depo.png", 40);
 
             EventServiceFactory.EventService.GetEvent<GenericEvent<Entity>>().Subscribe(OnResourceEvent);
             EventServiceFactory.EventService.GetEvent<GenericEvent<Warehouse>>().Subscribe(OnWarehouseEvent);

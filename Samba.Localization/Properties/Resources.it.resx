@@ -917,8 +917,8 @@ Attiverà dopo {1} giorni, {2} ore, {3} minuti</value>
   <data name="OrderTagGroup" xml:space="preserve">
     <value>Ordine Tag Gruppo</value>
   </data>
-  <data name="SambaMarket" xml:space="preserve">
-    <value>Samba Market</value>
+  <data name="FastPay" xml:space="preserve">
+    <value>FastPay</value>
   </data>
   <data name="DateRangeIsNotActiveWorkPeriod" xml:space="preserve">
     <value>Intervallo di date non è un periodo di lavoro attivo</value>
@@ -2398,8 +2398,8 @@ Messaggio di errore:
   <data name="Unpaid" xml:space="preserve">
     <value>Da Pagare</value>
   </data>
-  <data name="Market" xml:space="preserve">
-    <value>Market</value>
+  <data name="FastPay" xml:space="preserve">
+    <value>FastPay</value>
   </data>
   <data name="TotalTaxableAmount" xml:space="preserve">
     <value>Totale Base Imponibile</value>

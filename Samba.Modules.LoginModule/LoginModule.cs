@@ -24,7 +24,7 @@ namespace Samba.Modules.LoginModule
             _regionManager = regionManager;
             _loginView = loginView;
             _userService = userService;
-            SetNavigationCommand(Resources.Logout, Resources.Common, "images/bmp.png", 99);
+            SetNavigationCommand(Resources.Logout, Resources.Common, "images/cikis.png",90);
         }
 
         protected override bool CanNavigate(string arg)

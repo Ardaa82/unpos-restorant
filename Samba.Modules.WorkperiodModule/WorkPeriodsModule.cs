@@ -29,7 +29,7 @@ namespace Samba.Modules.WorkperiodModule
             _workPeriodsView = workPeriodsView;
             _userService = userService;
 
-            SetNavigationCommand(Resources.DayOperations, Resources.Common, "Images/Run.png");
+            SetNavigationCommand(Resources.DayOperations, Resources.Common, "Images/gun_islemleri.png");
             PermissionRegistry.RegisterPermission(PermissionNames.OpenWorkPeriods, PermissionCategories.Navigation,
                                                   Resources.CanStartEndOfDay);
         }

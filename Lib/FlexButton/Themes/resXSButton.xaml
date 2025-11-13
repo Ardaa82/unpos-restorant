@@ -58,18 +58,7 @@
                                     </Border.Background>
                                 </Border>
 
-                                <Border Name="Highlight" Grid.Row="0" Margin="0" CornerRadius="{Binding CornerRadius, RelativeSource={RelativeSource FindAncestor,
-                                    AncestorLevel=1, AncestorType={x:Type Border}}, Converter={StaticResource HighlightCornerRadiusConverter}}" >
-                                    <Border.Background>
-                                        <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1.5" >
-                                            <GradientStop Offset="0" Color="{Binding HighlightBrightness,
-                                                RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:FlexButton}},
-                                                Converter={StaticResource BrightnessToColorConverter}}" />
-                                            <GradientStop Offset="0.8" Color="{Binding ButtonColor.Color,
-                                                RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:FlexButton}}}"/>
-                                        </LinearGradientBrush>
-                                    </Border.Background>
-                                </Border>
+
 
                                 <Border Name="padding"  Margin="{TemplateBinding Padding}">
                                     <Grid>
@@ -129,7 +118,7 @@
                             <Setter TargetName="C2" Property="Width" Value="86*"/>
                             <Setter TargetName="C3" Property="Width" Value="7*"/>
                             <Setter TargetName="Glow" Property="Opacity" Value="0.5" />
-                            <Setter TargetName="Highlight" Property="Opacity" Value="0.5"/>
+                            <Setter Property="Opacity" Value="0.5"/>
                             <Setter Property="Color" Value="Gray"/>
                         </Trigger>
 

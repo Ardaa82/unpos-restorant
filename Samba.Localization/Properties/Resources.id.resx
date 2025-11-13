@@ -917,7 +917,7 @@ Akan Terlihat setelah {1} hari, {2} jam, {3} menit</value>
   <data name="OrderTagGroup" xml:space="preserve">
     <value>Label Grup Pesanan</value>
   </data>
-  <data name="SambaMarket" xml:space="preserve">
+  <data name="FastPay" xml:space="preserve">
     <value>Pasar Samba</value>
   </data>
   <data name="DateRangeIsNotActiveWorkPeriod" xml:space="preserve">
@@ -2398,7 +2398,7 @@ Pesan Error:
   <data name="Unpaid" xml:space="preserve">
     <value>Belum Dibayar</value>
   </data>
-  <data name="Market" xml:space="preserve">
+  <data name="FastPay" xml:space="preserve">
     <value>Pasar</value>
   </data>
   <data name="TotalTaxableAmount" xml:space="preserve">

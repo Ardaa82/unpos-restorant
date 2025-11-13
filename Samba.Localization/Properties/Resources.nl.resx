@@ -917,7 +917,7 @@ Zal leiden tot na {1} dagen {2} uur, {3} minuten</value>
   <data name="OrderTagGroup" xml:space="preserve">
     <value>Bestelling Tag Groep</value>
   </data>
-  <data name="SambaMarket" xml:space="preserve">
+  <data name="FastPay" xml:space="preserve">
     <value>Samba markt</value>
   </data>
   <data name="DateRangeIsNotActiveWorkPeriod" xml:space="preserve">
@@ -2374,7 +2374,7 @@ Foutbericht:
   <data name="Unpaid" xml:space="preserve">
     <value>Onbetaalde</value>
   </data>
-  <data name="Market" xml:space="preserve">
+  <data name="FastPay" xml:space="preserve">
     <value>Markt</value>
   </data>
   <data name="TotalTaxableAmount" xml:space="preserve">

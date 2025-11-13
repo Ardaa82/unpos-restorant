@@ -15,7 +15,7 @@
             </Border.Background>
         </Border>
 
-        <Border Background="#397A7779" Margin="25" BorderThickness="5" BorderBrush="#59000000" CornerRadius="15">
+        <Border Background="#397A7779" Margin="25" BorderThickness="5" BorderBrush="#6930C7B5" CornerRadius="15">
 
         </Border>
 
@@ -34,17 +34,22 @@
                                     <Setter.Value>
                                         <ControlTemplate TargetType="{x:Type Button}">
                                             <Grid x:Name="ContentGrid">
-                                                
-                                                <Border BorderBrush="#270C0C41"  CornerRadius="10">
+                                                <Border BorderBrush="#270C0C41" BorderThickness="5" CornerRadius="8">
                                                     <Border.Background>
                                                         <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                                                            <GradientStop Color="CadetBlue" Offset="0" />
-                                                            <GradientStop Color="White" Offset="1" />
+                                                            <GradientStop Color="#6930C7B5" Offset="0" />
+                                                            <GradientStop Color="#FF0C2258" Offset="1" />
                                                         </LinearGradientBrush>
                                                     </Border.Background>
                                                 </Border>
-
-
+                                                <Border Margin="5" BorderThickness="1" CornerRadius="5" Background="Transparent">
+                                                    <Border.BorderBrush>
+                                                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                                            <GradientStop Color="#6930C7B5" Offset="0" />
+                                                            <GradientStop Color="#FF0C2258" Offset="1" />
+                                                        </LinearGradientBrush>
+                                                    </Border.BorderBrush>
+                                                </Border>
                                                 <Grid>
                                                     <Grid.RowDefinitions>
                                                         <RowDefinition Height="10*"/>
@@ -52,7 +57,7 @@
                                                         <RowDefinition Height="45*"/>
                                                     </Grid.RowDefinitions>
                                                     <Viewbox StretchDirection="DownOnly" Grid.Row="2" MinHeight="20" Margin="15,5" Name="textbox">
-                                                        <TextBlock Foreground="black" FontSize="30" FontWeight="Bold" Text="{Binding Caption}">
+                                                        <TextBlock Foreground="#BDF5F5F5" FontSize="40" FontWeight="Bold" Text="{Binding Caption}">
                                                             <TextBlock.Effect>
                                                                 <DropShadowEffect ShadowDepth="2" BlurRadius="3" Opacity="0.5" />
                                                             </TextBlock.Effect>
