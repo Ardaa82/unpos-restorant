@@ -1,0 +1,10 @@
+﻿<UserControl x:Class="Samba.Modules.FastPayModule.FastPayModuleView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!--Grid>
+        <Button Content="FastPaye Geçiş"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Click="FastPayButton_Click"/>
+    </Grid-->
+</UserControl>
