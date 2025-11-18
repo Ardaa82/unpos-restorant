@@ -1,4 +1,6 @@
-﻿namespace Samba.Presentation.Common
+﻿using System.Net.NetworkInformation;
+
+namespace Samba.Presentation.Common
 {
     public static class RegionNames
     {
@@ -19,5 +21,15 @@
         public const string PaymentCommandButtonsRegion = "PaymentCommandButtonsRegion";
         public const string PaymentTotalsRegion = "PaymentTotalsRegion";
         public const string PaymentTenderedValueRegion = "PaymentTenderedValueRegion";
+
+
+
+        public static string FastPayMainRegion = "FastPayMainRegion";
+        public static string FastPaySubRegion = "FastPaySubRegion";
+        public static string FastTicketOrdersRegion = "FastTicketOrdersRegion";
+        public static string FastTicketInfoRegion = "FastTicketInfoRegion";
+        public static string FastTicketTotalsRegion = "FastTicketTotalsRegion";
+
+
     }
 }

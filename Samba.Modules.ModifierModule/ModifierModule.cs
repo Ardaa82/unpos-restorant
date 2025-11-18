@@ -97,7 +97,7 @@ namespace Samba.Modules.ModifierModule
                 DisplayTicketNoteEditor();
             }
 
-            if (obj.Topic == EventTopicNames.DisplayTicketLog)
+            if (obj.Topic == EventTopicNames.DisplayFastTicketLog)
             {
                 _ticketLogViewerViewModel.SelectedTicket = obj.Value;
                 DisplayTicketLogViewer();

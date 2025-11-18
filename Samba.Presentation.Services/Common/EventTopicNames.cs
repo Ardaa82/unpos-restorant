@@ -104,7 +104,6 @@
         public const string ActivatePosView = "Activate POS View";
         public const string RefreshSelectedTicket = "Refresh Selected Ticket";
         public const string EditTicketNote = "Edit Ticket Note";
-        public const string DisplayTicketLog = "DisplayTicketLog";
         public const string PaymentRequestedForTicket = "Payment Requested For Ticket";
         public const string ActivateAccountSelector = "Activate Account Selector";
         public const string Activate = "Activate";
@@ -122,6 +121,18 @@
         public const string SetSelectedTicket = "SetSelectedTicket";
         public const string SetWidgetValue = "SetWidgetValue";
         public const string SelectAutomationCommand = "SelectAutomationCommand";
+
+        // FastPay specific events 
+        public static string ActivateFastTicketList = "ActivateFastTicketList";
+        public const string DisplayFastTicketLog = "DisplayTicketLog";
+        public const string DisplayFastTicket = "DisplayFastTicket";
+        public const string FastEntitySelected = "FastEntitySelected";
+        public const string CloseFastTicketRequested = "CloseFastTicketRequested";
+        public const string RefreshSelectedFastTicket = "RefreshSelectedFastTicket";
+        public const string PaymentRequested = "PaymentRequested";
+
+
+
     }
 
     public static class FunctionNames

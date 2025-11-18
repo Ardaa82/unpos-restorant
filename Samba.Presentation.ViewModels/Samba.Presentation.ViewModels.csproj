@@ -60,6 +60,7 @@
     <Compile Include="AccountBalances.cs" />
     <Compile Include="AutomationCommandValueData.cs" />
     <Compile Include="ChangePaymentViewModel.cs" />
+    <Compile Include="FastTicketTotalsViewModel.cs" />
     <Compile Include="MapControllerView.xaml.cs">
       <DependentUpon>MapControllerView.xaml</DependentUpon>
     </Compile>

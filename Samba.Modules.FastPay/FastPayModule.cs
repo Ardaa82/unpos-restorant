@@ -5,128 +5,88 @@ using Samba.Localization.Properties;
 using Samba.Presentation.Common;
 using Samba.Presentation.Services;
 using Samba.Presentation.Services.Common;
-using Samba.Services.Common;
-using System;
 using System.ComponentModel.Composition;
-
-/* FastPayModule
- * Implements a Fast Pay module for the Samba POS system.
- * Ignores POS operations and provides a quick payment interface.
- * Has its own view and view model for handling, based off from ActivePostView. - ActivateFastPayView
- * Has a flag in ApplicationState to indicate Fast Pay mode.
- * The flag is set when navigating to the Fast Pay view and used to modify behavior elsewhere in the application.
- * FastPayMode is set to true when the Fast Pay view is activated and set to false when the ticket is closed or the user navigates away.
- * 
- */
-
-
+using Samba.Modules.FastPayModule;
+using Samba.Modules.FastPay; // FastEntity tipi için gerekli olan using yönergesi eklendi
 
 namespace Samba.Modules.FastPayModule
 {
     [ModuleExport(typeof(FastPayModule))]
-    public class FastPayModule : VisibleModuleBase
+    class FastPayModule : VisibleModuleBase
     {
+        private readonly FastPayView _fastPayView;
+        private readonly FastMenuItemSelectorView _menuItemSelectorView;
+        private readonly FastTicketEntityListView _ticketEntityListView;
+        private readonly FastTicketTypeListView _ticketTypeListView;
         private readonly IRegionManager _regionManager;
-        private readonly IUserService _userService;
-        private readonly FastPayModuleView _fastPayModuleView;
-        private readonly FastPayModuleViewModel _fastPayModuleViewModel;
         private readonly IApplicationState _applicationState;
-
-
+        private readonly FastTicketView _ticketView;
+        private readonly FastTicketListView _ticketListView;
+        private readonly FastTicketTagListView _ticketTagListView;
 
         [ImportingConstructor]
-        public FastPayModule(IRegionManager regionManager, IUserService userService,
-            FastPayModuleView fastPayModuleView, FastPayModuleViewModel fastPayModuleViewModel, IApplicationState applicationState)
+        public FastPayModule(IRegionManager regionManager, IApplicationState applicationState,
+            FastPayView fastPayView, FastTicketView ticketView, FastTicketListView ticketListView, FastTicketTagListView ticketTagListView,
+            FastMenuItemSelectorView menuItemSelectorView, FastTicketEntityListView ticketEntityListView, FastTicketTypeListView ticketTypeListView)
             : base(regionManager, AppScreens.FastPayView)
         {
+            SetNavigationCommand(Resources.FastPay, Resources.Common, "Images/sepet512.png", 80);
+
+            _fastPayView = fastPayView;
+            _menuItemSelectorView = menuItemSelectorView;
+            _ticketEntityListView = ticketEntityListView;
+            _ticketTypeListView = ticketTypeListView;
             _regionManager = regionManager;
-            _userService = userService;
-            _fastPayModuleView = fastPayModuleView;
-            _fastPayModuleViewModel = fastPayModuleViewModel;
             _applicationState = applicationState;
+            _ticketView = ticketView;
+            _ticketListView = ticketListView;
+            _ticketTagListView = ticketTagListView;
 
-            SetNavigationCommand(Resources.FastPay, Resources.Common, "Images/sepet512.png", 50);
-            PermissionRegistry.RegisterPermission(
-                PermissionNames.OpenFastPay,
-                PermissionCategories.Navigation,
-                string.Format(Resources.CanNavigate_f, Resources.FastPay));
-        }
+            // Custom FastPay events (replacing PosModule events)
+            EventServiceFactory.EventService.GetEvent<GenericEvent<FastEntityButton>>().Subscribe(
+                x =>
+                {
+                    if (x.Topic == EventTopicNames.PaymentRequested) Activate();
+                });
 
-        public void ExecuteFastPay()
-        {
-            _applicationState.IsPaymentDone = false;
-            _applicationState.IsFastPayMode = true;
-            EventServiceFactory.EventService.PublishEvent(EventTopicNames.CreateTicket);
-
-
-
-        }
-
-        private void OnPaymentEvent(EventParameters<EventParameters<object>> obj)
-        {
-            if (obj.Topic == RuleEventNames.PaymentProcessed)
-            {
-                _applicationState.IsPaymentDone = true;
-            }
+            EventServiceFactory.EventService.GetEvent<GenericEvent<EventAggregator>>().Subscribe(
+                x =>
+                {
+                    if (x.Topic == EventTopicNames.RefreshSelectedFastTicket)
+                    {
+                        _fastPayView.BackgroundFocus();
+                    }
+                });
         }
 
         protected override void OnInitialization()
         {
-            _regionManager.RegisterViewWithRegion(RegionNames.MainRegion, typeof(FastPayModuleView));
-            EventServiceFactory.EventService.GetEvent<GenericEvent<EventParameters<object>>>().Subscribe(OnPaymentEvent);
-            EventServiceFactory.EventService.GetEvent<GenericEvent<EventAggregator>>().Subscribe(OnEvent);
+            _regionManager.Regions[RegionNames.MainRegion].Add(_fastPayView, "FastPayView");
+            _regionManager.Regions[RegionNames.FastPayMainRegion].Add(_ticketView, "FastTicketView");
+            _regionManager.Regions[RegionNames.FastPayMainRegion].Add(_ticketListView, "FastTicketListView");
+            _regionManager.Regions[RegionNames.FastPayMainRegion].Add(_ticketTagListView, "FastTicketTagListView");
+            _regionManager.Regions[RegionNames.FastPayMainRegion].Add(_ticketEntityListView, "FastTicketEntityListView");
+            _regionManager.Regions[RegionNames.FastPayMainRegion].Add(_ticketTypeListView, "FastTicketTypeListView");
+            _regionManager.Regions[RegionNames.FastPaySubRegion].Add(_menuItemSelectorView, "FastMenuItemSelectorView");
+            _regionManager.RegisterViewWithRegion(RegionNames.TicketOrdersRegion, typeof(FastTicketOrdersView));
+            _regionManager.RegisterViewWithRegion(RegionNames.TicketInfoRegion, typeof(FastTicketInfoView));
+            _regionManager.RegisterViewWithRegion(RegionNames.TicketTotalsRegion, typeof(FastTicketTotalsView));
         }
 
         protected override bool CanNavigate(string arg)
         {
-            return _userService.IsUserPermittedFor(PermissionNames.OpenFastPay);
+            return _applicationState.IsCurrentWorkPeriodOpen;
         }
 
         protected override void OnNavigate(string obj)
         {
             base.OnNavigate(obj);
-            ExecuteFastPay();
-
-        }
-        // Event handler for various events related to Fast Pay functionality.
-        // If the ActivateFastPayView event is received, it navigates to the Fast Pay view.
-        // If the CloseTicketRequested event is received, it exits Fast Pay mode and activates navigation.
-        private void OnEvent(EventParameters<EventAggregator> obj)
-        {
-            switch (obj.Topic)
-            {
-                case EventTopicNames.ActivateFastPayView:
-                    _regionManager.RequestNavigate(
-                        RegionNames.MainRegion,
-                        new Uri("FastPayView", UriKind.Relative));
-                    break;
-
-                case EventTopicNames.CloseTicketRequested:
-                    // DO NOT redirect here.
-                    // Let the TicketModule actually close the ticket.
-                    // _applicationState.IsFastPayMode = false;
-                    if (_applicationState.IsPaymentDone)
-                    {
-
-                        _regionManager.RequestNavigate(
-                        RegionNames.MainRegion,
-                        new Uri("FastPayView", UriKind.Relative));
-                    }
-                    else
-                        {
-                        // Unsubscribe if not in Fast Pay mode
-                        EventServiceFactory.EventService.PublishEvent(EventTopicNames.ActivateNavigation);
-                    }
-                        break;
-
-              
-
-            }
+            EventServiceFactory.EventService.PublishEvent(EventTopicNames.ActivateFastPayView);
         }
 
         public override object GetVisibleView()
         {
-            return _fastPayModuleView;
+            return _fastPayView;
         }
     }
 }
