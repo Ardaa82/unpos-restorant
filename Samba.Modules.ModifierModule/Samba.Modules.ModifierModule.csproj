@@ -63,6 +63,38 @@
       <DependentUpon>AutomationCommandValueSelectorView.xaml</DependentUpon>
     </Compile>
     <Compile Include="AutomationCommandValueSelectorViewModel.cs" />
+    <Compile Include="FastAutomationCommandSelectorView.xaml.cs">
+      <DependentUpon>FastAutomationCommandSelectorView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="FastAutomationCommandSelectorViewModel.cs" />
+    <Compile Include="FastAutomationCommandValueSelectorView.xaml.cs">
+      <DependentUpon>FastAutomationCommandValueSelectorView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="FastAutomationCommandValueSelectorViewModel.cs" />
+    <Compile Include="FastGroupedOrderTagButtonViewModel.cs" />
+    <Compile Include="FastGroupedOrderTagViewModel.cs" />
+    <Compile Include="FastOrderTagButtonViewModel.cs" />
+    <Compile Include="FastOrderTagGroupEditorView.xaml.cs">
+      <DependentUpon>FastOrderTagGroupEditorView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="FastOrderTagGroupEditorViewModel.cs" />
+    <Compile Include="FastOrderTagGroupViewModel.cs" />
+    <Compile Include="FastProductTimerEditorView.xaml.cs">
+      <DependentUpon>FastProductTimerEditorView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="FastProductTimerEditorViewModel.cs" />
+    <Compile Include="FastTicketLogViewerView.xaml.cs">
+      <DependentUpon>FastTicketLogViewerView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="FastTicketLogViewerViewModel.cs" />
+    <Compile Include="FastTicketNoteEditorView.xaml.cs">
+      <DependentUpon>FastTicketNoteEditorView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="FastTicketNoteEditorViewModel.cs" />
+    <Compile Include="FastTicketTagEditorView.xaml.cs">
+      <DependentUpon>FastTicketTagEditorView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="FastTicketTagEditorViewModel.cs" />
     <Compile Include="GroupedOrderTagButtonViewModel.cs" />
     <Compile Include="GroupedOrderTagViewModel.cs" />
     <Compile Include="ProductTimerEditorView.xaml.cs">
@@ -98,6 +130,27 @@
     <Page Include="AutomationCommandValueSelectorView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="FastAutomationCommandSelectorView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="FastAutomationCommandValueSelectorView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="FastOrderTagGroupEditorView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="FastProductTimerEditorView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="FastTicketLogViewerView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="FastTicketNoteEditorView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="FastTicketTagEditorView.xaml">
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ProductTimerEditorView.xaml">
       <SubType>Designer</SubType>

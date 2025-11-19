@@ -19,7 +19,6 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 
-
 /* FastPayViewModel
  * Handles the main FastPay view model in the Samba POS system.
  * Has entities for ticket management, menu item selection, and ticket orders.
@@ -152,7 +151,7 @@ namespace Samba.Modules.FastPayModule
             if (obj.Topic == EventTopicNames.TicketTypeSelected && obj.Value != null)
             {
                 _applicationState.TempTicketType = obj.Value;
-                new OperationRequest<Entity>(_lastSelectedEntity, null).PublishEvent(EventTopicNames.EntitySelected, true);
+                new OperationRequest<Entity>(_lastSelectedEntity, null).PublishEvent(EventTopicNames.FastEntitySelected, true);
             }
         }
 
@@ -200,7 +199,7 @@ namespace Samba.Modules.FastPayModule
 
         private void OnEntitySelectedForTicket(EventParameters<OperationRequest<Entity>> eventParameters)
         {
-            if (eventParameters.Topic == EventTopicNames.EntitySelected)
+            if (eventParameters.Topic == EventTopicNames.FastEntitySelected)
             {
                 FireEntitySelectedRule(eventParameters.Value.SelectedItem);
                 if (SelectedTicket != null)
@@ -331,7 +330,8 @@ namespace Samba.Modules.FastPayModule
                     CreateTicket();
                     EventServiceFactory.EventService.PublishEvent(EventTopicNames.RefreshSelectedTicket);
                     break;
-                case EventTopicNames.ActivatePosView:
+
+                case EventTopicNames.ActivateFastPayView:
                     if (SelectedTicket == null || _ticketService.CanDeselectOrders(SelectedTicket.SelectedOrders))
                     {
                         DisplayTickets();
@@ -339,6 +339,7 @@ namespace Samba.Modules.FastPayModule
                         _fastTicketViewModel.ResetTicket();
                     }
                     break;
+
                 case EventTopicNames.RegenerateSelectedTicket:
                     if (SelectedTicket != null)
                     {
@@ -346,10 +347,13 @@ namespace Samba.Modules.FastPayModule
                         DisplaySingleTicket();
                     }
                     break;
+
                 case EventTopicNames.RefreshSelectedTicket:
                     DisplayMenuScreen();
                     DisplaySingleTicket();
                     break;
+
+                case EventTopicNames.CloseFastTicketRequested:
                 case EventTopicNames.CloseTicketRequested:
                     DisplayMenuScreen();
                     CloseTicket();
@@ -368,7 +372,7 @@ namespace Samba.Modules.FastPayModule
                 DisplaySingleTicket();
                 return;
             }
-            CommonEventPublisher.PublishEntityOperation<Entity>(null, EventTopicNames.SelectEntity, EventTopicNames.EntitySelected);
+            CommonEventPublisher.PublishEntityOperation<Entity>(null, EventTopicNames.SelectEntity, EventTopicNames.FastEntitySelected);
         }
 
         private void DisplaySingleTicket()
@@ -389,10 +393,13 @@ namespace Samba.Modules.FastPayModule
                 return;
             }
 
-            if (SelectedTicket != null && !_userService.IsUserPermittedFor(PermissionNames.DisplayOtherWaitersTickets) && SelectedTicket.Orders.Any() && SelectedTicket.Orders[0].CreatingUserName != _applicationState.CurrentLoggedInUser.Name)
+            if (SelectedTicket != null &&
+                !_userService.IsUserPermittedFor(PermissionNames.DisplayOtherWaitersTickets) &&
+                SelectedTicket.Orders.Any() &&
+                SelectedTicket.Orders[0].CreatingUserName != _applicationState.CurrentLoggedInUser.Name)
             {
                 InteractionService.UserIntraction.GiveFeedback("Can't display this ticket");
-                EventServiceFactory.EventService.PublishEvent(EventTopicNames.CloseTicketRequested);
+                EventServiceFactory.EventService.PublishEvent(EventTopicNames.CloseFastTicketRequested);
                 return;
             }
 

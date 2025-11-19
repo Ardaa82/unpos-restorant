@@ -124,6 +124,7 @@
 
         // FastPay specific events 
         public static string ActivateFastTicketList = "ActivateFastTicketList";
+        public static string DisplayTicketLog = "DisplayTicketLog";
         public const string DisplayFastTicketLog = "DisplayTicketLog";
         public const string DisplayFastTicket = "DisplayFastTicket";
         public const string FastEntitySelected = "FastEntitySelected";

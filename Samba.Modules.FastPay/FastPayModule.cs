@@ -7,7 +7,7 @@ using Samba.Presentation.Services;
 using Samba.Presentation.Services.Common;
 using System.ComponentModel.Composition;
 using Samba.Modules.FastPayModule;
-using Samba.Modules.FastPay; // FastEntity tipi için gerekli olan using yönergesi eklendi
+using Samba.Modules.FastPay; // FastTicketTotalsView için
 
 namespace Samba.Modules.FastPayModule
 {
@@ -25,9 +25,16 @@ namespace Samba.Modules.FastPayModule
         private readonly FastTicketTagListView _ticketTagListView;
 
         [ImportingConstructor]
-        public FastPayModule(IRegionManager regionManager, IApplicationState applicationState,
-            FastPayView fastPayView, FastTicketView ticketView, FastTicketListView ticketListView, FastTicketTagListView ticketTagListView,
-            FastMenuItemSelectorView menuItemSelectorView, FastTicketEntityListView ticketEntityListView, FastTicketTypeListView ticketTypeListView)
+        public FastPayModule(
+            IRegionManager regionManager,
+            IApplicationState applicationState,
+            FastPayView fastPayView,
+            FastTicketView ticketView,
+            FastTicketListView ticketListView,
+            FastTicketTagListView ticketTagListView,
+            FastMenuItemSelectorView menuItemSelectorView,
+            FastTicketEntityListView ticketEntityListView,
+            FastTicketTypeListView ticketTypeListView)
             : base(regionManager, AppScreens.FastPayView)
         {
             SetNavigationCommand(Resources.FastPay, Resources.Common, "Images/sepet512.png", 80);
@@ -42,11 +49,12 @@ namespace Samba.Modules.FastPayModule
             _ticketListView = ticketListView;
             _ticketTagListView = ticketTagListView;
 
-            // Custom FastPay events (replacing PosModule events)
+            // FastPay’e özel event’ler
             EventServiceFactory.EventService.GetEvent<GenericEvent<FastEntityButton>>().Subscribe(
                 x =>
                 {
-                    if (x.Topic == EventTopicNames.PaymentRequested) Activate();
+                    if (x.Topic == EventTopicNames.PaymentRequested)
+                        Activate();
                 });
 
             EventServiceFactory.EventService.GetEvent<GenericEvent<EventAggregator>>().Subscribe(
@@ -61,16 +69,23 @@ namespace Samba.Modules.FastPayModule
 
         protected override void OnInitialization()
         {
+            // Ana layout
             _regionManager.Regions[RegionNames.MainRegion].Add(_fastPayView, "FastPayView");
+
+            // FastPay ana region (ticket tarafı)
             _regionManager.Regions[RegionNames.FastPayMainRegion].Add(_ticketView, "FastTicketView");
             _regionManager.Regions[RegionNames.FastPayMainRegion].Add(_ticketListView, "FastTicketListView");
             _regionManager.Regions[RegionNames.FastPayMainRegion].Add(_ticketTagListView, "FastTicketTagListView");
             _regionManager.Regions[RegionNames.FastPayMainRegion].Add(_ticketEntityListView, "FastTicketEntityListView");
             _regionManager.Regions[RegionNames.FastPayMainRegion].Add(_ticketTypeListView, "FastTicketTypeListView");
+
+            // FastPay alt region (menü tarafı)
             _regionManager.Regions[RegionNames.FastPaySubRegion].Add(_menuItemSelectorView, "FastMenuItemSelectorView");
-            _regionManager.RegisterViewWithRegion(RegionNames.TicketOrdersRegion, typeof(FastTicketOrdersView));
-            _regionManager.RegisterViewWithRegion(RegionNames.TicketInfoRegion, typeof(FastTicketInfoView));
-            _regionManager.RegisterViewWithRegion(RegionNames.TicketTotalsRegion, typeof(FastTicketTotalsView));
+
+            // POS region’larını ezmek yerine FastPay için ayrı region isimleri kullanıyoruz
+            _regionManager.RegisterViewWithRegion(RegionNames.FastTicketOrdersRegion, typeof(FastTicketOrdersView));
+            _regionManager.RegisterViewWithRegion(RegionNames.FastTicketInfoRegion, typeof(FastTicketInfoView));
+            _regionManager.RegisterViewWithRegion(RegionNames.FastTicketTotalsRegion, typeof(FastTicketTotalsView));
         }
 
         protected override bool CanNavigate(string arg)

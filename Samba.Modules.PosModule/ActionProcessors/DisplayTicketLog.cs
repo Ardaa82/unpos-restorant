@@ -18,7 +18,7 @@ namespace Samba.Modules.PosModule.ActionProcessors
             var ticket = actionData.GetDataValue<Ticket>("Ticket");
             if (ticket != null)
             {
-                ticket.PublishEvent(EventTopicNames.DisplayFastTicketLog);
+                ticket.PublishEvent(EventTopicNames.DisplayTicketLog);
             }
         }
 

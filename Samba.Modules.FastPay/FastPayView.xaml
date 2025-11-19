@@ -9,29 +9,42 @@
              d:DesignHeight="300" d:DesignWidth="300" 
              FocusVisualStyle="{x:Null}"
              Focusable="True"
-             PreviewTextInput="UserControl_PreviewTextInput" Loaded="UserControl_Loaded">
+             PreviewTextInput="UserControl_PreviewTextInput"
+             Loaded="UserControl_Loaded">
 
-    <TabControl Name="LayoutTabControl" Background="Transparent" FocusVisualStyle="{x:Null}" Style="{StaticResource BorderlessTabControlStyle}"
-                Grid.Column="0" BorderThickness="0"
-                Margin="0" Padding="0">
+    <TabControl Name="LayoutTabControl"
+                Background="Transparent"
+                FocusVisualStyle="{x:Null}"
+                Style="{StaticResource BorderlessTabControlStyle}"
+                Grid.Column="0"
+                BorderThickness="0"
+                Margin="0"
+                Padding="0"
+                SelectedIndex="0">
+
         <TabControl.ItemContainerStyle>
             <Style TargetType="{x:Type TabItem}">
                 <Setter Property="Visibility" Value="Collapsed"/>
             </Style>
         </TabControl.ItemContainerStyle>
 
-        <Grid Name="Grid1" Background="{StaticResource {x:Static SystemColors.ControlLightBrushKey}}">
+        <!-- Landscape layout -->
+        <Grid Name="Grid1"
+              Background="{StaticResource {x:Static SystemColors.ControlLightBrushKey}}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="45*"/>
                 <ColumnDefinition Width="55*"/>
             </Grid.ColumnDefinitions>
 
-            <TabControl cal:RegionManager.RegionName="{x:Static Common:RegionNames.FastPayMainRegion}" 
+            <!-- Ticket side (FastPayMainRegion) -->
+            <TabControl x:Name="TicketRegion"
+                        cal:RegionManager.RegionName="{x:Static Common:RegionNames.FastPayMainRegion}"
                         Background="Transparent"
-                        Grid.Column="0" BorderThickness="0"
-                        Margin="0" Padding="0"
-                        FocusVisualStyle="{x:Null}"
-                        Name="TicketRegion">
+                        Grid.Column="0"
+                        BorderThickness="0"
+                        Margin="0"
+                        Padding="0"
+                        FocusVisualStyle="{x:Null}">
                 <TabControl.ItemContainerStyle>
                     <Style TargetType="{x:Type TabItem}">
                         <Setter Property="Visibility" Value="Collapsed"/>
@@ -39,13 +52,15 @@
                 </TabControl.ItemContainerStyle>
             </TabControl>
 
-            <TabControl cal:RegionManager.RegionName="{x:Static Common:RegionNames.FastPaySubRegion}"                        
+            <!-- Menu side (FastPaySubRegion) -->
+            <TabControl x:Name="MenuRegion"
+                        cal:RegionManager.RegionName="{x:Static Common:RegionNames.FastPaySubRegion}"
                         Grid.Column="1"
                         FocusVisualStyle="{x:Null}"
                         Background="Transparent"
                         BorderThickness="0"
-                        Margin="0" Padding="0"
-                        Name="MenuRegion">
+                        Margin="0"
+                        Padding="0">
                 <TabControl.ItemContainerStyle>
                     <Style TargetType="{x:Type TabItem}">
                         <Setter Property="Visibility" Value="Collapsed"/>
@@ -54,7 +69,10 @@
             </TabControl>
         </Grid>
 
-        <TabControl Name="Grid2" FocusVisualStyle="{x:Null}" Style="{StaticResource BorderlessTabControlStyle}"
+        <!-- Portrait layout: Grid2 holds TicketRegion + MenuRegion as tabs -->
+        <TabControl x:Name="Grid2"
+                    FocusVisualStyle="{x:Null}"
+                    Style="{StaticResource BorderlessTabControlStyle}"
                     Background="Transparent"
                     BorderThickness="0"
                     Margin="-1"

@@ -18,6 +18,10 @@ namespace Samba.Modules.ModifierModule
     {
         private IEnumerable<Order> _selectedOrders;
 
+        private readonly IRegionManager _regionManager;
+        private readonly IApplicationState _applicationState;
+
+        // POS tarafı view / VM’ler
         private readonly OrderTagGroupEditorView _selectedOrdersView;
         private readonly OrderTagGroupEditorViewModel _selectedOrdersViewModel;
         private readonly AutomationCommandSelectorView _automationCommandSelectorView;
@@ -27,23 +31,73 @@ namespace Samba.Modules.ModifierModule
         private readonly ProductTimerEditorViewModel _productTimerEditorViewModel;
         private readonly TicketLogViewerView _ticketLogViewerView;
         private readonly TicketLogViewerViewModel _ticketLogViewerViewModel;
-        private readonly IRegionManager _regionManager;
-
         private readonly TicketNoteEditorView _ticketNoteEditorView;
         private readonly TicketNoteEditorViewModel _ticketNoteEditorViewModel;
         private readonly TicketTagEditorView _ticketTagEditorView;
         private readonly TicketTagEditorViewModel _ticketTagEditorViewModel;
 
-        [ImportingConstructor]
-        public ModifierModule(IRegionManager regionManager, IUserService userService,
-            TicketNoteEditorView ticketNoteEditorView, TicketNoteEditorViewModel ticketNoteEditorViewModel,
-            TicketTagEditorView ticketTagEditorView, TicketTagEditorViewModel ticketTagEditorViewModel,
-            OrderTagGroupEditorView selectedOrdersView, OrderTagGroupEditorViewModel selectedOrdersViewModel,
-            AutomationCommandSelectorView automationCommandSelectorView, AutomationCommandSelectorViewModel automationCommandSelectorViewModel,
-            AutomationCommandValueSelectorView automationCommandValueSelectorView, AutomationCommandValueSelectorViewModel automationCommandValueSelectorViewModel,
-            ProductTimerEditorView productTimerEditorView, ProductTimerEditorViewModel productTimerEditorViewModel,
-            TicketLogViewerView ticketLogViewerView, TicketLogViewerViewModel ticketLogViewerViewModel)
+        // FastPay tarafı view / VM’ler
+        private readonly FastOrderTagGroupEditorView _fastSelectedOrdersView;
+        private readonly FastOrderTagGroupEditorViewModel _fastSelectedOrdersViewModel;
+        private readonly FastAutomationCommandSelectorView _fastAutomationCommandSelectorView;
+        private readonly FastAutomationCommandSelectorViewModel _fastAutomationCommandSelectorViewModel;
+        private readonly FastAutomationCommandValueSelectorView _fastAutomationCommandValueSelectorView;
+        private readonly FastProductTimerEditorView _fastProductTimerEditorView;
+        private readonly FastProductTimerEditorViewModel _fastProductTimerEditorViewModel;
+        private readonly FastTicketLogViewerView _fastTicketLogViewerView;
+        private readonly FastTicketLogViewerViewModel _fastTicketLogViewerViewModel;
+        private readonly FastTicketNoteEditorView _fastTicketNoteEditorView;
+        private readonly FastTicketNoteEditorViewModel _fastTicketNoteEditorViewModel;
+        private readonly FastTicketTagEditorView _fastTicketTagEditorView;
+        private readonly FastTicketTagEditorViewModel _fastTicketTagEditorViewModel;
+
+        private bool IsFastPayMode
         {
+            get { return _applicationState != null && _applicationState.IsFastPayMode; }
+        }
+
+        [ImportingConstructor]
+        public ModifierModule(
+            IRegionManager regionManager,
+            IUserService userService,
+            IApplicationState applicationState,
+
+            // POS bileşenleri
+            TicketNoteEditorView ticketNoteEditorView,
+            TicketNoteEditorViewModel ticketNoteEditorViewModel,
+            TicketTagEditorView ticketTagEditorView,
+            TicketTagEditorViewModel ticketTagEditorViewModel,
+            OrderTagGroupEditorView selectedOrdersView,
+            OrderTagGroupEditorViewModel selectedOrdersViewModel,
+            AutomationCommandSelectorView automationCommandSelectorView,
+            AutomationCommandSelectorViewModel automationCommandSelectorViewModel,
+            AutomationCommandValueSelectorView automationCommandValueSelectorView,
+            AutomationCommandValueSelectorViewModel automationCommandValueSelectorViewModel,
+            ProductTimerEditorView productTimerEditorView,
+            ProductTimerEditorViewModel productTimerEditorViewModel,
+            TicketLogViewerView ticketLogViewerView,
+            TicketLogViewerViewModel ticketLogViewerViewModel,
+
+            // FastPay bileşenleri
+            FastTicketNoteEditorView fastTicketNoteEditorView,
+            FastTicketNoteEditorViewModel fastTicketNoteEditorViewModel,
+            FastTicketTagEditorView fastTicketTagEditorView,
+            FastTicketTagEditorViewModel fastTicketTagEditorViewModel,
+            FastOrderTagGroupEditorView fastSelectedOrdersView,
+            FastOrderTagGroupEditorViewModel fastSelectedOrdersViewModel,
+            FastAutomationCommandSelectorView fastAutomationCommandSelectorView,
+            FastAutomationCommandSelectorViewModel fastAutomationCommandSelectorViewModel,
+            FastAutomationCommandValueSelectorView fastAutomationCommandValueSelectorView,
+            FastAutomationCommandValueSelectorViewModel fastAutomationCommandValueSelectorViewModel,
+            FastProductTimerEditorView fastProductTimerEditorView,
+            FastProductTimerEditorViewModel fastProductTimerEditorViewModel,
+            FastTicketLogViewerView fastTicketLogViewerView,
+            FastTicketLogViewerViewModel fastTicketLogViewerViewModel)
+        {
+            _regionManager = regionManager;
+            _applicationState = applicationState;
+
+            // POS
             _selectedOrdersView = selectedOrdersView;
             _selectedOrdersViewModel = selectedOrdersViewModel;
             _automationCommandSelectorView = automationCommandSelectorView;
@@ -58,7 +112,20 @@ namespace Samba.Modules.ModifierModule
             _ticketTagEditorView = ticketTagEditorView;
             _ticketTagEditorViewModel = ticketTagEditorViewModel;
 
-            _regionManager = regionManager;
+            // FastPay
+            _fastSelectedOrdersView = fastSelectedOrdersView;
+            _fastSelectedOrdersViewModel = fastSelectedOrdersViewModel;
+            _fastAutomationCommandSelectorView = fastAutomationCommandSelectorView;
+            _fastAutomationCommandSelectorViewModel = fastAutomationCommandSelectorViewModel;
+            _fastAutomationCommandValueSelectorView = fastAutomationCommandValueSelectorView;
+            _fastProductTimerEditorView = fastProductTimerEditorView;
+            _fastProductTimerEditorViewModel = fastProductTimerEditorViewModel;
+            _fastTicketLogViewerView = fastTicketLogViewerView;
+            _fastTicketLogViewerViewModel = fastTicketLogViewerViewModel;
+            _fastTicketNoteEditorView = fastTicketNoteEditorView;
+            _fastTicketNoteEditorViewModel = fastTicketNoteEditorViewModel;
+            _fastTicketTagEditorView = fastTicketTagEditorView;
+            _fastTicketTagEditorViewModel = fastTicketTagEditorViewModel;
 
             EventServiceFactory.EventService.GetEvent<GenericEvent<OperationRequest<SelectedOrdersData>>>().Subscribe(OnSelectedOrdersDataEvent);
             EventServiceFactory.EventService.GetEvent<GenericEvent<TicketTagData>>().Subscribe(OnTicketTagDataSelected);
@@ -70,7 +137,10 @@ namespace Samba.Modules.ModifierModule
         {
             if (obj.Topic == EventTopicNames.SelectAutomationCommandValue)
             {
-                DisplayAutomationCommandValueSelector();
+                if (IsFastPayMode)
+                    DisplayFastAutomationCommandValueSelector();
+                else
+                    DisplayAutomationCommandValueSelector();
             }
         }
 
@@ -78,8 +148,16 @@ namespace Samba.Modules.ModifierModule
         {
             if (obj.Topic == EventTopicNames.SelectTicketTag)
             {
-                var isTagSelected = _ticketTagEditorViewModel.TicketTagSelected(obj.Value.Ticket, obj.Value.TicketTagGroup);
-                if (!isTagSelected) DisplayTicketTagEditor();
+                if (IsFastPayMode)
+                {
+                    var isTagSelected = _fastTicketTagEditorViewModel.TicketTagSelected(obj.Value.Ticket, obj.Value.TicketTagGroup);
+                    if (!isTagSelected) DisplayFastTicketTagEditor();
+                }
+                else
+                {
+                    var isTagSelected = _ticketTagEditorViewModel.TicketTagSelected(obj.Value.Ticket, obj.Value.TicketTagGroup);
+                    if (!isTagSelected) DisplayTicketTagEditor();
+                }
             }
         }
 
@@ -87,25 +165,49 @@ namespace Samba.Modules.ModifierModule
         {
             if (obj.Topic == EventTopicNames.SelectAutomationCommand)
             {
-                _automationCommandSelectorViewModel.SelectedTicket = obj.Value;
-                DisplayAutomationCommandSelector();
+                if (IsFastPayMode)
+                {
+                    _fastAutomationCommandSelectorViewModel.SelectedTicket = obj.Value;
+                    DisplayFastAutomationCommandSelector();
+                }
+                else
+                {
+                    _automationCommandSelectorViewModel.SelectedTicket = obj.Value;
+                    DisplayAutomationCommandSelector();
+                }
             }
 
             if (obj.Topic == EventTopicNames.EditTicketNote)
             {
-                _ticketNoteEditorViewModel.SelectedTicket = obj.Value;
-                DisplayTicketNoteEditor();
+                if (IsFastPayMode)
+                {
+                    _fastTicketNoteEditorViewModel.SelectedTicket = obj.Value;
+                    DisplayFastTicketNoteEditor();
+                }
+                else
+                {
+                    _ticketNoteEditorViewModel.SelectedTicket = obj.Value;
+                    DisplayTicketNoteEditor();
+                }
+            }
+
+            // POS log vs FastPay log
+            if (obj.Topic == EventTopicNames.DisplayTicketLog)
+            {
+                _ticketLogViewerViewModel.SelectedTicket = obj.Value;
+                DisplayTicketLogViewer();
             }
 
             if (obj.Topic == EventTopicNames.DisplayFastTicketLog)
             {
-                _ticketLogViewerViewModel.SelectedTicket = obj.Value;
-                DisplayTicketLogViewer();
+                _fastTicketLogViewerViewModel.SelectedTicket = obj.Value;
+                DisplayFastTicketLogViewer();
             }
         }
 
         protected override void OnInitialization()
         {
+            // POS sub region kayıtları
             _regionManager.RegisterViewWithRegion(RegionNames.PosSubRegion, typeof(OrderTagGroupEditorView));
             _regionManager.RegisterViewWithRegion(RegionNames.PosSubRegion, typeof(TicketNoteEditorView));
             _regionManager.RegisterViewWithRegion(RegionNames.PosSubRegion, typeof(TicketTagEditorView));
@@ -113,13 +215,32 @@ namespace Samba.Modules.ModifierModule
             _regionManager.RegisterViewWithRegion(RegionNames.PosSubRegion, typeof(AutomationCommandSelectorView));
             _regionManager.RegisterViewWithRegion(RegionNames.PosSubRegion, typeof(AutomationCommandValueSelectorView));
             _regionManager.RegisterViewWithRegion(RegionNames.PosSubRegion, typeof(TicketLogViewerView));
+
+            // FastPaySubRegion Fast bileşenleri – ayrı tipler, o yüzden çakışma yok
+            _regionManager.RegisterViewWithRegion(RegionNames.FastPaySubRegion, typeof(FastOrderTagGroupEditorView));
+            _regionManager.RegisterViewWithRegion(RegionNames.FastPaySubRegion, typeof(FastTicketNoteEditorView));
+            _regionManager.RegisterViewWithRegion(RegionNames.FastPaySubRegion, typeof(FastTicketTagEditorView));
+            _regionManager.RegisterViewWithRegion(RegionNames.FastPaySubRegion, typeof(FastProductTimerEditorView));
+            _regionManager.RegisterViewWithRegion(RegionNames.FastPaySubRegion, typeof(FastAutomationCommandSelectorView));
+            _regionManager.RegisterViewWithRegion(RegionNames.FastPaySubRegion, typeof(FastAutomationCommandValueSelectorView));
+            _regionManager.RegisterViewWithRegion(RegionNames.FastPaySubRegion, typeof(FastTicketLogViewerView));
         }
 
+        // POS ekranı için
         public void DisplayTicketDetailsScreen(OperationRequest<SelectedOrdersData> currentOperationRequest)
         {
-            _selectedOrdersViewModel.CurrentOperationRequest = currentOperationRequest;
-            _regionManager.ActivateRegion(RegionNames.PosSubRegion, _selectedOrdersView);
-            _ticketNoteEditorView.TicketNote.BackgroundFocus();
+            if (IsFastPayMode)
+            {
+                _fastSelectedOrdersViewModel.CurrentOperationRequest = currentOperationRequest;
+                _regionManager.ActivateRegion(RegionNames.FastPaySubRegion, _fastSelectedOrdersView);
+                _fastTicketNoteEditorView.TicketNote.BackgroundFocus();
+            }
+            else
+            {
+                _selectedOrdersViewModel.CurrentOperationRequest = currentOperationRequest;
+                _regionManager.ActivateRegion(RegionNames.PosSubRegion, _selectedOrdersView);
+                _ticketNoteEditorView.TicketNote.BackgroundFocus();
+            }
         }
 
         public void DisplayAutomationCommandSelector()
@@ -153,21 +274,74 @@ namespace Samba.Modules.ModifierModule
             _regionManager.ActivateRegion(RegionNames.PosSubRegion, _productTimerEditorView);
         }
 
+        // FastPay için karşılık gelen ekranlar
+        private void DisplayFastAutomationCommandSelector()
+        {
+            _regionManager.ActivateRegion(RegionNames.FastPaySubRegion, _fastAutomationCommandSelectorView);
+        }
+
+        private void DisplayFastAutomationCommandValueSelector()
+        {
+            _regionManager.ActivateRegion(RegionNames.FastPaySubRegion, _fastAutomationCommandValueSelectorView);
+        }
+
+        private void DisplayFastTicketNoteEditor()
+        {
+            _regionManager.ActivateRegion(RegionNames.FastPaySubRegion, _fastTicketNoteEditorView);
+        }
+
+        private void DisplayFastTicketLogViewer()
+        {
+            _regionManager.ActivateRegion(RegionNames.FastPaySubRegion, _fastTicketLogViewerView);
+        }
+
+        private void DisplayFastTicketTagEditor()
+        {
+            _regionManager.ActivateRegion(RegionNames.FastPaySubRegion, _fastTicketTagEditorView);
+        }
+
+        private void DisplayFastProductTimerEditor(Order selectedOrder)
+        {
+            _fastProductTimerEditorViewModel.Update(selectedOrder);
+            _regionManager.ActivateRegion(RegionNames.FastPaySubRegion, _fastProductTimerEditorView);
+        }
+
         private void OnSelectedOrdersDataEvent(EventParameters<OperationRequest<SelectedOrdersData>> selectedOrdersEvent)
         {
             if (selectedOrdersEvent.Topic == EventTopicNames.DisplayTicketOrderDetails)
             {
                 _selectedOrders = selectedOrdersEvent.Value.SelectedItem.SelectedOrders.ToList();
 
-                if (_selectedOrdersViewModel.ShouldDisplay(selectedOrdersEvent.Value.SelectedItem.Ticket, _selectedOrders))
+                if (IsFastPayMode)
                 {
-                    DisplayTicketDetailsScreen(selectedOrdersEvent.Value);
+                    if (_fastSelectedOrdersViewModel.ShouldDisplay(selectedOrdersEvent.Value.SelectedItem.Ticket, _selectedOrders))
+                    {
+                        DisplayTicketDetailsScreen(selectedOrdersEvent.Value);
+                    }
+                    else if (_fastProductTimerEditorViewModel.ShouldDisplay(selectedOrdersEvent.Value.SelectedItem.Ticket, _selectedOrders.ToList()))
+                    {
+                        DisplayFastProductTimerEditor(_selectedOrders.First());
+                    }
+                    else
+                    {
+                        EventServiceFactory.EventService.PublishEvent(EventTopicNames.RefreshSelectedTicket);
+                    }
                 }
-                else if (_productTimerEditorViewModel.ShouldDisplay(selectedOrdersEvent.Value.SelectedItem.Ticket, _selectedOrders.ToList()))
+                else
                 {
-                    DisplayProdcutTimerEdior(_selectedOrders.First());
+                    if (_selectedOrdersViewModel.ShouldDisplay(selectedOrdersEvent.Value.SelectedItem.Ticket, _selectedOrders))
+                    {
+                        DisplayTicketDetailsScreen(selectedOrdersEvent.Value);
+                    }
+                    else if (_productTimerEditorViewModel.ShouldDisplay(selectedOrdersEvent.Value.SelectedItem.Ticket, _selectedOrders.ToList()))
+                    {
+                        DisplayProdcutTimerEdior(_selectedOrders.First());
+                    }
+                    else
+                    {
+                        EventServiceFactory.EventService.PublishEvent(EventTopicNames.RefreshSelectedTicket);
+                    }
                 }
-                else EventServiceFactory.EventService.PublishEvent(EventTopicNames.RefreshSelectedTicket);
             }
         }
     }

@@ -5,7 +5,7 @@ using Samba.Domain.Models.Entities;
 using Samba.Domain.Models.Menus;
 using Samba.Domain.Models.Tickets;
 using Samba.Localization.Properties;
-using Samba.Modules.PosModule;
+using Samba.Modules.PosModule; // SelectedOrdersData, OrderViewModel vb. için
 using Samba.Presentation.Common;
 using Samba.Presentation.Common.Commands;
 using Samba.Presentation.Common.Services;
@@ -20,9 +20,10 @@ using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.Linq;
-using Samba.Modules.FastPay;
+using Samba.Modules.FastPayModule;          // FastTicketOrdersViewModel, FastEntityButton, FastCommandContainerButton, FastTicketInfoViewModel
+using FastPay.Presentation.ViewModels;      // FastTicketTotalsViewModel
 
-namespace Samba.Modules.FastPayModule
+namespace Samba.Modules.FastPay
 {
     [Export]
     public class FastTicketViewModel : ObservableObject
@@ -32,9 +33,9 @@ namespace Samba.Modules.FastPayModule
         private readonly ICacheService _cacheService;
         private readonly IApplicationState _applicationState;
         private readonly IExpressionService _expressionService;
-        private readonly TicketOrdersViewModel _ticketOrdersViewModel;
-        private readonly TicketTotalsViewModel _totals;
-        private readonly TicketInfoViewModel _ticketInfo;
+        private readonly FastTicketOrdersViewModel _ticketOrdersViewModel;
+        private readonly FastTicketTotalsViewModel _totals;
+        private readonly FastTicketInfoViewModel _ticketInfo;
 
         public CaptionCommand<string> MoveOrdersCommand { get; set; }
         public ICaptionCommand IncQuantityCommand { get; set; }
@@ -50,24 +51,24 @@ namespace Samba.Modules.FastPayModule
         public ICaptionCommand ModifyOrderCommand { get; set; }
 
         public DelegateCommand<EntityType> SelectEntityCommand { get; set; }
-        public DelegateCommand<CommandContainerButton> ExecuteAutomationCommnand { get; set; }
+        public DelegateCommand<FastCommandContainerButton> ExecuteAutomationCommnand { get; set; }
 
-        private ObservableCollection<EntityButton> _entityButtons;
-        public ObservableCollection<EntityButton> EntityButtons
+        private ObservableCollection<FastEntityButton> _entityButtons;
+        public ObservableCollection<FastEntityButton> EntityButtons
         {
             get
             {
                 if (_entityButtons == null && SelectedDepartment != null && SelectedTicket != null && SelectedTicket.TicketTypeId > 0)
                 {
-                    _entityButtons = new ObservableCollection<EntityButton>(
+                    _entityButtons = new ObservableCollection<FastEntityButton>(
                         _cacheService.GetEntityTypesByTicketType(SelectedTicket.TicketTypeId)
-                        .Select(x => new EntityButton(x, SelectedTicket)));
+                            .Select(x => new FastEntityButton(x, SelectedTicket)));
                 }
                 else if (_entityButtons == null && _applicationState.CurrentTicketType != null && _applicationState.CurrentTicketType.Id > 0)
                 {
-                    _entityButtons = new ObservableCollection<EntityButton>(
-                       _cacheService.GetEntityTypesByTicketType(_applicationState.CurrentTicketType.Id)
-                       .Select(x => new EntityButton(x, SelectedTicket)));
+                    _entityButtons = new ObservableCollection<FastEntityButton>(
+                        _cacheService.GetEntityTypesByTicketType(_applicationState.CurrentTicketType.Id)
+                            .Select(x => new FastEntityButton(x, SelectedTicket)));
                 }
                 return _entityButtons;
             }
@@ -90,7 +91,7 @@ namespace Samba.Modules.FastPayModule
             }
         }
 
-        public TicketInfoViewModel TicketInfo { get { return _ticketInfo; } }
+        public FastTicketInfoViewModel TicketInfo { get { return _ticketInfo; } }
         public IEnumerable<Order> SelectedOrders { get { return SelectedTicket.SelectedOrders; } }
         public Order SelectedOrder => _ticketOrdersViewModel != null && SelectedOrders.Count() == 1 ? SelectedOrders.ElementAt(0) : null;
         public Department SelectedDepartment => _applicationState.CurrentDepartment != null ? _applicationState.CurrentDepartment.Model : null;
@@ -110,30 +111,78 @@ namespace Samba.Modules.FastPayModule
         public OrderViewModel LastSelectedOrder { get; set; }
         public bool ClearSelection { get; set; }
 
-        private IEnumerable<CommandContainerButton> _allAutomationCommands;
-        private IEnumerable<CommandContainerButton> AllAutomationCommands
+        private IEnumerable<FastCommandContainerButton> _allAutomationCommands;
+        private IEnumerable<FastCommandContainerButton> AllAutomationCommands
         {
             get
             {
                 return _allAutomationCommands ??
-                 (_allAutomationCommands =
-                  _applicationState.GetAutomationCommands().Select(x => new CommandContainerButton(x, SelectedTicket)).ToList());
+                       (_allAutomationCommands =
+                           _applicationState.GetAutomationCommands()
+                                .Select(x => new FastCommandContainerButton(x, SelectedTicket))
+                                .ToList());
             }
         }
 
-        public IEnumerable<CommandContainerButton> TicketAutomationCommands => AllAutomationCommands.Where(x => x.CommandContainer.DisplayOnTicket && x.CommandContainer.CanDisplay(SelectedTicket));
-        public IEnumerable<CommandContainerButton> OrderAutomationCommands => AllAutomationCommands.Where(x => x.CommandContainer.DisplayOnOrders && x.CommandContainer.CanDisplay(SelectedTicket));
-        public IEnumerable<CommandContainerButton> UnderTicketAutomationCommands => AllAutomationCommands.Where(x => x.CommandContainer.DisplayUnderTicket && x.CommandContainer.CanDisplay(SelectedTicket));
-        public IEnumerable<CommandContainerButton> UnderTicketRow2AutomationCommands => AllAutomationCommands.Where(x => x.CommandContainer.DisplayUnderTicket2 && x.CommandContainer.CanDisplay(SelectedTicket));
-        public IEnumerable<TicketTagButton> TicketTagButtons => _applicationState.CurrentDepartment != null
-                    ? _applicationState.GetTicketTagGroups().OrderBy(x => x.SortOrder).Select(x => new TicketTagButton(x, SelectedTicket))
+        public IEnumerable<FastCommandContainerButton> TicketAutomationCommands
+        {
+            get
+            {
+                return AllAutomationCommands.Where(x =>
+                    x.CommandContainer.DisplayOnTicket &&
+                    x.CommandContainer.CanDisplay(SelectedTicket));
+            }
+        }
+
+        public IEnumerable<FastCommandContainerButton> OrderAutomationCommands
+        {
+            get
+            {
+                return AllAutomationCommands.Where(x =>
+                    x.CommandContainer.DisplayOnOrders &&
+                    x.CommandContainer.CanDisplay(SelectedTicket));
+            }
+        }
+
+        public IEnumerable<FastCommandContainerButton> UnderTicketAutomationCommands
+        {
+            get
+            {
+                return AllAutomationCommands.Where(x =>
+                    x.CommandContainer.DisplayUnderTicket &&
+                    x.CommandContainer.CanDisplay(SelectedTicket));
+            }
+        }
+
+        public IEnumerable<FastCommandContainerButton> UnderTicketRow2AutomationCommands
+        {
+            get
+            {
+                return AllAutomationCommands.Where(x =>
+                    x.CommandContainer.DisplayUnderTicket2 &&
+                    x.CommandContainer.CanDisplay(SelectedTicket));
+            }
+        }
+
+        public IEnumerable<FastTicketTagButton> TicketTagButtons
+        {
+            get
+            {
+                return _applicationState.CurrentDepartment != null
+                    ? _applicationState.GetTicketTagGroups()
+                        .OrderBy(x => x.SortOrder)
+                        .Select(x => new FastTicketTagButton(x, SelectedTicket))
                     : null;
+            }
+        }
 
         [ImportingConstructor]
         public FastTicketViewModel(IApplicationState applicationState, IExpressionService expressionService,
-            ITicketService ticketService, IAccountService accountService, IEntityServiceClient locationService, IUserService userService,
-            ICacheService cacheService, TicketOrdersViewModel ticketOrdersViewModel,
-            TicketTotalsViewModel totals, TicketInfoViewModel ticketInfoViewModel)
+            ITicketService ticketService, IAccountService accountService, IEntityServiceClient locationService,
+            IUserService userService, ICacheService cacheService,
+            FastTicketOrdersViewModel ticketOrdersViewModel,
+            FastTicketTotalsViewModel totals,
+            FastTicketInfoViewModel ticketInfoViewModel)
         {
             _ticketService = ticketService;
             _userService = userService;
@@ -145,7 +194,7 @@ namespace Samba.Modules.FastPayModule
             _ticketInfo = ticketInfoViewModel;
 
             SelectEntityCommand = new DelegateCommand<EntityType>(OnSelectEntity, CanSelectEntity);
-            ExecuteAutomationCommnand = new DelegateCommand<CommandContainerButton>(OnExecuteAutomationCommand, CanExecuteAutomationCommand);
+            ExecuteAutomationCommnand = new DelegateCommand<FastCommandContainerButton>(OnExecuteAutomationCommand, CanExecuteAutomationCommand);
 
             IncQuantityCommand = new CaptionCommand<string>("+", OnIncQuantityCommand, CanIncQuantity);
             DecQuantityCommand = new CaptionCommand<string>("-", OnDecQuantityCommand, CanDecQuantity);
@@ -171,7 +220,6 @@ namespace Samba.Modules.FastPayModule
             SelectedTicket = Ticket.Empty;
         }
 
-
         private bool CanModifyOrder(string arg)
         {
             return SelectedOrders.Any();
@@ -180,7 +228,11 @@ namespace Samba.Modules.FastPayModule
         private void OnModifyOrder(string obj)
         {
             var so = new SelectedOrdersData { SelectedOrders = SelectedOrders, Ticket = SelectedTicket };
-            OperationRequest<SelectedOrdersData>.Publish(so, EventTopicNames.DisplayTicketOrderDetails, EventTopicNames.ActivatePosView, "");
+            OperationRequest<SelectedOrdersData>.Publish(
+                so,
+                EventTopicNames.DisplayTicketOrderDetails,
+                EventTopicNames.ActivatePosView,
+                "");
         }
 
         private bool CanAddOrder(string arg)
@@ -193,14 +245,20 @@ namespace Samba.Modules.FastPayModule
             EventServiceFactory.EventService.PublishEvent(EventTopicNames.ActivateMenuView);
         }
 
-        private bool CanExecuteAutomationCommand(CommandContainerButton arg)
+        private bool CanExecuteAutomationCommand(FastCommandContainerButton arg)
         {
-            return arg.IsEnabled && arg.CommandContainer.CanExecute(SelectedTicket) && _expressionService.EvalCommand(FunctionNames.CanExecuteAutomationCommand, arg.CommandContainer.AutomationCommand, new { Ticket = SelectedTicket }, true);
+            return arg.IsEnabled
+                   && arg.CommandContainer.CanExecute(SelectedTicket)
+                   && _expressionService.EvalCommand(
+                       FunctionNames.CanExecuteAutomationCommand,
+                       arg.CommandContainer.AutomationCommand,
+                       new { Ticket = SelectedTicket },
+                       true);
         }
 
-        private void OnExecuteAutomationCommand(CommandContainerButton obj)
+        private void OnExecuteAutomationCommand(FastCommandContainerButton obj)
         {
-            ExecuteAutomationCommand(obj.CommandContainer.AutomationCommand, obj.SelectedValue, obj.SelectedValue);
+            ExecuteAutomationCommand(obj.CommandContainer.AutomationCommand, obj.SelectedValue, obj.GetNextValue());
             obj.NextValue();
         }
 
@@ -236,27 +294,29 @@ namespace Samba.Modules.FastPayModule
             {
                 foreach (var selectedOrder in SelectedOrders.ToList())
                 {
-                    _applicationState.NotifyEvent(RuleEventNames.AutomationCommandExecuted,
-                                                  new
-                                                  {
-                                                      Ticket = SelectedTicket,
-                                                      Order = selectedOrder,
-                                                      AutomationCommandName = automationCommandName,
-                                                      CommandValue = automationCommandValue,
-                                                      NextCommandValue = nextCommandValue
-                                                  });
+                    _applicationState.NotifyEvent(
+                        RuleEventNames.AutomationCommandExecuted,
+                        new
+                        {
+                            Ticket = SelectedTicket,
+                            Order = selectedOrder,
+                            AutomationCommandName = automationCommandName,
+                            CommandValue = automationCommandValue,
+                            NextCommandValue = nextCommandValue
+                        });
                 }
             }
             else
             {
-                _applicationState.NotifyEvent(RuleEventNames.AutomationCommandExecuted,
-                                              new
-                                              {
-                                                  Ticket = SelectedTicket,
-                                                  AutomationCommandName = automationCommandName,
-                                                  CommandValue = automationCommandValue,
-                                                  NextCommandValue = nextCommandValue
-                                              });
+                _applicationState.NotifyEvent(
+                    RuleEventNames.AutomationCommandExecuted,
+                    new
+                    {
+                        Ticket = SelectedTicket,
+                        AutomationCommandName = automationCommandName,
+                        CommandValue = automationCommandValue,
+                        NextCommandValue = nextCommandValue
+                    });
             }
             _ticketOrdersViewModel.SelectedTicket = SelectedTicket;
             ClearSelectedItems();
@@ -278,14 +338,24 @@ namespace Samba.Modules.FastPayModule
         private bool CanSelectEntity(EntityType arg)
         {
             Debug.Assert(SelectedTicket != null);
-            return arg != null && !SelectedTicket.IsLocked && SelectedTicket.CanSubmit && _applicationState.GetTicketEntityScreens().Any(x => x.EntityTypeId == arg.Id);
+            return arg != null
+                   && !SelectedTicket.IsLocked
+                   && SelectedTicket.CanSubmit
+                   && _applicationState.GetTicketEntityScreens().Any(x => x.EntityTypeId == arg.Id);
         }
 
         private void OnSelectEntity(EntityType obj)
         {
             var ticketEntity = SelectedTicket.TicketEntities.SingleOrDefault(x => x.EntityTypeId == obj.Id);
-            var selectedEntity = ticketEntity != null ? _cacheService.GetEntityById(ticketEntity.EntityId) : Entity.GetNullEntity(obj.Id);
-            OperationRequest<Entity>.Publish(selectedEntity, EventTopicNames.SelectEntity, EventTopicNames.EntitySelected, "");
+            var selectedEntity = ticketEntity != null
+                ? _cacheService.GetEntityById(ticketEntity.EntityId)
+                : Entity.GetNullEntity(obj.Id);
+
+            OperationRequest<Entity>.Publish(
+                selectedEntity,
+                EventTopicNames.SelectEntity,
+                EventTopicNames.EntitySelected,
+                "");
         }
 
         private void OnPortionSelected(EventParameters<MenuItemPortion> obj)
@@ -293,7 +363,11 @@ namespace Samba.Modules.FastPayModule
             if (obj.Topic == EventTopicNames.PortionSelected)
             {
                 var taxTemplate = _applicationState.GetTaxTemplates(obj.Value.MenuItemId);
-                SelectedOrder.UpdatePortion(obj.Value, _applicationState.CurrentDepartment.PriceTag, taxTemplate);
+                SelectedOrder.UpdatePortion(
+                    obj.Value,
+                    _applicationState.CurrentDepartment.PriceTag,
+                    taxTemplate);
+
                 _ticketOrdersViewModel.SelectedTicket = SelectedTicket;
                 RefreshVisuals();
             }
@@ -303,7 +377,12 @@ namespace Samba.Modules.FastPayModule
         {
             if (obj.Topic == EventTopicNames.OrderTagSelected)
             {
-                _ticketService.TagOrders(SelectedTicket, SelectedTicket.ExtractSelectedOrders(), obj.Value.OrderTagGroup, obj.Value.SelectedOrderTag, "");
+                _ticketService.TagOrders(
+                    SelectedTicket,
+                    SelectedTicket.ExtractSelectedOrders(),
+                    obj.Value.OrderTagGroup,
+                    obj.Value.SelectedOrderTag,
+                    "");
                 _ticketOrdersViewModel.SelectedTicket = SelectedTicket;
                 ClearSelection = true;
                 RefreshVisuals();
@@ -311,8 +390,11 @@ namespace Samba.Modules.FastPayModule
 
             if (obj.Topic == EventTopicNames.OrderTagRemoved)
             {
-                _ticketService.UntagOrders(SelectedTicket, SelectedTicket.ExtractSelectedOrders(), obj.Value.OrderTagGroup,
-                                           obj.Value.SelectedOrderTag);
+                _ticketService.UntagOrders(
+                    SelectedTicket,
+                    SelectedTicket.ExtractSelectedOrders(),
+                    obj.Value.OrderTagGroup,
+                    obj.Value.SelectedOrderTag);
                 _ticketOrdersViewModel.RefreshSelectedOrders();
                 RefreshVisuals();
             }
@@ -361,7 +443,11 @@ namespace Samba.Modules.FastPayModule
                 if (_applicationState.IsLandscape)
                 {
                     var so = new SelectedOrdersData { SelectedOrders = SelectedOrders, Ticket = SelectedTicket };
-                    OperationRequest<SelectedOrdersData>.Publish(so, EventTopicNames.DisplayTicketOrderDetails, EventTopicNames.ActivatePosView, "");
+                    OperationRequest<SelectedOrdersData>.Publish(
+                        so,
+                        EventTopicNames.DisplayTicketOrderDetails,
+                        EventTopicNames.ActivatePosView,
+                        "");
                 }
             }
         }
@@ -378,6 +464,7 @@ namespace Samba.Modules.FastPayModule
                 tagGroup.PublishEvent(EventTopicNames.ActivateTicketList);
                 return;
             }
+
             var ticketTagData = new TicketTagData
             {
                 TicketTagGroup = tagGroup,
@@ -389,9 +476,10 @@ namespace Samba.Modules.FastPayModule
         private bool CanChangePrice(string arg)
         {
             return !SelectedTicket.IsLocked
-                && SelectedTicket.CanSubmit
-                && SelectedOrder != null
-                && (SelectedOrder.Price == 0 || _userService.IsUserPermittedFor(PermissionNames.ChangeItemPrice));
+                   && SelectedTicket.CanSubmit
+                   && SelectedOrder != null
+                   && (SelectedOrder.Price == 0 ||
+                       _userService.IsUserPermittedFor(PermissionNames.ChangeItemPrice));
         }
 
         private void OnChangePrice(string obj)
@@ -436,7 +524,9 @@ namespace Samba.Modules.FastPayModule
             if (SelectedTicket.IsLocked || SelectedTicket.IsClosed) return false;
             if (!SelectedTicket.CanRemoveSelectedOrders(SelectedOrders)) return false;
             if (SelectedOrders.Any(x => x.Id == 0)) return false;
-            if (SelectedOrders.Any(x => !x.Locked) && _userService.IsUserPermittedFor(PermissionNames.MoveUnlockedOrders)) return true;
+            if (SelectedOrders.Any(x => !x.Locked) &&
+                _userService.IsUserPermittedFor(PermissionNames.MoveUnlockedOrders)) return true;
+
             return _userService.IsUserPermittedFor(PermissionNames.MoveOrders);
         }
 
@@ -508,6 +598,7 @@ namespace Samba.Modules.FastPayModule
                 ClearSelectedItems();
                 return;
             }
+
             _ticketService.CancelSelectedOrders(SelectedTicket);
             _ticketOrdersViewModel.CancelSelectedOrders();
             _ticketService.RecalculateTicket(SelectedTicket);

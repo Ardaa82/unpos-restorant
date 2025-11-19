@@ -30,6 +30,5 @@ namespace Samba.Presentation.Common
         public static string FastTicketInfoRegion = "FastTicketInfoRegion";
         public static string FastTicketTotalsRegion = "FastTicketTotalsRegion";
 
-
     }
 }

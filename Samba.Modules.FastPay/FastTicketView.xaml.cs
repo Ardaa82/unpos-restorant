@@ -3,6 +3,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using Microsoft.Practices.Prism.Events;
+using Samba.Modules.FastPayModule;
 using Samba.Presentation.Services.Common;
 
 namespace Samba.Modules.FastPay

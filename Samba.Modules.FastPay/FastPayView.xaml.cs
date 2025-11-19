@@ -11,7 +11,7 @@ namespace Samba.Modules.FastPayModule
     public partial class FastPayView : UserControl
     {
         private bool _isLandscape;
-        private bool IsPortrait => !_isLandscape;
+        private bool IsPortrait { get { return !_isLandscape; } }
 
         [ImportingConstructor]
         public FastPayView(FastPayViewModel viewModel)
@@ -26,7 +26,8 @@ namespace Samba.Modules.FastPayModule
 
         private void OnRegionDataEvent(EventParameters<RegionData> obj)
         {
-            if (IsPortrait && obj.Topic == EventTopicNames.RegionActivated && obj.Value.RegionName == RegionNames.FastPaySubRegion)
+            if (IsPortrait && obj.Topic == EventTopicNames.RegionActivated &&
+                obj.Value.RegionName == RegionNames.FastPaySubRegion)
             {
                 Grid2.SelectedIndex = 1;
             }
@@ -49,13 +50,16 @@ namespace Samba.Modules.FastPayModule
                 case EventTopicNames.ActivateMenuView:
                     if (IsPortrait) Grid2.SelectedIndex = 1;
                     break;
+
                 case EventTopicNames.ActivateFastPayView:
                     if (IsPortrait) Grid2.SelectedIndex = 0;
                     LayoutTabControl.BackgroundFocus();
                     break;
+
                 case EventTopicNames.DisableLandscape:
                     DisableLandscapeMode();
                     break;
+
                 case EventTopicNames.EnableLandscape:
                     EnableLandscapeMode();
                     break;
@@ -85,10 +89,11 @@ namespace Samba.Modules.FastPayModule
 
         private void Disconnect(FrameworkElement region)
         {
-            if (region.Parent is TabControl tab)
-                tab.Items.Remove(region);
-            if (region.Parent is Panel panel)
-                panel.Children.Remove(region);
+            if (region.Parent is TabControl)
+                (region.Parent as TabControl).Items.Remove(region);
+
+            if (region.Parent is Panel)
+                (region.Parent as Panel).Children.Remove(region);
         }
     }
 }

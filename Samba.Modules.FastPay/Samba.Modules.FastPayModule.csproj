@@ -101,7 +101,6 @@
     <Compile Include="FastTicketView.xaml.cs">
       <DependentUpon>FastTicketView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="FastTicketViewModel .cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
