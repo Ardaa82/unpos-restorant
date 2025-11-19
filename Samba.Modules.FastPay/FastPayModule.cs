@@ -96,6 +96,10 @@ namespace Samba.Modules.FastPayModule
         protected override void OnNavigate(string obj)
         {
             base.OnNavigate(obj);
+
+            _applicationState.IsFastPayMode = true;
+            _applicationState.IsPaymentDone = false;
+
             EventServiceFactory.EventService.PublishEvent(EventTopicNames.ActivateFastPayView);
         }
 

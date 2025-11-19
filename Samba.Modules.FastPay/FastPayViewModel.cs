@@ -1,6 +1,5 @@
 ﻿using Microsoft.Practices.Prism.Events;
 using Microsoft.Practices.Prism.Regions;
-using Samba.Domain.Models.Entities;
 using Samba.Domain.Models.Tickets;
 using Samba.Infrastructure.Messaging;
 using Samba.Localization.Properties;
@@ -19,20 +18,12 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 
-/* FastPayViewModel
- * Handles the main FastPay view model in the Samba POS system.
- * Has entities for ticket management, menu item selection, and ticket orders.
- * When an entity is selected, it checks for existing tickets and opens or creates tickets as needed.
- * An entity can also be assigned to a customer within the ticket.
- */
-
 namespace Samba.Modules.FastPayModule
 {
     [Export]
     public class FastPayViewModel : ObservableObject
     {
         private readonly ITicketService _ticketService;
-        private readonly ITicketServiceBase _ticketServiceBase;
         private readonly IUserService _userService;
         private readonly ICacheService _cacheService;
         private readonly IMessagingService _messagingService;
@@ -43,15 +34,12 @@ namespace Samba.Modules.FastPayModule
         private readonly FastMenuItemSelectorViewModel _fastMenuItemSelectorViewModel;
         private readonly FastTicketListViewModel _fastTicketListViewModel;
         private readonly FastTicketTagListViewModel _fastTicketTagListViewModel;
-        private readonly FastTicketEntityListViewModel _fastTicketEntityListViewModel;
-        private readonly FastTicketTypeListViewModel _fastTicketTypeListViewModel;
         private readonly AccountBalances _accountBalances;
 
         private readonly FastMenuItemSelectorView _fastMenuItemSelectorView;
         private readonly FastTicketViewModel _fastTicketViewModel;
         private readonly FastTicketOrdersViewModel _fastTicketOrdersViewModel;
 
-        private Entity _lastSelectedEntity;
         protected Action ExpectedAction { get; set; }
 
         private Ticket _selectedTicket;
@@ -78,21 +66,33 @@ namespace Samba.Modules.FastPayModule
                 }
                 else
                 {
-                    if (screenMenuId == 0) screenMenuId = _applicationState.CurrentTicketType.ScreenMenuId;
+                    if (screenMenuId == 0 && _applicationState.CurrentTicketType != null)
+                        screenMenuId = _applicationState.CurrentTicketType.ScreenMenuId;
                 }
+
                 _fastMenuItemSelectorViewModel.UpdateCurrentScreenMenu(screenMenuId);
+                RaisePropertyChanged(() => SelectedTicket);
             }
         }
 
         [ImportingConstructor]
-        public FastPayViewModel(IRegionManager regionManager, IApplicationState applicationState, IApplicationStateSetter applicationStateSetter,
-            ITicketService ticketService, ITicketServiceBase ticketServiceBase, IUserService userService, ICacheService cacheService, IMessagingService messagingService,
-            FastTicketListViewModel fastTicketListViewModel, FastTicketTagListViewModel fastTicketTagListViewModel, FastMenuItemSelectorViewModel fastMenuItemSelectorViewModel,
-            FastMenuItemSelectorView fastMenuItemSelectorView, FastTicketViewModel fastTicketViewModel, FastTicketOrdersViewModel fastTicketOrdersViewModel,
-            FastTicketEntityListViewModel fastTicketEntityListViewModel, FastTicketTypeListViewModel fastTicketTypeListViewModel, AccountBalances accountBalances)
+        public FastPayViewModel(
+            IRegionManager regionManager,
+            IApplicationState applicationState,
+            IApplicationStateSetter applicationStateSetter,
+            ITicketService ticketService,
+            IUserService userService,
+            ICacheService cacheService,
+            IMessagingService messagingService,
+            FastTicketListViewModel fastTicketListViewModel,
+            FastTicketTagListViewModel fastTicketTagListViewModel,
+            FastMenuItemSelectorViewModel fastMenuItemSelectorViewModel,
+            FastMenuItemSelectorView fastMenuItemSelectorView,
+            FastTicketViewModel fastTicketViewModel,
+            FastTicketOrdersViewModel fastTicketOrdersViewModel,
+            AccountBalances accountBalances)
         {
             _ticketService = ticketService;
-            _ticketServiceBase = ticketServiceBase;
             _userService = userService;
             _cacheService = cacheService;
             _messagingService = messagingService;
@@ -100,41 +100,61 @@ namespace Samba.Modules.FastPayModule
             _applicationStateSetter = applicationStateSetter;
             _regionManager = regionManager;
 
-            _fastMenuItemSelectorView = fastMenuItemSelectorView;
-            _fastTicketViewModel = fastTicketViewModel;
-            _fastTicketOrdersViewModel = fastTicketOrdersViewModel;
             _fastMenuItemSelectorViewModel = fastMenuItemSelectorViewModel;
             _fastTicketListViewModel = fastTicketListViewModel;
             _fastTicketTagListViewModel = fastTicketTagListViewModel;
-            _fastTicketEntityListViewModel = fastTicketEntityListViewModel;
-            _fastTicketTypeListViewModel = fastTicketTypeListViewModel;
             _accountBalances = accountBalances;
 
-            EventServiceFactory.EventService.GetEvent<GenericEvent<Order>>().Subscribe(OnOrderEventReceived);
-            EventServiceFactory.EventService.GetEvent<GenericEvent<Ticket>>().Subscribe(OnTicketEventReceived);
-            EventServiceFactory.EventService.GetEvent<GenericEvent<EventAggregator>>().Subscribe(OnTicketEvent);
-            EventServiceFactory.EventService.GetEvent<GenericEvent<ScreenMenuItemData>>().Subscribe(OnMenuItemSelected);
-            EventServiceFactory.EventService.GetEvent<GenericIdEvent>().Subscribe(OnTicketIdPublished);
-            EventServiceFactory.EventService.GetEvent<GenericEvent<OperationRequest<Entity>>>().Subscribe(OnEntitySelectedForTicket);
-            EventServiceFactory.EventService.GetEvent<GenericEvent<TicketTagGroup>>().Subscribe(OnTicketTagSelected);
-            EventServiceFactory.EventService.GetEvent<GenericEvent<TicketStateData>>().Subscribe(OnTicketStateSelected);
-            EventServiceFactory.EventService.GetEvent<GenericEvent<TicketType>>().Subscribe(OnTicketTypeChanged);
+            _fastMenuItemSelectorView = fastMenuItemSelectorView;
+            _fastTicketViewModel = fastTicketViewModel;
+            _fastTicketOrdersViewModel = fastTicketOrdersViewModel;
 
-            EventServiceFactory.EventService.GetEvent<GenericEvent<EventAggregator>>().Subscribe(
-            x =>
-            {
-                if (x.Topic == EventTopicNames.ResetCache && _applicationState.CurrentTicketType != null)
+            // EVENT SUBSCRIPTIONS
+            EventServiceFactory.EventService.GetEvent<GenericEvent<Order>>()
+                .Subscribe(OnOrderEventReceived);
+
+            EventServiceFactory.EventService.GetEvent<GenericEvent<Ticket>>()
+                .Subscribe(OnTicketEventReceived);
+
+            EventServiceFactory.EventService.GetEvent<GenericEvent<EventAggregator>>()
+                .Subscribe(OnTicketEvent);
+
+            EventServiceFactory.EventService.GetEvent<GenericEvent<ScreenMenuItemData>>()
+                .Subscribe(OnMenuItemSelected);
+
+            EventServiceFactory.EventService.GetEvent<GenericIdEvent>()
+                .Subscribe(OnTicketIdPublished);
+
+            EventServiceFactory.EventService.GetEvent<GenericEvent<TicketTagGroup>>()
+                .Subscribe(OnTicketTagSelected);
+
+            EventServiceFactory.EventService.GetEvent<GenericEvent<TicketStateData>>()
+                .Subscribe(OnTicketStateSelected);
+
+            EventServiceFactory.EventService.GetEvent<GenericEvent<TicketType>>()
+                .Subscribe(OnTicketTypeChanged);
+
+            // Screen menu cache reset
+            EventServiceFactory.EventService.GetEvent<GenericEvent<EventAggregator>>()
+                .Subscribe(x =>
                 {
-                    _fastMenuItemSelectorViewModel.Reset();
-                    _fastMenuItemSelectorViewModel.UpdateCurrentScreenMenu(_applicationState.CurrentTicketType.GetScreenMenuId(_applicationState.CurrentTerminal));
-                }
-            });
+                    if (x.Topic == EventTopicNames.ResetCache &&
+                        _applicationState.CurrentTicketType != null)
+                    {
+                        _fastMenuItemSelectorViewModel.Reset();
+                        _fastMenuItemSelectorViewModel.UpdateCurrentScreenMenu(
+                            _applicationState.CurrentTicketType.GetScreenMenuId(_applicationState.CurrentTerminal));
+                    }
+                });
         }
 
-        // Methods renamed internally to use FastPay equivalents
+        #region Event handlers
+
         private void OnOrderEventReceived(EventParameters<Order> obj)
         {
-            if (obj.Topic == EventTopicNames.OrderAdded && obj.Value != null && SelectedTicket != null)
+            if (obj.Topic == EventTopicNames.OrderAdded &&
+                obj.Value != null &&
+                SelectedTicket != null)
             {
                 _fastTicketOrdersViewModel.SelectedTicket = SelectedTicket;
                 DisplaySingleTicket();
@@ -143,15 +163,12 @@ namespace Samba.Modules.FastPayModule
 
         private void OnTicketTypeChanged(EventParameters<TicketType> obj)
         {
-            if (obj.Topic == EventTopicNames.TicketTypeChanged && obj.Value != null)
+            if ((obj.Topic == EventTopicNames.TicketTypeChanged ||
+                 obj.Topic == EventTopicNames.TicketTypeSelected) &&
+                obj.Value != null)
             {
-                _fastMenuItemSelectorViewModel.UpdateCurrentScreenMenu(obj.Value.GetScreenMenuId(_applicationState.CurrentTerminal));
-            }
-
-            if (obj.Topic == EventTopicNames.TicketTypeSelected && obj.Value != null)
-            {
-                _applicationState.TempTicketType = obj.Value;
-                new OperationRequest<Entity>(_lastSelectedEntity, null).PublishEvent(EventTopicNames.FastEntitySelected, true);
+                _fastMenuItemSelectorViewModel
+                    .UpdateCurrentScreenMenu(obj.Value.GetScreenMenuId(_applicationState.CurrentTerminal));
             }
         }
 
@@ -163,7 +180,8 @@ namespace Samba.Modules.FastPayModule
                 _fastTicketListViewModel.UpdateListByTicketState(obj.Value);
                 if (_fastTicketListViewModel.Tickets.Any())
                     DisplayTicketList();
-                else DisplayTickets();
+                else
+                    DisplayTickets();
             }
         }
 
@@ -175,7 +193,8 @@ namespace Samba.Modules.FastPayModule
                 _fastTicketListViewModel.UpdateListByTicketTagGroup(obj.Value);
                 if (_fastTicketListViewModel.Tickets.Any())
                     DisplayTicketList();
-                else DisplayTickets();
+                else
+                    DisplayTickets();
             }
         }
 
@@ -188,87 +207,16 @@ namespace Samba.Modules.FastPayModule
                 SelectedTicket = obj.Value;
             }
 
-            if (obj.Topic == EventTopicNames.MoveSelectedOrders)
+            if (obj.Topic == EventTopicNames.MoveSelectedOrders &&
+                SelectedTicket != null)
             {
-                var newTicketId = _ticketService.MoveOrders(SelectedTicket, SelectedTicket.ExtractSelectedOrders().ToArray(), 0).TicketId;
+                var newTicketId = _ticketService
+                    .MoveOrders(SelectedTicket, SelectedTicket.ExtractSelectedOrders().ToArray(), 0)
+                    .TicketId;
+
                 SelectedTicket = null;
                 OpenTicket(newTicketId);
                 DisplaySingleTicket();
-            }
-        }
-
-        private void OnEntitySelectedForTicket(EventParameters<OperationRequest<Entity>> eventParameters)
-        {
-            if (eventParameters.Topic == EventTopicNames.FastEntitySelected)
-            {
-                FireEntitySelectedRule(eventParameters.Value.SelectedItem);
-                if (SelectedTicket != null)
-                {
-                    _ticketService.UpdateEntity(SelectedTicket, eventParameters.Value.SelectedItem);
-                    if (_applicationState.CurrentDepartment != null && _applicationState.CurrentDepartment.TicketCreationMethod == 0
-                        && _applicationState.SelectedEntityScreen != null
-                        && SelectedTicket.Orders.Count > 0 && eventParameters.Value.SelectedItem.Id > 0
-                        && _applicationState.TempEntityScreen != null
-                        && eventParameters.Value.SelectedItem.EntityTypeId == _applicationState.TempEntityScreen.EntityTypeId)
-                        CloseTicket();
-                    else DisplaySingleTicket();
-                }
-                else
-                {
-                    var openTickets = _ticketServiceBase.GetOpenTicketIds(eventParameters.Value.SelectedItem.Id).ToList();
-                    if (!openTickets.Any())
-                    {
-                        if (_applicationState.SelectedEntityScreen != null &&
-                            _applicationState.SelectedEntityScreen.AskTicketType &&
-                            _cacheService.GetTicketTypes().Count() > 1 &&
-                            _applicationState.TempTicketType == null)
-                        {
-                            _lastSelectedEntity = eventParameters.Value.SelectedItem;
-                            DisplayTicketTypeList();
-                            return;
-                        }
-
-                        if (_applicationState.TempTicketType != null)
-                        {
-                            _applicationStateSetter.SetCurrentTicketType(_applicationState.TempTicketType);
-                            _applicationState.TempTicketType = null;
-                        }
-
-                        OpenTicket(0);
-                        _ticketService.UpdateEntity(SelectedTicket, eventParameters.Value.SelectedItem);
-                    }
-                    else if (openTickets.Count > 1)
-                    {
-                        _lastSelectedEntity = eventParameters.Value.SelectedItem;
-                        _fastTicketListViewModel.UpdateListByEntity(eventParameters.Value.SelectedItem);
-                        DisplayTicketList();
-                        return;
-                    }
-                    else
-                    {
-                        OpenTicket(openTickets.ElementAt(0));
-                    }
-                    EventServiceFactory.EventService.PublishEvent(EventTopicNames.ActivateFastPayView);
-                }
-            }
-        }
-
-        private void FireEntitySelectedRule(Entity entity)
-        {
-            if (entity != null && entity != Entity.Null)
-            {
-                var entityType = _cacheService.GetEntityTypeById(entity.EntityTypeId);
-                if (entityType != null)
-                {
-                    _applicationState.NotifyEvent(RuleEventNames.EntitySelected, new
-                    {
-                        Ticket = SelectedTicket,
-                        EntityTypeName = entityType.Name,
-                        EntityName = entity.Name,
-                        EntityCustomData = entity.CustomData,
-                        IsTicketSelected = SelectedTicket != null
-                    });
-                }
             }
         }
 
@@ -278,6 +226,7 @@ namespace Samba.Modules.FastPayModule
             {
                 if (SelectedTicket != null) CloseTicket();
                 if (SelectedTicket != null) return;
+
                 ExpectedAction = obj.ExpectedAction;
                 OpenTicket(obj.Value);
                 EventServiceFactory.EventService.PublishEvent(EventTopicNames.RefreshSelectedTicket);
@@ -290,8 +239,8 @@ namespace Samba.Modules.FastPayModule
             {
                 if (SelectedTicket == null)
                 {
+                    // FastPay: ürün seçildiği anda direkt yeni ticket aç
                     OpenTicket(0);
-                    _ticketService.UpdateEntity(SelectedTicket, _lastSelectedEntity);
                 }
 
                 Debug.Assert(SelectedTicket != null);
@@ -300,30 +249,13 @@ namespace Samba.Modules.FastPayModule
             }
         }
 
-        private void CreateTicket()
-        {
-            IEnumerable<TicketEntity> tr = new List<TicketEntity>();
-            if (SelectedTicket != null)
-            {
-                tr = SelectedTicket.TicketEntities;
-                CloseTicket();
-                if (SelectedTicket != null) return;
-            }
-
-            OpenTicket(0);
-            foreach (var ticketEntity in tr)
-            {
-                if (_applicationState.CurrentTicketType.EntityTypeAssignments.Any(
-                        x => x.CopyToNewTickets && x.EntityTypeId == ticketEntity.EntityTypeId))
-                {
-                    var entity = _cacheService.GetEntityById(ticketEntity.EntityId);
-                    _ticketService.UpdateEntity(SelectedTicket, entity, ticketEntity.AccountTypeId, ticketEntity.AccountId, ticketEntity.EntityCustomData);
-                }
-            }
-        }
-
         private void OnTicketEvent(EventParameters<EventAggregator> obj)
         {
+            // FastPay dışındayken SADECE FastPay’i aktive eden event’e cevap ver
+            if (!_applicationState.IsFastPayMode &&
+                obj.Topic != EventTopicNames.ActivateFastPayView)
+                return;
+
             switch (obj.Topic)
             {
                 case EventTopicNames.CreateTicket:
@@ -332,6 +264,9 @@ namespace Samba.Modules.FastPayModule
                     break;
 
                 case EventTopicNames.ActivateFastPayView:
+                    _applicationStateSetter.SetCurrentApplicationScreen(AppScreens.TicketView);
+                    _applicationState.IsFastPayMode = true;
+
                     if (SelectedTicket == null || _ticketService.CanDeselectOrders(SelectedTicket.SelectedOrders))
                     {
                         DisplayTickets();
@@ -353,7 +288,6 @@ namespace Samba.Modules.FastPayModule
                     DisplaySingleTicket();
                     break;
 
-                case EventTopicNames.CloseFastTicketRequested:
                 case EventTopicNames.CloseTicketRequested:
                     DisplayMenuScreen();
                     CloseTicket();
@@ -361,30 +295,27 @@ namespace Samba.Modules.FastPayModule
             }
         }
 
+
+
+        #endregion
+
+        #region Public API
+
         public void DisplayTickets()
         {
-            _lastSelectedEntity = null;
-            Debug.Assert(_applicationState.CurrentDepartment != null);
-            if (SelectedTicket != null || !_applicationState.GetTicketEntityScreens().Any() || _applicationState.CurrentDepartment.TicketCreationMethod == 1)
+            // FastPay: entity ekranı yok, direkt ticket’a gir
+            if (SelectedTicket == null)
             {
-                _applicationStateSetter.SetCurrentApplicationScreen(AppScreens.TicketView);
-                if (SelectedTicket == null) SelectedTicket = null;
-                DisplaySingleTicket();
-                return;
+                OpenTicket(0);
             }
-            CommonEventPublisher.PublishEntityOperation<Entity>(null, EventTopicNames.SelectEntity, EventTopicNames.FastEntitySelected);
+
+            _applicationStateSetter.SetCurrentApplicationScreen(AppScreens.TicketView);
+            DisplaySingleTicket();
         }
 
         private void DisplaySingleTicket()
         {
             _applicationStateSetter.SetCurrentApplicationScreen(AppScreens.TicketView);
-
-            if (ShouldDisplayEntityList(SelectedTicket))
-            {
-                _fastTicketEntityListViewModel.Update(SelectedTicket);
-                DisplayTicketEntityList();
-                return;
-            }
 
             if (ShouldDisplayTicketTagList(SelectedTicket))
             {
@@ -399,14 +330,16 @@ namespace Samba.Modules.FastPayModule
                 SelectedTicket.Orders[0].CreatingUserName != _applicationState.CurrentLoggedInUser.Name)
             {
                 InteractionService.UserIntraction.GiveFeedback("Can't display this ticket");
-                EventServiceFactory.EventService.PublishEvent(EventTopicNames.CloseFastTicketRequested);
+                EventServiceFactory.EventService.PublishEvent(EventTopicNames.CloseTicketRequested);
                 return;
             }
 
             _regionManager.RequestNavigate(RegionNames.MainRegion, new Uri("FastPayView", UriKind.Relative));
             _regionManager.RequestNavigate(RegionNames.FastPayMainRegion, new Uri("FastTicketView", UriKind.Relative));
+
             _accountBalances.RefreshAsync(() => _fastTicketViewModel.RefreshSelectedTicketTitle());
             _fastTicketViewModel.RefreshSelectedItems();
+
             if (SelectedTicket != null)
             {
                 CommonEventPublisher.ExecuteEvents(SelectedTicket);
@@ -416,24 +349,9 @@ namespace Samba.Modules.FastPayModule
         private bool ShouldDisplayTicketTagList(Ticket ticket)
         {
             return ticket != null
-                && ticket.Orders.Count == 0
-                && _applicationState.GetTicketTagGroups().Any(x => x.AskBeforeCreatingTicket && !ticket.IsTaggedWith(x.Name));
-        }
-
-        private bool ShouldDisplayEntityList(Ticket ticket)
-        {
-            return ticket != null
-                && ticket.Orders.Count == 0
-                && _cacheService.GetTicketTypeById(ticket.TicketTypeId).EntityTypeAssignments.Any(
-                x => x.AskBeforeCreatingTicket && ticket.TicketEntities.All(y => y.EntityTypeId != x.EntityTypeId));
-        }
-
-        private void DisplayTicketTypeList()
-        {
-            _fastTicketTypeListViewModel.Update();
-            _applicationStateSetter.SetCurrentApplicationScreen(AppScreens.TicketView);
-            _regionManager.RequestNavigate(RegionNames.MainRegion, new Uri("FastPayView", UriKind.Relative));
-            _regionManager.RequestNavigate(RegionNames.FastPayMainRegion, new Uri("FastTicketTypeListView", UriKind.Relative));
+                   && ticket.Orders.Count == 0
+                   && _applicationState.GetTicketTagGroups()
+                       .Any(x => x.AskBeforeCreatingTicket && !ticket.IsTaggedWith(x.Name));
         }
 
         private void DisplayTicketList()
@@ -450,13 +368,6 @@ namespace Samba.Modules.FastPayModule
             _regionManager.RequestNavigate(RegionNames.FastPayMainRegion, new Uri("FastTicketTagListView", UriKind.Relative));
         }
 
-        private void DisplayTicketEntityList()
-        {
-            _applicationStateSetter.SetCurrentApplicationScreen(AppScreens.TicketView);
-            _regionManager.RequestNavigate(RegionNames.MainRegion, new Uri("FastPayView", UriKind.Relative));
-            _regionManager.RequestNavigate(RegionNames.FastPayMainRegion, new Uri("FastTicketEntityListView", UriKind.Relative));
-        }
-
         public void DisplayMenuScreen()
         {
             _regionManager.RequestNavigate(RegionNames.MainRegion, new Uri("FastPayView", UriKind.Relative));
@@ -465,8 +376,9 @@ namespace Samba.Modules.FastPayModule
 
         public bool HandleTextInput(string text)
         {
-            return _regionManager.Regions[RegionNames.FastPaySubRegion].ActiveViews.Contains(_fastMenuItemSelectorView)
-                && _fastMenuItemSelectorViewModel.HandleTextInput(text);
+            return _regionManager.Regions[RegionNames.FastPaySubRegion]
+                       .ActiveViews.Contains(_fastMenuItemSelectorView)
+                   && _fastMenuItemSelectorViewModel.HandleTextInput(text);
         }
 
         public void OpenTicket(int id)
@@ -475,16 +387,40 @@ namespace Samba.Modules.FastPayModule
             SelectedTicket = _ticketService.OpenTicket(id);
         }
 
+        #endregion
+
+        #region Close & helpers
+
+        private void CreateTicket()
+        {
+            // Entitiesiz FastPay: sadece yeni ticket oluştur
+            if (SelectedTicket != null)
+            {
+                CloseTicket();
+                if (SelectedTicket != null) return;
+            }
+
+            OpenTicket(0);
+        }
+
         private void CloseTicket()
         {
             if (SelectedTicket == null) return;
 
-            if (!SelectedTicket.CanCloseTicket() && !SelectedTicket.IsTaggedWithDefinedTags(_cacheService.GetTicketTagGroupNames()))
+            // KAPATMADAN ÖNCE satışın durumu:
+            var hadOrders = SelectedTicket.Orders.Any();
+            var fullyPaid = hadOrders && SelectedTicket.GetRemainingAmount() == 0;
+
+            // Kapatmaya izin verilmiyorsa hiç devam etme
+            if (!SelectedTicket.CanCloseTicket() &&
+                !SelectedTicket.IsTaggedWithDefinedTags(_cacheService.GetTicketTagGroupNames()))
             {
                 return;
             }
 
-            if (_fastTicketOrdersViewModel.Orders.Count > 0 && SelectedTicket.GetRemainingAmount() == 0)
+            // Zorunlu tag kontrolleri vs.
+            if (_fastTicketOrdersViewModel.Orders.Count > 0 &&
+                SelectedTicket.GetRemainingAmount() == 0)
             {
                 var message = GetPrintError();
                 if (!string.IsNullOrEmpty(message))
@@ -497,12 +433,14 @@ namespace Samba.Modules.FastPayModule
             }
 
             _fastTicketOrdersViewModel.ClearSelectedOrders();
+
             var result = _ticketService.CloseTicket(SelectedTicket);
             if (!string.IsNullOrEmpty(result.ErrorMessage))
             {
                 InteractionService.UserIntraction.GiveFeedback(result.ErrorMessage);
             }
 
+            // Bu noktada ticket DB tarafında kapandı
             SelectedTicket = null;
 
             if (_applicationState.CurrentTerminal.AutoLogout)
@@ -517,39 +455,60 @@ namespace Samba.Modules.FastPayModule
                 }
                 else
                 {
-                    if (_applicationState.IsFastPayMode)
+                    if (fullyPaid)
                     {
+                        // Başarılı, ödenmiş satış -> FastPay’e geri dön (yeni satışa hazır ekran)
                         EventServiceFactory.EventService.PublishEvent(EventTopicNames.ActivateFastPayView);
-                        _applicationState.IsFastPayMode = false;
-                        _applicationState.IsPaymentDone = false;
                     }
-                    else EventServiceFactory.EventService.PublishEvent(EventTopicNames.ActivatePosView);
+                    else
+                    {
+                        // Ödeme alınmamış / satış iptal -> Ana menüye dön
+                        _applicationStateSetter.SetCurrentApplicationScreen(AppScreens.Navigation);
+                        // Eğer sende ayrıca main menu event’i varsa, onu da publish edebilirsin:
+                        // EventServiceFactory.EventService.PublishEvent(EventTopicNames.ActivateNavigation);
+                    }
                 }
             }
+
             ExpectedAction = null;
-            _messagingService.SendMessage(Messages.TicketRefreshMessage, result.TicketId.ToString(CultureInfo.InvariantCulture));
+
+            _messagingService.SendMessage(
+                Messages.TicketRefreshMessage,
+                result.TicketId.ToString(CultureInfo.InvariantCulture));
+
             _applicationStateSetter.SetApplicationLocked(false);
         }
+
 
         public string GetPrintError()
         {
             if (SelectedTicket.Orders.Any(x => x.GetValue() == 0 && x.CalculatePrice))
                 return Resources.CantCompleteOperationWhenThereIsZeroPricedProduct;
+
             if (!SelectedTicket.IsClosed && SelectedTicket.Orders.Count > 0)
             {
-                if (_applicationState.GetTicketTagGroups().Any(x => x.ForceValue && !_fastTicketViewModel.IsTaggedWith(x.Name)))
-                    return string.Format(Resources.TagCantBeEmpty_f, _applicationState.GetTicketTagGroups().First(x => x.ForceValue && !_fastTicketViewModel.IsTaggedWith(x.Name)).Name);
+                if (_applicationState.GetTicketTagGroups()
+                    .Any(x => x.ForceValue && !_fastTicketViewModel.IsTaggedWith(x.Name)))
+                {
+                    var tg = _applicationState.GetTicketTagGroups()
+                        .First(x => x.ForceValue && !_fastTicketViewModel.IsTaggedWith(x.Name));
+                    return string.Format(Resources.TagCantBeEmpty_f, tg.Name);
+                }
             }
             return "";
         }
 
         private void SaveTicketIfNew()
         {
-            if ((SelectedTicket.Id == 0 || _fastTicketOrdersViewModel.Orders.Any(x => x.Model.Id == 0)) && _fastTicketOrdersViewModel.Orders.Count > 0)
+            if ((SelectedTicket.Id == 0 ||
+                 _fastTicketOrdersViewModel.Orders.Any(x => x.Model.Id == 0)) &&
+                _fastTicketOrdersViewModel.Orders.Count > 0)
             {
                 var result = _ticketService.CloseTicket(SelectedTicket);
                 OpenTicket(result.TicketId);
             }
         }
+
+        #endregion
     }
 }

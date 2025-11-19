@@ -322,13 +322,22 @@ namespace Samba.Modules.PosModule
 
         private void OnTicketEvent(EventParameters<EventAggregator> obj)
         {
+            // FastPay modundaysan Pos tarafı genel ticket event’lerini yok saysın
+            if (_applicationState.IsFastPayMode &&
+                obj.Topic != EventTopicNames.ActivatePosView)
+                return;
+
             switch (obj.Topic)
             {
                 case EventTopicNames.CreateTicket:
                     CreateTicket();
                     EventServiceFactory.EventService.PublishEvent(EventTopicNames.RefreshSelectedTicket);
                     break;
+
                 case EventTopicNames.ActivatePosView:
+                    _applicationStateSetter.SetCurrentApplicationScreen(AppScreens.TicketView);
+                    _applicationState.IsFastPayMode = false;
+
                     if (SelectedTicket == null || _ticketService.CanDeselectOrders(SelectedTicket.SelectedOrders))
                     {
                         DisplayTickets();
@@ -336,6 +345,7 @@ namespace Samba.Modules.PosModule
                         _ticketViewModel.ResetTicket();
                     }
                     break;
+
                 case EventTopicNames.RegenerateSelectedTicket:
                     if (SelectedTicket != null)
                     {
@@ -343,16 +353,19 @@ namespace Samba.Modules.PosModule
                         DisplaySingleTicket();
                     }
                     break;
+
                 case EventTopicNames.RefreshSelectedTicket:
                     DisplayMenuScreen();
                     DisplaySingleTicket();
                     break;
+
                 case EventTopicNames.CloseTicketRequested:
                     DisplayMenuScreen();
                     CloseTicket();
                     break;
             }
         }
+
 
         public void DisplayTickets()
         {
@@ -508,14 +521,7 @@ namespace Samba.Modules.PosModule
                 }
                 else
                 {   
-                    if (_applicationState.IsFastPayMode)
-
-                    {
-                        EventServiceFactory.EventService.PublishEvent(EventTopicNames.ActivateFastPayView);
-                        _applicationState.IsFastPayMode = false;
-                        _applicationState.IsPaymentDone = false;
-                    }
-                     else EventServiceFactory.EventService.PublishEvent(EventTopicNames.ActivatePosView);
+                         EventServiceFactory.EventService.PublishEvent(EventTopicNames.ActivatePosView);
                 }
             }
             ExpectedAction = null;
