@@ -3,44 +3,12 @@
   "WorkspaceRootPath": "C:\\Users\\Admin\\Desktop\\unpos-restorant\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{6B09228C-C411-4E88-A8FE-A2E2C4D513F7}|Samba.Modules.FastPay\\Samba.Modules.FastpayModule.csproj|c:\\users\\admin\\desktop\\unpos-restorant\\samba.modules.fastpay\\fastpaymodule.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{6B09228C-C411-4E88-A8FE-A2E2C4D513F7}|Samba.Modules.FastPay\\Samba.Modules.FastpayModule.csproj|solutionrelative:samba.modules.fastpay\\fastpaymodule.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{6B09228C-C411-4E88-A8FE-A2E2C4D513F7}|Samba.Modules.FastPay\\Samba.Modules.FastpayModule.csproj|c:\\users\\admin\\desktop\\unpos-restorant\\samba.modules.fastpay\\fastpayview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
-      "RelativeMoniker": "D:0:0:{6B09228C-C411-4E88-A8FE-A2E2C4D513F7}|Samba.Modules.FastPay\\Samba.Modules.FastpayModule.csproj|solutionrelative:samba.modules.fastpay\\fastpayview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{6B09228C-C411-4E88-A8FE-A2E2C4D513F7}|Samba.Modules.FastPay\\Samba.Modules.FastpayModule.csproj|C:\\Users\\Admin\\Desktop\\unpos-restorant\\samba.modules.fastpay\\fastpayviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{6B09228C-C411-4E88-A8FE-A2E2C4D513F7}|Samba.Modules.FastPay\\Samba.Modules.FastpayModule.csproj|c:\\users\\admin\\desktop\\unpos-restorant\\samba.modules.fastpay\\fastpayviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{6B09228C-C411-4E88-A8FE-A2E2C4D513F7}|Samba.Modules.FastPay\\Samba.Modules.FastpayModule.csproj|solutionrelative:samba.modules.fastpay\\fastpayviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{B75C6387-9855-44BF-886E-5BB60D643AD2}|Samba.Modules.PosModule\\Samba.Modules.PosModule.csproj|c:\\users\\admin\\desktop\\unpos-restorant\\samba.modules.posmodule\\posview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
-      "RelativeMoniker": "D:0:0:{B75C6387-9855-44BF-886E-5BB60D643AD2}|Samba.Modules.PosModule\\Samba.Modules.PosModule.csproj|solutionrelative:samba.modules.posmodule\\posview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{2386F6A0-91B2-4D1A-8DBC-92109924AFFE}|Samba.Domain\\Samba.Domain.csproj|c:\\users\\admin\\desktop\\unpos-restorant\\samba.domain\\models\\tickets\\order.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{2386F6A0-91B2-4D1A-8DBC-92109924AFFE}|Samba.Domain\\Samba.Domain.csproj|solutionrelative:samba.domain\\models\\tickets\\order.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{2386F6A0-91B2-4D1A-8DBC-92109924AFFE}|Samba.Domain\\Samba.Domain.csproj|c:\\users\\admin\\desktop\\unpos-restorant\\samba.domain\\models\\tickets\\ordermerger.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{2386F6A0-91B2-4D1A-8DBC-92109924AFFE}|Samba.Domain\\Samba.Domain.csproj|solutionrelative:samba.domain\\models\\tickets\\ordermerger.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{FC6B9AFB-7633-4250-BDFF-A9251B64B909}|Samba.Services.Tests\\Samba.Services.Tests.csproj|c:\\users\\admin\\desktop\\unpos-restorant\\samba.services.tests\\accounttests.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{FC6B9AFB-7633-4250-BDFF-A9251B64B909}|Samba.Services.Tests\\Samba.Services.Tests.csproj|solutionrelative:samba.services.tests\\accounttests.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{2386F6A0-91B2-4D1A-8DBC-92109924AFFE}|Samba.Domain\\Samba.Domain.csproj|c:\\users\\admin\\desktop\\unpos-restorant\\samba.domain\\models\\tickets\\calculationtype.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{2386F6A0-91B2-4D1A-8DBC-92109924AFFE}|Samba.Domain\\Samba.Domain.csproj|solutionrelative:samba.domain\\models\\tickets\\calculationtype.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{B75C6387-9855-44BF-886E-5BB60D643AD2}|Samba.Modules.PosModule\\Samba.Modules.PosModule.csproj|C:\\Users\\Admin\\Desktop\\unpos-restorant\\samba.modules.posmodule\\posviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{B75C6387-9855-44BF-886E-5BB60D643AD2}|Samba.Modules.PosModule\\Samba.Modules.PosModule.csproj|c:\\users\\admin\\desktop\\unpos-restorant\\samba.modules.posmodule\\posviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{B75C6387-9855-44BF-886E-5BB60D643AD2}|Samba.Modules.PosModule\\Samba.Modules.PosModule.csproj|solutionrelative:samba.modules.posmodule\\posviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{406B96A6-C886-4149-AD88-A2402EDB2B90}|Samba.Localization\\Samba.Localization.csproj|C:\\Users\\Admin\\Desktop\\unpos-restorant\\samba.localization\\properties\\resources.tr.resx||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
-      "RelativeMoniker": "D:0:0:{406B96A6-C886-4149-AD88-A2402EDB2B90}|Samba.Localization\\Samba.Localization.csproj|solutionrelative:samba.localization\\properties\\resources.tr.resx||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
     },
     {
       "AbsoluteMoniker": "D:0:0:{7DD8848C-3ADB-45B3-BD49-10AF3AEE2521}|Samba.Presentation.Services\\Samba.Presentation.Services.csproj|C:\\Users\\Admin\\Desktop\\unpos-restorant\\samba.presentation.services\\common\\eventtopicnames.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -62,21 +30,7 @@
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "Resources.tr.resx",
-              "DocumentMoniker": "C:\\Users\\Admin\\Desktop\\unpos-restorant\\Samba.Localization\\Properties\\Resources.tr.resx",
-              "RelativeDocumentMoniker": "Samba.Localization\\Properties\\Resources.tr.resx",
-              "ToolTip": "C:\\Users\\Admin\\Desktop\\unpos-restorant\\Samba.Localization\\Properties\\Resources.tr.resx",
-              "RelativeToolTip": "Samba.Localization\\Properties\\Resources.tr.resx",
-              "ViewState": "AgIAAPAAAAAAAAAAAAAEwIQAAAAPAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001005|",
-              "WhenOpened": "2025-11-15T14:34:25.687Z",
-              "IsPinned": true,
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 2,
               "Title": "EventTopicNames.cs",
               "DocumentMoniker": "C:\\Users\\Admin\\Desktop\\unpos-restorant\\Samba.Presentation.Services\\Common\\EventTopicNames.cs",
               "RelativeDocumentMoniker": "Samba.Presentation.Services\\Common\\EventTopicNames.cs",
@@ -90,7 +44,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 3,
               "Title": "RegionNames.cs",
               "DocumentMoniker": "C:\\Users\\Admin\\Desktop\\unpos-restorant\\Samba.Presentation.Common\\RegionNames.cs",
               "RelativeDocumentMoniker": "Samba.Presentation.Common\\RegionNames.cs",
@@ -99,122 +53,32 @@
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABkAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-11-18T12:00:57.425Z",
-              "IsPinned": true,
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "FastPayModule.cs",
-              "DocumentMoniker": "C:\\Users\\Admin\\Desktop\\unpos-restorant\\Samba.Modules.FastPay\\FastPayModule.cs",
-              "RelativeDocumentMoniker": "Samba.Modules.FastPay\\FastPayModule.cs",
-              "ToolTip": "C:\\Users\\Admin\\Desktop\\unpos-restorant\\Samba.Modules.FastPay\\FastPayModule.cs",
-              "RelativeToolTip": "Samba.Modules.FastPay\\FastPayModule.cs",
-              "ViewState": "AgIAADgAAAAAAAAAAAAqwFoAAAA3AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-20T07:30:56.975Z",
-              "EditorCaption": ""
+              "IsPinned": true
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "FastPayView.xaml",
-              "DocumentMoniker": "C:\\Users\\Admin\\Desktop\\unpos-restorant\\Samba.Modules.FastPay\\FastPayView.xaml",
-              "RelativeDocumentMoniker": "Samba.Modules.FastPay\\FastPayView.xaml",
-              "ToolTip": "C:\\Users\\Admin\\Desktop\\unpos-restorant\\Samba.Modules.FastPay\\FastPayView.xaml",
-              "RelativeToolTip": "Samba.Modules.FastPay\\FastPayView.xaml",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2025-11-20T07:30:00.42Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "FastPayViewModel.cs",
-              "DocumentMoniker": "C:\\Users\\Admin\\Desktop\\unpos-restorant\\Samba.Modules.FastPay\\FastPayViewModel.cs",
-              "RelativeDocumentMoniker": "Samba.Modules.FastPay\\FastPayViewModel.cs",
-              "ToolTip": "C:\\Users\\Admin\\Desktop\\unpos-restorant\\Samba.Modules.FastPay\\FastPayViewModel.cs",
-              "RelativeToolTip": "Samba.Modules.FastPay\\FastPayViewModel.cs",
-              "ViewState": "AgIAAFIBAAAAAAAAAAAtwGcBAAA3AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-19T13:54:34.527Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "PosView.xaml",
-              "DocumentMoniker": "C:\\Users\\Admin\\Desktop\\unpos-restorant\\Samba.Modules.PosModule\\PosView.xaml",
-              "RelativeDocumentMoniker": "Samba.Modules.PosModule\\PosView.xaml",
-              "ToolTip": "C:\\Users\\Admin\\Desktop\\unpos-restorant\\Samba.Modules.PosModule\\PosView.xaml",
-              "RelativeToolTip": "Samba.Modules.PosModule\\PosView.xaml",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2025-11-20T07:28:50.719Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "Order.cs",
-              "DocumentMoniker": "C:\\Users\\Admin\\Desktop\\unpos-restorant\\Samba.Domain\\Models\\Tickets\\Order.cs",
-              "RelativeDocumentMoniker": "Samba.Domain\\Models\\Tickets\\Order.cs",
-              "ToolTip": "C:\\Users\\Admin\\Desktop\\unpos-restorant\\Samba.Domain\\Models\\Tickets\\Order.cs",
-              "RelativeToolTip": "Samba.Domain\\Models\\Tickets\\Order.cs",
-              "ViewState": "AgIAAHUAAAAAAAAAAAAtwCIAAAAUAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-20T07:27:04.172Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "OrderMerger.cs",
-              "DocumentMoniker": "C:\\Users\\Admin\\Desktop\\unpos-restorant\\Samba.Domain\\Models\\Tickets\\OrderMerger.cs",
-              "RelativeDocumentMoniker": "Samba.Domain\\Models\\Tickets\\OrderMerger.cs",
-              "ToolTip": "C:\\Users\\Admin\\Desktop\\unpos-restorant\\Samba.Domain\\Models\\Tickets\\OrderMerger.cs",
-              "RelativeToolTip": "Samba.Domain\\Models\\Tickets\\OrderMerger.cs",
-              "ViewState": "AgIAACkAAAAAAAAAAAAwwEcAAAAXAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-20T07:28:25.966Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "AccountTests.cs",
-              "DocumentMoniker": "C:\\Users\\Admin\\Desktop\\unpos-restorant\\Samba.Services.Tests\\AccountTests.cs",
-              "RelativeDocumentMoniker": "Samba.Services.Tests\\AccountTests.cs",
-              "ToolTip": "C:\\Users\\Admin\\Desktop\\unpos-restorant\\Samba.Services.Tests\\AccountTests.cs",
-              "RelativeToolTip": "Samba.Services.Tests\\AccountTests.cs",
-              "ViewState": "AgIAAOAAAAAAAAAAAAAYwPIAAAAYAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-20T07:27:56.185Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "CalculationType.cs",
-              "DocumentMoniker": "C:\\Users\\Admin\\Desktop\\unpos-restorant\\Samba.Domain\\Models\\Tickets\\CalculationType.cs",
-              "RelativeDocumentMoniker": "Samba.Domain\\Models\\Tickets\\CalculationType.cs",
-              "ToolTip": "C:\\Users\\Admin\\Desktop\\unpos-restorant\\Samba.Domain\\Models\\Tickets\\CalculationType.cs",
-              "RelativeToolTip": "Samba.Domain\\Models\\Tickets\\CalculationType.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAAUAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-20T07:27:01.524Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
               "Title": "PosViewModel.cs",
               "DocumentMoniker": "C:\\Users\\Admin\\Desktop\\unpos-restorant\\Samba.Modules.PosModule\\PosViewModel.cs",
               "RelativeDocumentMoniker": "Samba.Modules.PosModule\\PosViewModel.cs",
               "ToolTip": "C:\\Users\\Admin\\Desktop\\unpos-restorant\\Samba.Modules.PosModule\\PosViewModel.cs",
               "RelativeToolTip": "Samba.Modules.PosModule\\PosViewModel.cs",
-              "ViewState": "AgIAAAcCAAAAAAAAAAAAAEQCAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAH8BAAAAAAAAAAAAwH8BAAA7AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-19T13:59:03.777Z",
+              "WhenOpened": "2025-11-20T10:33:31.258Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "FastPayViewModel.cs",
+              "DocumentMoniker": "C:\\Users\\Admin\\Desktop\\unpos-restorant\\Samba.Modules.FastPay\\FastPayViewModel.cs",
+              "RelativeDocumentMoniker": "Samba.Modules.FastPay\\FastPayViewModel.cs",
+              "ToolTip": "C:\\Users\\Admin\\Desktop\\unpos-restorant\\Samba.Modules.FastPay\\FastPayViewModel.cs",
+              "RelativeToolTip": "Samba.Modules.FastPay\\FastPayViewModel.cs",
+              "ViewState": "AgIAAJUBAAAAAAAAAAA2wPgBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-20T10:27:57.209Z",
               "EditorCaption": ""
             }
           ]

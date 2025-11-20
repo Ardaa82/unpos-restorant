@@ -227,11 +227,13 @@ namespace Samba.Modules.FastPay
 
         private void OnModifyOrder(string obj)
         {
+            if (!_applicationState.IsFastPayMode) return;
+
             var so = new SelectedOrdersData { SelectedOrders = SelectedOrders, Ticket = SelectedTicket };
             OperationRequest<SelectedOrdersData>.Publish(
                 so,
                 EventTopicNames.DisplayTicketOrderDetails,
-                EventTopicNames.ActivatePosView,
+                EventTopicNames.ActivateFastPayView,
                 "");
         }
 
@@ -242,6 +244,7 @@ namespace Samba.Modules.FastPay
 
         private void OnAddOrder(string obj)
         {
+            if (!_applicationState.IsFastPayMode) return;
             EventServiceFactory.EventService.PublishEvent(EventTopicNames.ActivateMenuView);
         }
 
@@ -258,6 +261,8 @@ namespace Samba.Modules.FastPay
 
         private void OnExecuteAutomationCommand(FastCommandContainerButton obj)
         {
+            if (!_applicationState.IsFastPayMode) return;
+
             ExecuteAutomationCommand(obj.CommandContainer.AutomationCommand, obj.SelectedValue, obj.GetNextValue());
             obj.NextValue();
         }
@@ -275,6 +280,8 @@ namespace Samba.Modules.FastPay
 
         private void OnAutomationCommandSelected(EventParameters<AutomationCommandData> obj)
         {
+            if (!_applicationState.IsFastPayMode) return;
+
             if (obj.Topic == EventTopicNames.HandlerRequested)
             {
                 EventServiceFactory.EventService.PublishEvent(EventTopicNames.RefreshSelectedTicket);
@@ -284,6 +291,8 @@ namespace Samba.Modules.FastPay
 
         private void OnAutomationCommandValueSelected(EventParameters<AutomationCommandValueData> obj)
         {
+            if (!_applicationState.IsFastPayMode) return;
+
             ExecuteAutomationCommand(obj.Value.AutomationCommand.Name, obj.Value.Value, "");
             EventServiceFactory.EventService.PublishEvent(EventTopicNames.RefreshSelectedTicket);
         }
@@ -325,6 +334,8 @@ namespace Samba.Modules.FastPay
 
         private void OnDepartmentChanged(EventParameters<Department> obj)
         {
+            if (!_applicationState.IsFastPayMode) return;
+
             _entityButtons = null;
             RaisePropertyChanged(() => EntityButtons);
         }
@@ -346,6 +357,8 @@ namespace Samba.Modules.FastPay
 
         private void OnSelectEntity(EntityType obj)
         {
+            if (!_applicationState.IsFastPayMode) return;
+
             var ticketEntity = SelectedTicket.TicketEntities.SingleOrDefault(x => x.EntityTypeId == obj.Id);
             var selectedEntity = ticketEntity != null
                 ? _cacheService.GetEntityById(ticketEntity.EntityId)
@@ -360,6 +373,8 @@ namespace Samba.Modules.FastPay
 
         private void OnPortionSelected(EventParameters<MenuItemPortion> obj)
         {
+            if (!_applicationState.IsFastPayMode) return;
+
             if (obj.Topic == EventTopicNames.PortionSelected)
             {
                 var taxTemplate = _applicationState.GetTaxTemplates(obj.Value.MenuItemId);
@@ -375,6 +390,8 @@ namespace Samba.Modules.FastPay
 
         private void OnOrderTagEvent(EventParameters<OrderTagData> obj)
         {
+            if (!_applicationState.IsFastPayMode) return;
+
             if (obj.Topic == EventTopicNames.OrderTagSelected)
             {
                 _ticketService.TagOrders(
@@ -402,6 +419,8 @@ namespace Samba.Modules.FastPay
 
         private void OnRefreshTicket(EventParameters<EventAggregator> obj)
         {
+            if (!_applicationState.IsFastPayMode) return;
+
             if (obj.Topic == EventTopicNames.UnlockTicketRequested)
             {
                 OnRemoveTicketLock("");
@@ -415,6 +434,8 @@ namespace Samba.Modules.FastPay
 
         private void OnSelectedOrdersChanged(EventParameters<OrderViewModel> obj)
         {
+            if (!_applicationState.IsFastPayMode) return;
+
             if (obj.Topic == EventTopicNames.SelectedOrdersChanged)
             {
                 if (!obj.Value.Selected && !_ticketService.CanDeselectOrder(obj.Value.Model))
@@ -446,7 +467,7 @@ namespace Samba.Modules.FastPay
                     OperationRequest<SelectedOrdersData>.Publish(
                         so,
                         EventTopicNames.DisplayTicketOrderDetails,
-                        EventTopicNames.ActivatePosView,
+                        EventTopicNames.ActivateFastPayView,
                         "");
                 }
             }
@@ -484,6 +505,8 @@ namespace Samba.Modules.FastPay
 
         private void OnChangePrice(string obj)
         {
+            if (!_applicationState.IsFastPayMode) return;
+
             decimal price;
             decimal.TryParse(_applicationState.NumberPadValue, out price);
             if (price <= 0)
@@ -506,6 +529,8 @@ namespace Samba.Modules.FastPay
 
         private void OnRemoveTicketLock(string obj)
         {
+            if (!_applicationState.IsFastPayMode) return;
+
             SelectedTicket.UnLock();
             _ticketOrdersViewModel.Refresh();
             _allAutomationCommands = null;
@@ -516,6 +541,8 @@ namespace Samba.Modules.FastPay
 
         private void OnMoveOrders(string obj)
         {
+            if (!_applicationState.IsFastPayMode) return;
+
             SelectedTicket.PublishEvent(EventTopicNames.MoveSelectedOrders);
         }
 
@@ -537,17 +564,23 @@ namespace Samba.Modules.FastPay
 
         private void OnEditTicketNote(string obj)
         {
+            if (!_applicationState.IsFastPayMode) return;
+
             SelectedTicket.PublishEvent(EventTopicNames.EditTicketNote);
         }
 
         private void OnDecQuantityCommand(string obj)
         {
+            if (!_applicationState.IsFastPayMode) return;
+
             LastSelectedOrder.Quantity--;
             RefreshSelectedOrders();
         }
 
         private void OnIncQuantityCommand(string obj)
         {
+            if (!_applicationState.IsFastPayMode) return;
+
             LastSelectedOrder.Quantity++;
             RefreshSelectedOrders();
         }
@@ -574,6 +607,8 @@ namespace Samba.Modules.FastPay
 
         private void OnDecSelectionQuantityCommand(string obj)
         {
+            if (!_applicationState.IsFastPayMode) return;
+
             LastSelectedOrder.DecSelectedQuantity();
             RefreshSelectedOrders();
         }
@@ -587,12 +622,16 @@ namespace Samba.Modules.FastPay
 
         private void OnIncSelectionQuantityCommand(string obj)
         {
+            if (!_applicationState.IsFastPayMode) return;
+
             LastSelectedOrder.IncSelectedQuantity();
             RefreshSelectedOrders();
         }
 
         private void OnCancelItemCommand(string obj)
         {
+            if (!_applicationState.IsFastPayMode) return;
+
             if (!_ticketOrdersViewModel.CanCancelSelectedOrders())
             {
                 ClearSelectedItems();

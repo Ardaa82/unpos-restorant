@@ -313,7 +313,7 @@ namespace Samba.Modules.FastPayModule
                     break;
 
                 case EventTopicNames.CloseTicketRequested:
-                    DisplayMenuScreen();
+                    // BURADA Artık DisplayMenuScreen yok
                     CloseTicket();
                     break;
             }
@@ -456,7 +456,8 @@ namespace Samba.Modules.FastPayModule
 
             _fastTicketOrdersViewModel.ClearSelectedOrders();
 
-            var result = _ticketService.CloseTicket(SelectedTicket);
+            var ticketToClose = SelectedTicket;
+            var result = _ticketService.CloseTicket(ticketToClose);
             if (!string.IsNullOrEmpty(result.ErrorMessage))
             {
                 InteractionService.UserIntraction.GiveFeedback(result.ErrorMessage);
@@ -479,15 +480,16 @@ namespace Samba.Modules.FastPayModule
                 {
                     if (fullyPaid)
                     {
-                        // Başarılı, ödenmiş satış -> FastPay’e geri dön (yeni satışa hazır ekran)
+                        // Başarılı, ödenmiş satış -> FastPay’de kal, yeni satışa hazır ekran
+                        // FastPay modundan çıkmıyoruz, sadece FastPay ekranını yeniden aktif ediyoruz
                         EventServiceFactory.EventService.PublishEvent(EventTopicNames.ActivateFastPayView);
                     }
                     else
                     {
-                        // Ödeme alınmamış / satış iptal -> Ana menüye dön
+                        // Ödeme alınmamış / iptal -> FastPay modundan ÇIK ve ana menüye dön
+                        _applicationState.IsFastPayMode = false;
                         _applicationStateSetter.SetCurrentApplicationScreen(AppScreens.Navigation);
-                        // Eğer sende ayrıca main menu event’i varsa, onu da publish edebilirsin:
-                        // EventServiceFactory.EventService.PublishEvent(EventTopicNames.ActivateNavigation);
+                        EventServiceFactory.EventService.PublishEvent(EventTopicNames.ActivateNavigation);
                     }
                 }
             }
@@ -500,6 +502,7 @@ namespace Samba.Modules.FastPayModule
 
             _applicationStateSetter.SetApplicationLocked(false);
         }
+
 
         public string GetPrintError()
         {

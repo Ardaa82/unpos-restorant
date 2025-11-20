@@ -13,7 +13,7 @@ namespace Samba.Modules.FastPay
     {
         private readonly GridLength _buttonColumnLenght = new GridLength(2, GridUnitType.Star);
         private readonly GridLength _ticketColumnLenght = new GridLength(7, GridUnitType.Star);
-        private FastTicketViewModel _ticketViewModel;
+        private readonly FastTicketViewModel _ticketViewModel;
 
         [ImportingConstructor]
         public FastTicketView(FastTicketViewModel viewModel)
