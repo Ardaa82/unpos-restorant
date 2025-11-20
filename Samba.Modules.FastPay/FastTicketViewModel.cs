@@ -49,6 +49,8 @@ namespace Samba.Modules.FastPay
         public ICaptionCommand ChangePriceCommand { get; set; }
         public ICaptionCommand AddOrderCommand { get; set; }
         public ICaptionCommand ModifyOrderCommand { get; set; }
+        public ICaptionCommand ClearTicketContentsCommand { get; set; }
+
 
         public DelegateCommand<EntityType> SelectEntityCommand { get; set; }
         public DelegateCommand<FastCommandContainerButton> ExecuteAutomationCommnand { get; set; }
@@ -208,6 +210,7 @@ namespace Samba.Modules.FastPay
             ChangePriceCommand = new CaptionCommand<string>(Resources.ChangePrice, OnChangePrice, CanChangePrice);
             AddOrderCommand = new CaptionCommand<string>(Resources.AddOrder.Replace(" ", Environment.NewLine), OnAddOrder, CanAddOrder);
             ModifyOrderCommand = new CaptionCommand<string>(Resources.ModifyOrder.Replace(" ", Environment.NewLine), OnModifyOrder, CanModifyOrder);
+            ClearTicketContentsCommand = new CaptionCommand<string>("Belgeyi Kapat", OnClearTicketContents, CanClearTicketContents);
 
             EventServiceFactory.EventService.GetEvent<GenericEvent<OrderViewModel>>().Subscribe(OnSelectedOrdersChanged);
             EventServiceFactory.EventService.GetEvent<GenericEvent<EventAggregator>>().Subscribe(OnRefreshTicket);
@@ -331,6 +334,43 @@ namespace Samba.Modules.FastPay
             ClearSelectedItems();
             ClearSelection = true;
         }
+        private bool CanClearTicketContents(string arg)
+        {
+            if (!_applicationState.IsFastPayMode) return false;
+
+            if (SelectedTicket == null || SelectedTicket == Ticket.Empty)
+                return false;
+
+            if (SelectedTicket.IsClosed || SelectedTicket.IsLocked)
+                return false;
+
+            return SelectedTicket.Orders.Any();
+        }
+
+        private void OnClearTicketContents(string obj)
+        {
+            if (!CanClearTicketContents(obj)) return;
+
+            // Kullanıcıdan onay al
+            if (!InteractionService.UserIntraction
+                    .AskQuestion("Belgedeki tüm satırlar silinecek. Devam edilsin mi?"))
+                return;
+
+            // 1) Bilet içindeki tüm siparişleri KALICI olarak temizle
+            SelectedTicket.Orders.Clear();
+
+            // 2) Tutarları yeniden hesapla
+            _ticketService.RecalculateTicket(SelectedTicket);
+
+            // 3) Orders viewmodel’e güncel bileti ver ve görünümü yenile
+            _ticketOrdersViewModel.SelectedTicket = SelectedTicket;
+            _ticketOrdersViewModel.RefreshSelectedOrders();
+
+            // 4) Üst başlık + butonlar vs. için genel refresh
+            RefreshVisuals();
+            ClearSelectedItems();
+        }
+
 
         private void OnDepartmentChanged(EventParameters<Department> obj)
         {

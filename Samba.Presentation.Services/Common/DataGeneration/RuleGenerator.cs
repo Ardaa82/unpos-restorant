@@ -87,7 +87,8 @@ namespace Samba.Presentation.Services.Common.DataGeneration
         // Checks whether the rules should be regenerated based on the presence of a specific file.
         public static bool ShouldRegenerateRules()
         {
-            return File.Exists(LocalSettings.UserPath + "\\regen.txt");
+            return true;
+            // return File.Exists(LocalSettings.UserPath + "\\regen.txt");
         }
 
         public void RegenerateRules(IWorkspace workspace)
@@ -110,6 +111,8 @@ namespace Samba.Presentation.Services.Common.DataGeneration
             DeleteEntity<AutomationCommand>(workspace, "Cancel_f", "Void");
             DeleteEntity<AutomationCommand>(workspace, "CloseTicket");
             DeleteEntity<AutomationCommand>(workspace, "Settle");
+            DeleteEntity<AutomationCommand>(workspace, "ClearTicketContents");
+
 
             DeleteEntity<State>(workspace, "NewOrders");
             DeleteEntity<State>(workspace, "Available");
@@ -152,11 +155,31 @@ namespace Samba.Presentation.Services.Common.DataGeneration
             DeleteEntity<AppRule>(workspace, "Rule_f", "CloseTicket");
             DeleteEntity<AppRule>(workspace, "Rule_f", "Settle");
 
+
         }
 
         // Generates system rules and adds them to the provided workspace.
         public void GenerateSystemRules(IWorkspace workspace)
         {
+            // Yeni kurallar.
+            var clearTicketContentsAutomation = new AutomationCommand
+            {
+                Name = "ClearTicketContents",         // internal name
+                ButtonHeader = "Belge\nÝptal",        // text shown on the button
+                SortOrder = -3,                       // adjust relative position as you like
+                Color = "#ffffff",                    // optional
+                FontSize = 40
+            };
+            clearTicketContentsAutomation.AutomationCommandMaps.Add(new AutomationCommandMap
+            {
+                EnabledStates = string.Format("{0},{1},{2}", Resources.New, Resources.NewOrders, Resources.Unpaid),
+                VisibleStates = "*",
+                DisplayUnderTicket = true
+            });
+
+
+
+
             // Otomatik butonlar burada yaratýlýyor - Kapat butonu vs.
             // Automation commands are created here
             var closeTicketAutomation = new AutomationCommand { Name = Resources.CloseTicket, ButtonHeader = Resources.Close, SortOrder = -1, Color = "#FF0000", FontSize = 40 };

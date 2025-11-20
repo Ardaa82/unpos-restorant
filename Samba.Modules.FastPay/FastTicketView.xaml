@@ -155,9 +155,19 @@
                                  Content="{Binding EditTicketNoteCommand.Caption}"
                                  Visibility="{Binding IsNothingSelected,Converter={StaticResource VisibilityConverter}}"/>
 
+            <!-- Empty handling -->
+            <FxButton:FlexButton Command="{Binding ClearTicketContentsCommand}"
+                     Content="{Binding ClearTicketContentsCommand.Caption}"
+                     Visibility="{Binding IsNothingSelected, Converter={StaticResource VisibilityConverter}}"/>
+
+
             <FxButton:FlexButton Command="{Binding RemoveTicketLockCommand}"
                                  Content="{Binding RemoveTicketLockCommand.Caption}"
                                  Visibility="{Binding IsNothingSelectedAndTicketLocked,Converter={StaticResource VisibilityConverter}}"/>
+
+
+
+
 
         </StackPanel>
     </Grid>
