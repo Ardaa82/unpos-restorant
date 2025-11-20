@@ -138,6 +138,9 @@ namespace Samba.Modules.FastPayModule
             EventServiceFactory.EventService.GetEvent<GenericEvent<EventAggregator>>()
                 .Subscribe(x =>
                 {
+                    if (!_applicationState.IsFastPayMode)
+                        return;
+
                     if (x.Topic == EventTopicNames.ResetCache &&
                         _applicationState.CurrentTicketType != null)
                     {
@@ -152,6 +155,9 @@ namespace Samba.Modules.FastPayModule
 
         private void OnOrderEventReceived(EventParameters<Order> obj)
         {
+            if (!_applicationState.IsFastPayMode)
+                return;
+
             if (obj.Topic == EventTopicNames.OrderAdded &&
                 obj.Value != null &&
                 SelectedTicket != null)
@@ -163,6 +169,9 @@ namespace Samba.Modules.FastPayModule
 
         private void OnTicketTypeChanged(EventParameters<TicketType> obj)
         {
+            if (!_applicationState.IsFastPayMode)
+                return;
+
             if ((obj.Topic == EventTopicNames.TicketTypeChanged ||
                  obj.Topic == EventTopicNames.TicketTypeSelected) &&
                 obj.Value != null)
@@ -174,6 +183,9 @@ namespace Samba.Modules.FastPayModule
 
         private void OnTicketStateSelected(EventParameters<TicketStateData> obj)
         {
+            if (!_applicationState.IsFastPayMode)
+                return;
+
             if (obj.Topic == EventTopicNames.ActivateTicketList)
             {
                 if (SelectedTicket != null) CloseTicket();
@@ -187,6 +199,9 @@ namespace Samba.Modules.FastPayModule
 
         private void OnTicketTagSelected(EventParameters<TicketTagGroup> obj)
         {
+            if (!_applicationState.IsFastPayMode)
+                return;
+
             if (obj.Topic == EventTopicNames.ActivateTicketList)
             {
                 if (SelectedTicket != null) CloseTicket();
@@ -200,6 +215,9 @@ namespace Samba.Modules.FastPayModule
 
         private void OnTicketEventReceived(EventParameters<Ticket> obj)
         {
+            if (!_applicationState.IsFastPayMode)
+                return;
+
             if (obj.Topic == EventTopicNames.SetSelectedTicket)
             {
                 if (SelectedTicket != null) CloseTicket();
@@ -222,6 +240,9 @@ namespace Samba.Modules.FastPayModule
 
         private void OnTicketIdPublished(EventParameters<int> obj)
         {
+            if (!_applicationState.IsFastPayMode)
+                return;
+
             if (obj.Topic == EventTopicNames.DisplayTicket)
             {
                 if (SelectedTicket != null) CloseTicket();
@@ -235,6 +256,9 @@ namespace Samba.Modules.FastPayModule
 
         private void OnMenuItemSelected(EventParameters<ScreenMenuItemData> obj)
         {
+            if (!_applicationState.IsFastPayMode)
+                return;
+
             if (obj.Topic == EventTopicNames.ScreenMenuItemDataSelected)
             {
                 if (SelectedTicket == null)
@@ -294,8 +318,6 @@ namespace Samba.Modules.FastPayModule
                     break;
             }
         }
-
-
 
         #endregion
 
@@ -478,7 +500,6 @@ namespace Samba.Modules.FastPayModule
 
             _applicationStateSetter.SetApplicationLocked(false);
         }
-
 
         public string GetPrintError()
         {

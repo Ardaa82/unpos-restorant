@@ -120,6 +120,9 @@ namespace Samba.Modules.PosModule
             EventServiceFactory.EventService.GetEvent<GenericEvent<EventAggregator>>().Subscribe(
             x =>
             {
+                if (_applicationState.IsFastPayMode)
+                    return;
+
                 if (x.Topic == EventTopicNames.ResetCache && _applicationState.CurrentTicketType != null)
                 {
                     _menuItemSelectorViewModel.Reset();
@@ -130,6 +133,9 @@ namespace Samba.Modules.PosModule
 
         private void OnOrderEventReceived(EventParameters<Order> obj)
         {
+            if (_applicationState.IsFastPayMode)
+                return;
+
             if (obj.Topic == EventTopicNames.OrderAdded && obj.Value != null && SelectedTicket != null)
             {
                 _ticketOrdersViewModel.SelectedTicket = SelectedTicket;
@@ -139,6 +145,9 @@ namespace Samba.Modules.PosModule
 
         private void OnTicketTypeChanged(EventParameters<TicketType> obj)
         {
+            if (_applicationState.IsFastPayMode)
+                return;
+
             if (obj.Topic == EventTopicNames.TicketTypeChanged && obj.Value != null)
             {
                 _menuItemSelectorViewModel.UpdateCurrentScreenMenu(obj.Value.GetScreenMenuId(_applicationState.CurrentTerminal));
@@ -153,6 +162,9 @@ namespace Samba.Modules.PosModule
 
         private void OnTicketStateSelected(EventParameters<TicketStateData> obj)
         {
+            if (_applicationState.IsFastPayMode)
+                return;
+
             if (obj.Topic == EventTopicNames.ActivateTicketList)
             {
                 if (SelectedTicket != null) CloseTicket();
@@ -165,6 +177,9 @@ namespace Samba.Modules.PosModule
 
         private void OnTicketTagSelected(EventParameters<TicketTagGroup> obj)
         {
+            if (_applicationState.IsFastPayMode)
+                return;
+
             if (obj.Topic == EventTopicNames.ActivateTicketList)
             {
                 if (SelectedTicket != null) CloseTicket();
@@ -177,6 +192,9 @@ namespace Samba.Modules.PosModule
 
         private void OnTicketEventReceived(EventParameters<Ticket> obj)
         {
+            if (_applicationState.IsFastPayMode)
+                return;
+
             if (obj.Topic == EventTopicNames.SetSelectedTicket)
             {
                 if (SelectedTicket != null) CloseTicket();
@@ -195,6 +213,9 @@ namespace Samba.Modules.PosModule
 
         private void OnEntitySelectedForTicket(EventParameters<OperationRequest<Entity>> eventParameters)
         {
+            if (_applicationState.IsFastPayMode)
+                return;
+
             if (eventParameters.Topic == EventTopicNames.EntitySelected)
             {
                 FireEntitySelectedRule(eventParameters.Value.SelectedItem);
@@ -229,7 +250,7 @@ namespace Samba.Modules.PosModule
                             _applicationStateSetter.SetCurrentTicketType(_applicationState.TempTicketType);
                             _applicationState.TempTicketType = null;
                         }
-                        
+
 
                         OpenTicket(0);
 
@@ -259,19 +280,22 @@ namespace Samba.Modules.PosModule
                 if (entityType != null)
                 {
                     _applicationState.NotifyEvent(RuleEventNames.EntitySelected, new
-                        {
-                            Ticket = SelectedTicket,
-                            EntityTypeName = entityType.Name,
-                            EntityName = entity.Name,
-                            EntityCustomData = entity.CustomData,
-                            IsTicketSelected = SelectedTicket != null
-                        });
+                    {
+                        Ticket = SelectedTicket,
+                        EntityTypeName = entityType.Name,
+                        EntityName = entity.Name,
+                        EntityCustomData = entity.CustomData,
+                        IsTicketSelected = SelectedTicket != null
+                    });
                 }
             }
         }
 
         private void OnTicketIdPublished(EventParameters<int> obj)
         {
+            if (_applicationState.IsFastPayMode)
+                return;
+
             if (obj.Topic == EventTopicNames.DisplayTicket)
             {
                 if (SelectedTicket != null) CloseTicket();
@@ -284,6 +308,9 @@ namespace Samba.Modules.PosModule
 
         private void OnMenuItemSelected(EventParameters<ScreenMenuItemData> obj)
         {
+            if (_applicationState.IsFastPayMode)
+                return;
+
             if (obj.Topic == EventTopicNames.ScreenMenuItemDataSelected)
             {
                 if (SelectedTicket == null)
@@ -315,7 +342,7 @@ namespace Samba.Modules.PosModule
                         x => x.CopyToNewTickets && x.EntityTypeId == ticketEntity.EntityTypeId))
                 {
                     var entity = _cacheService.GetEntityById(ticketEntity.EntityId);
-                   _ticketService.UpdateEntity(SelectedTicket, entity, ticketEntity.AccountTypeId, ticketEntity.AccountId, ticketEntity.EntityCustomData);
+                    _ticketService.UpdateEntity(SelectedTicket, entity, ticketEntity.AccountTypeId, ticketEntity.AccountId, ticketEntity.EntityCustomData);
                 }
             }
         }
@@ -520,8 +547,8 @@ namespace Samba.Modules.PosModule
                     ExpectedAction.Invoke();
                 }
                 else
-                {   
-                         EventServiceFactory.EventService.PublishEvent(EventTopicNames.ActivatePosView);
+                {
+                    EventServiceFactory.EventService.PublishEvent(EventTopicNames.ActivatePosView);
                 }
             }
             ExpectedAction = null;
