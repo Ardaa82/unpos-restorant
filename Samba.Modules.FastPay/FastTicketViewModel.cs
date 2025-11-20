@@ -49,7 +49,9 @@ namespace Samba.Modules.FastPay
         public ICaptionCommand ChangePriceCommand { get; set; }
         public ICaptionCommand AddOrderCommand { get; set; }
         public ICaptionCommand ModifyOrderCommand { get; set; }
-        public ICaptionCommand ClearTicketContentsCommand { get; set; }
+        public ICaptionCommand ClearTicketContentsCommand { get; set; } // Belgeyi Kapat butonu
+        public ICaptionCommand DiscountCommand { get; set; } // İskonto butonu
+
 
 
         public DelegateCommand<EntityType> SelectEntityCommand { get; set; }
@@ -211,6 +213,7 @@ namespace Samba.Modules.FastPay
             AddOrderCommand = new CaptionCommand<string>(Resources.AddOrder.Replace(" ", Environment.NewLine), OnAddOrder, CanAddOrder);
             ModifyOrderCommand = new CaptionCommand<string>(Resources.ModifyOrder.Replace(" ", Environment.NewLine), OnModifyOrder, CanModifyOrder);
             ClearTicketContentsCommand = new CaptionCommand<string>("Belgeyi Kapat", OnClearTicketContents, CanClearTicketContents);
+            DiscountCommand = new CaptionCommand<string>("İskonto", OnApplyDiscount, CanApplyDiscount);
 
             EventServiceFactory.EventService.GetEvent<GenericEvent<OrderViewModel>>().Subscribe(OnSelectedOrdersChanged);
             EventServiceFactory.EventService.GetEvent<GenericEvent<EventAggregator>>().Subscribe(OnRefreshTicket);
@@ -369,6 +372,90 @@ namespace Samba.Modules.FastPay
             // 4) Üst başlık + butonlar vs. için genel refresh
             RefreshVisuals();
             ClearSelectedItems();
+        }
+
+        private bool CanApplyDiscount(string arg)
+        {
+            if (!_applicationState.IsFastPayMode) return false;
+
+            if (SelectedTicket == null || SelectedTicket == Ticket.Empty)
+                return false;
+
+            if (SelectedTicket.IsClosed || SelectedTicket.IsLocked)
+                return false;
+
+            return SelectedTicket.Orders.Any();
+        }
+
+        private void OnApplyDiscount(string obj)
+        {
+            if (!CanApplyDiscount(obj)) return;
+
+            // 1) Kullanıcının girdiği iskonto değeri (numaratör)
+            decimal value;
+            if (!decimal.TryParse(_applicationState.NumberPadValue, out value) || value <= 0)
+            {
+                InteractionService.UserIntraction.GiveFeedback("İskonto için geçerli bir değer giriniz.");
+                return;
+            }
+
+            // 2) Yüzde mi, tutar mı?
+            var isPercent = InteractionService.UserIntraction
+                .AskQuestion("İskonto yüzdelik olarak uygulansın mı? (Evet: %, Hayır: tutar)");
+
+            // 3) Hedef grup: seçili satırlar varsa onlar, yoksa tüm bilet
+            var targetOrders = SelectedOrders.Any()
+                ? SelectedOrders.ToList()
+                : SelectedTicket.Orders.ToList();
+
+            ApplyDiscountToOrders(targetOrders, value, isPercent);
+
+            // 4) Bilet ve ekranı güncelle
+            _ticketService.RecalculateTicket(SelectedTicket);
+            _ticketOrdersViewModel.SelectedTicket = SelectedTicket;
+            _ticketOrdersViewModel.RefreshSelectedOrders();
+            RefreshVisuals();
+            ClearSelectedItems();
+            EventServiceFactory.EventService.PublishEvent(EventTopicNames.ResetNumerator);
+        }
+
+        private void ApplyDiscountToOrders(IList<Order> orders, decimal value, bool isPercent)
+        {
+            if (orders == null || orders.Count == 0) return;
+
+            if (isPercent)
+            {
+                // Yüzde iskonto
+                var rate = value / 100m;
+                if (rate <= 0) return;
+                if (rate > 1) rate = 1;
+
+                foreach (var order in orders)
+                {
+                    var basePrice = order.Price;
+                    var newPrice = basePrice * (1 - rate);
+                    if (newPrice < 0) newPrice = 0;
+
+                    order.UpdatePrice(newPrice, SelectedDepartment.PriceTag);
+                }
+            }
+            else
+            {
+                // Tutar iskonto: girilen değer, hedef grubun toplamına göre paylaştırılır
+                var total = orders.Sum(x => x.Price);
+                if (total <= 0) return;
+
+                foreach (var order in orders)
+                {
+                    var basePrice = order.Price;
+                    var proportion = total == 0 ? 0 : (basePrice / total);
+                    var discountForOrder = value * proportion;
+                    var newPrice = basePrice - discountForOrder;
+                    if (newPrice < 0) newPrice = 0;
+
+                    order.UpdatePrice(newPrice, SelectedDepartment.PriceTag);
+                }
+            }
         }
 
 

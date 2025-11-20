@@ -155,10 +155,15 @@
                                  Content="{Binding EditTicketNoteCommand.Caption}"
                                  Visibility="{Binding IsNothingSelected,Converter={StaticResource VisibilityConverter}}"/>
 
-            <!-- Empty handling -->
+            <!-- Clearing handling -->
             <FxButton:FlexButton Command="{Binding ClearTicketContentsCommand}"
                      Content="{Binding ClearTicketContentsCommand.Caption}"
                      Visibility="{Binding IsNothingSelected, Converter={StaticResource VisibilityConverter}}"/>
+            <!-- Discount Handling -->
+            <FxButton:FlexButton Command="{Binding DiscountCommand}"
+                     Content="{Binding DiscountCommand.Caption}"
+                     Visibility="{Binding IsTicketSelected,Converter={StaticResource VisibilityConverter}}"/>
+
 
 
             <FxButton:FlexButton Command="{Binding RemoveTicketLockCommand}"
