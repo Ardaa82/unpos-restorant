@@ -1,0 +1,69 @@
+<UserControl x:Class="Samba.Modules.FastPay.DiscountPopupView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:FxButton="clr-namespace:FlexButton;assembly=FlexButton">
+
+    <!-- The screen -->
+    <Grid Background="#80000080">
+        <Border HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Padding="15"
+                Background="White"
+                CornerRadius="5"
+                BorderThickness="1"
+                BorderBrush="Gray">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- Title -->
+                <TextBlock Grid.Row="0"
+                           Text="Iskonto"
+                           FontSize="18"
+                           FontWeight="Bold"
+                           Margin="0,0,0,10"
+                           HorizontalAlignment="Center"/>
+
+                <!-- Discount value -->
+                <StackPanel Grid.Row="1"
+                            Orientation="Horizontal"
+                            VerticalAlignment="Center"
+                            Margin="0,0,0,10">
+                    <TextBlock Text="Iskonto degeri:"
+                               VerticalAlignment="Center"
+                               Margin="0,0,5,0"/>
+                    <TextBox Width="100"
+                             HorizontalAlignment="Left"
+                             Text="{Binding DiscountValue, UpdateSourceTrigger=PropertyChanged}"/>
+                </StackPanel>
+
+                <!-- Mods -->
+                <StackPanel Grid.Row="2"
+                            Orientation="Vertical"
+                            Margin="0,0,0,10">
+                    <CheckBox Content="Yuzde olarak uygula"
+                              IsChecked="{Binding IsPercentMode}"/>
+                    <CheckBox Content="Tum belgeye uygula (isaretli degilse, secili ürünlere uygulanır)"
+                              IsChecked="{Binding IsTicketLevel}"/>
+                </StackPanel>
+
+                <!-- Buttons -->
+                <StackPanel Grid.Row="3"
+                            Orientation="Horizontal"
+                            HorizontalAlignment="Right">
+                    <FxButton:FlexButton Content="Iptal"
+                                         Width="80"
+                                         Margin="0,0,5,0"
+                                         Command="{Binding DiscountCancelCommand}"/>
+                    <FxButton:FlexButton Content="Uygula"
+                                         Width="80"
+                                         Command="{Binding DiscountOkCommand}"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

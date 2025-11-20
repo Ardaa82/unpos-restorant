@@ -150,10 +150,6 @@
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
 
-            <!-- Ticket note / lock handling -->
-            <FxButton:FlexButton Command="{Binding EditTicketNoteCommand}"
-                                 Content="{Binding EditTicketNoteCommand.Caption}"
-                                 Visibility="{Binding IsNothingSelected,Converter={StaticResource VisibilityConverter}}"/>
 
             <!-- Clearing handling -->
             <FxButton:FlexButton Command="{Binding ClearTicketContentsCommand}"
@@ -163,16 +159,16 @@
             <FxButton:FlexButton Command="{Binding DiscountCommand}"
                      Content="{Binding DiscountCommand.Caption}"
                      Visibility="{Binding IsTicketSelected,Converter={StaticResource VisibilityConverter}}"/>
-
+            <!-- Hold Ticket Handling -->
+            <FxButton:FlexButton Command="{Binding HoldTicketCommand}"
+                     Content="{Binding HoldTicketCaption}"
+                     Visibility="{Binding IsHoldButtonVisible,
+                                          Converter={StaticResource VisibilityConverter}}"/>
 
 
             <FxButton:FlexButton Command="{Binding RemoveTicketLockCommand}"
-                                 Content="{Binding RemoveTicketLockCommand.Caption}"
-                                 Visibility="{Binding IsNothingSelectedAndTicketLocked,Converter={StaticResource VisibilityConverter}}"/>
-
-
-
-
+                     Content="{Binding RemoveTicketLockCommand.Caption}"
+                     Visibility="{Binding IsNothingSelectedAndTicketLocked,Converter={StaticResource VisibilityConverter}}"/>
 
         </StackPanel>
     </Grid>
