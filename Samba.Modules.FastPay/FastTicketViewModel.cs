@@ -1,10 +1,12 @@
-﻿using Microsoft.Practices.Prism.Commands;
+﻿using FastPay.Presentation.ViewModels;      // FastTicketTotalsViewModel
+using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.Events;
 using Samba.Domain.Models.Automation;
 using Samba.Domain.Models.Entities;
 using Samba.Domain.Models.Menus;
 using Samba.Domain.Models.Tickets;
 using Samba.Localization.Properties;
+using Samba.Modules.FastPayModule;          // FastTicketOrdersViewModel, FastEntityButton, FastCommandContainerButton, FastTicketInfoViewModel
 using Samba.Modules.PosModule; // SelectedOrdersData, OrderViewModel vb. için
 using Samba.Presentation.Common;
 using Samba.Presentation.Common.Commands;
@@ -20,8 +22,8 @@ using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.Linq;
-using Samba.Modules.FastPayModule;          // FastTicketOrdersViewModel, FastEntityButton, FastCommandContainerButton, FastTicketInfoViewModel
-using FastPay.Presentation.ViewModels;      // FastTicketTotalsViewModel
+using Samba.Infrastructure.Data.Serializer;
+
 
 namespace Samba.Modules.FastPay
 {
@@ -36,8 +38,21 @@ namespace Samba.Modules.FastPay
         private readonly FastTicketOrdersViewModel _ticketOrdersViewModel;
         private readonly FastTicketTotalsViewModel _totals;
         private readonly FastTicketInfoViewModel _ticketInfo;
-        // FastPay için tek slotluk bekletilmiş bilet ID'si
-        private static int _heldTicketId;
+
+        // FastPay için tek slotluk bekletilmiş ticket snapshot'ı
+        private class HeldTicketSnapshot
+        {
+            public IList<Order> Orders { get; set; }
+            public string Note { get; set; }
+            public string TicketTags { get; set; }
+            public string TicketStates { get; set; }
+        }
+
+        private static HeldTicketSnapshot _heldTicket;
+
+        // FastPay için tek slotluk bekletilmiş ticket içeriği
+
+
         public CaptionCommand<string> MoveOrdersCommand { get; set; }
         public ICaptionCommand IncQuantityCommand { get; set; }
         public ICaptionCommand DecQuantityCommand { get; set; }
@@ -52,8 +67,10 @@ namespace Samba.Modules.FastPay
         public ICaptionCommand ModifyOrderCommand { get; set; }
         public ICaptionCommand ClearTicketContentsCommand { get; set; } // Belgeyi Kapat butonu
         public ICaptionCommand DiscountCommand { get; set; } // İskonto butonu
-
         public ICaptionCommand HoldTicketCommand { get; set; } // Belge Beklet / Belge Çağır
+
+
+
 
         public DelegateCommand<EntityType> SelectEntityCommand { get; set; }
         public DelegateCommand<FastCommandContainerButton> ExecuteAutomationCommnand { get; set; }
@@ -113,13 +130,15 @@ namespace Samba.Modules.FastPay
         public bool IsNothingSelectedAndTicketTagged => !SelectedOrders.Any() && SelectedTicket.IsTagged;
         public bool IsTicketSelected => SelectedTicket != Ticket.Empty;
 
-        public bool HasHeldTicket => _heldTicketId > 0;
+        // Bekletilmiş snapshot var mı?
+        public bool HasHeldTicket => _heldTicket != null && _heldTicket.Orders != null && _heldTicket.Orders.Any();
 
-        // Butonun metni: slot boşken Beklet, doluyken Çağır
+        // Butonun yazısı
         public string HoldTicketCaption => HasHeldTicket ? "Belge Çağır" : "Belge Beklet";
 
-        // Butonun görünürlüğü: ya aktif bilet varsa ya da bekletilmiş bilet varsa
+        // Buton görünsün mü?
         public bool IsHoldButtonVisible => HasHeldTicket || IsTicketSelected;
+
 
 
         public OrderViewModel LastSelectedOrder { get; set; }
@@ -222,9 +241,10 @@ namespace Samba.Modules.FastPay
             ChangePriceCommand = new CaptionCommand<string>(Resources.ChangePrice, OnChangePrice, CanChangePrice);
             AddOrderCommand = new CaptionCommand<string>(Resources.AddOrder.Replace(" ", Environment.NewLine), OnAddOrder, CanAddOrder);
             ModifyOrderCommand = new CaptionCommand<string>(Resources.ModifyOrder.Replace(" ", Environment.NewLine), OnModifyOrder, CanModifyOrder);
-            ClearTicketContentsCommand = new CaptionCommand<string>("Belgeyi Kapat", OnClearTicketContents, CanClearTicketContents);
+            ClearTicketContentsCommand = new CaptionCommand<string>("Belge İptal", OnClearTicketContents, CanClearTicketContents);
             DiscountCommand = new CaptionCommand<string>("İskonto", OnApplyDiscount, CanApplyDiscount);
             HoldTicketCommand = new CaptionCommand<string>("Belge Beklet", OnHoldOrRecallTicket, CanHoldOrRecallTicket);
+
 
             EventServiceFactory.EventService.GetEvent<GenericEvent<OrderViewModel>>().Subscribe(OnSelectedOrdersChanged);
             EventServiceFactory.EventService.GetEvent<GenericEvent<EventAggregator>>().Subscribe(OnRefreshTicket);
@@ -240,12 +260,13 @@ namespace Samba.Modules.FastPay
         {
             if (!_applicationState.IsFastPayMode) return false;
 
-            // Slot boşsa: bekletmek için geçerli bir ticket lazım
+            // Slot boşsa: bekletmek için dolu bir ticket lazım
             if (!HasHeldTicket)
             {
                 return SelectedTicket != null
                        && SelectedTicket != Ticket.Empty
-                       && !SelectedTicket.IsClosed;
+                       && !SelectedTicket.IsClosed
+                       && SelectedTicket.GetItemCount() > 0;
             }
 
             // Slot doluyken: her durumda çağırabilsin
@@ -254,22 +275,37 @@ namespace Samba.Modules.FastPay
 
         private void OnHoldOrRecallTicket(string obj)
         {
-            // Slot boş -> BEKLET
+            // SLOT BOŞ -> BEKLET
             if (!HasHeldTicket)
             {
-                if (SelectedTicket == null || SelectedTicket == Ticket.Empty)
-                {
-                    InteractionService.UserIntraction.GiveFeedback("Bekletilecek bir belge yok.");
-                    return;
-                }
+                if (!CanHoldOrRecallTicket(obj)) return;
 
-                if (SelectedTicket.Id <= 0)
-                {
-                    InteractionService.UserIntraction.GiveFeedback("Bu belgenin henüz numarası yok, önce kaydedin.");
-                    return;
-                }
+                // Snapshot al
+                var clonedOrders = SelectedTicket.Orders
+                    .Select(o =>
+                    {
+                        var c = ObjectCloner.Clone(o);
+                        c.Id = 0;
+                        c.ResetSelectedQuantity();
+                        return c;
+                    })
+                    .ToList();
 
-                _heldTicketId = SelectedTicket.Id;
+                _heldTicket = new HeldTicketSnapshot
+                {
+                    Orders = clonedOrders,
+                    Note = SelectedTicket.Note,
+                    TicketTags = SelectedTicket.TicketTags,
+                    TicketStates = SelectedTicket.TicketStates
+                };
+
+                // Mevcut ticket'ı BOŞALT
+                SelectedTicket.RemoveData();
+                _ticketService.RecalculateTicket(SelectedTicket);
+
+                // UI'YI YENİLE
+                RefreshSelectedOrders(); // ← 1. adımda düzelttiğimiz metod
+
                 InteractionService.UserIntraction.GiveFeedback("Belge bekletildi.");
 
                 RaisePropertyChanged(() => HoldTicketCaption);
@@ -278,29 +314,47 @@ namespace Samba.Modules.FastPay
                 return;
             }
 
-            // Slot dolu -> ÇAĞIR
-            var ticket = _ticketService.OpenTicket(_heldTicketId);
-            if (ticket == null || ticket == Ticket.Empty)
+
+            // SLOT DOLU -> ÇAĞIR
+            var snapshot = _heldTicket;
+            _heldTicket = null;
+
+            if (snapshot == null || snapshot.Orders == null || !snapshot.Orders.Any())
             {
                 InteractionService.UserIntraction.GiveFeedback("Bekletilen belge bulunamadı.");
-                _heldTicketId = 0;
                 RaisePropertyChanged(() => HoldTicketCaption);
                 RaisePropertyChanged(() => IsHoldButtonVisible);
                 (HoldTicketCommand as CaptionCommand<string>)?.RaiseCanExecuteChanged();
                 return;
             }
 
-            SelectedTicket = ticket;
-            RefreshSelectedTicketTitle();
-            RefreshVisuals();
+            // Önce mevcut ticket'ı boşalt
+            SelectedTicket.RemoveData();
 
-            _heldTicketId = 0;
+            // Snapshot'tan siparişleri geri koy
+            foreach (var order in snapshot.Orders)
+            {
+                var o = ObjectCloner.Clone(order);
+                o.Id = 0;
+                o.ResetSelectedQuantity();
+                SelectedTicket.Orders.Add(o);
+            }
+
+            SelectedTicket.Note = snapshot.Note;
+            SelectedTicket.TicketTags = snapshot.TicketTags;
+            SelectedTicket.TicketStates = snapshot.TicketStates;
+
+            _ticketService.RecalculateTicket(SelectedTicket);
+
+            // UI'YI YENİLE
+            RefreshSelectedOrders();   // ← yine bu
+
+            InteractionService.UserIntraction.GiveFeedback("Bekletilen belge çağrıldı.");
+
             RaisePropertyChanged(() => HoldTicketCaption);
             RaisePropertyChanged(() => IsHoldButtonVisible);
             (HoldTicketCommand as CaptionCommand<string>)?.RaiseCanExecuteChanged();
         }
-
-
 
 
         private bool CanModifyOrder(string arg)
@@ -928,8 +982,15 @@ namespace Samba.Modules.FastPay
 
         private void RefreshSelectedOrders()
         {
+            // Önce Orders VM’e hangi ticket ile çalışacağını tekrar söyle
+            _ticketOrdersViewModel.SelectedTicket = SelectedTicket;
+
+            // Orders grid’i, SelectedTicket.Orders’tan yeniden kur
             _ticketOrdersViewModel.RefreshSelectedOrders();
+
+            // Totaller, tag butonları, komutlar, selection vs. hepsini yenile
             RefreshVisuals();
         }
+
     }
 }

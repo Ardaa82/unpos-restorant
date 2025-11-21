@@ -64,10 +64,11 @@ namespace Samba.Modules.InventoryModule
 
         protected override bool CanSave(string arg)
         {
-            return !_applicationState.IsCurrentWorkPeriodOpen && SelectedWarehouseConsumption != null
+            return SelectedWarehouseConsumption != null
                 && SelectedWarehouseConsumption.PeriodicConsumptionItems.Count > 0
-                && Model.WorkPeriodId == _applicationState.CurrentWorkPeriod.Id && base.CanSave(arg);
+                && base.CanSave(arg);
         }
+
 
         private void OnUpdateCalculation(string obj)
         {

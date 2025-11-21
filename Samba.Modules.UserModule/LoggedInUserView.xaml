@@ -6,11 +6,11 @@
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="auto" />
         </Grid.ColumnDefinitions>
-        <StackPanel Grid.Column="0" Margin="0,0,5,2" >
+        <StackPanel Grid.Column="0" Margin="0,0,8,8" >
             <TextBlock Text="{LocText User, Suffix=':'}" HorizontalAlignment="Left" VerticalAlignment="Center" />
             <TextBlock Text="{Binding Path=LoggedInUserName}" HorizontalAlignment="Left" VerticalAlignment="Center" />
         </StackPanel>
-        <FlexButton:FlexButton Focusable="False" Grid.Column="2" Width="70" Content="{LocText MainMenu}"
+        <FlexButton:FlexButton Focusable="False" Grid.Column="2" Width="80" Content="{LocText MainMenu}"
              Command="{Binding Path=LogoutUserCommand}" />
     </Grid>
 </UserControl>

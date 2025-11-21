@@ -78,10 +78,12 @@ namespace Samba.Modules.NavigationModule
                 Activate();
                 ((NavigationViewModel)_navigationView.DataContext).Refresh();
             }
-            else if (_applicationState.IsCurrentWorkPeriodOpen)
+            else
             {
                 EventServiceFactory.EventService.PublishEvent(EventTopicNames.ActivatePosView);
             }
+
         }
+
     }
 }

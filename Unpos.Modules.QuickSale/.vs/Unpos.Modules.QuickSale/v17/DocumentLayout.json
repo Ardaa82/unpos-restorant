@@ -1,0 +1,37 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\Admin\\Desktop\\UNPOS_V01\\Unpos.Modules.QuickSale\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{6A2949A5-CE7D-470C-B1BA-0FC7AD472BF0}|Unpos.Modules.QuickSale.csproj|c:\\users\\admin\\desktop\\unpos_v01\\unpos.modules.quicksale\\ticketviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6A2949A5-CE7D-470C-B1BA-0FC7AD472BF0}|Unpos.Modules.QuickSale.csproj|solutionrelative:ticketviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "TicketViewModel.cs",
+              "DocumentMoniker": "C:\\Users\\Admin\\Desktop\\UNPOS_V01\\Unpos.Modules.QuickSale\\TicketViewModel.cs",
+              "RelativeDocumentMoniker": "TicketViewModel.cs",
+              "ToolTip": "C:\\Users\\Admin\\Desktop\\UNPOS_V01\\Unpos.Modules.QuickSale\\TicketViewModel.cs",
+              "RelativeToolTip": "TicketViewModel.cs",
+              "ViewState": "AgIAAAUAAAAAAAAAAAAMwBEAAAApAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-17T11:29:24.965Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

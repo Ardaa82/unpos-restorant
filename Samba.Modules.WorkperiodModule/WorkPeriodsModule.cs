@@ -22,7 +22,7 @@ namespace Samba.Modules.WorkperiodModule
         }
 
         [ImportingConstructor]
-        public WorkPeriodsModule(IRegionManager regionManager, WorkPeriodsView workPeriodsView,IUserService userService)
+        public WorkPeriodsModule(IRegionManager regionManager, WorkPeriodsView workPeriodsView, IUserService userService)
             : base(regionManager, AppScreens.WorkPeriods)
         {
             _regionManager = regionManager;

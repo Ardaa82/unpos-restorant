@@ -9,17 +9,13 @@
              d:DataContext="{d:DesignInstance local:NavigationViewModel, IsDesignTimeCreatable=True}">
     <Grid>
 
-        <Border Opacity="0.5">
-            <Border.Background>
-                <ImageBrush ImageSource="Images/Wallpaper3.jpg" />
-            </Border.Background>
-        </Border>
 
-        <Border Background="#397A7779" Margin="25" BorderThickness="5" BorderBrush="#6930C7B5" CornerRadius="15">
+
+        <Border Background="#397A7779" Margin="15" BorderThickness="1" BorderBrush="#6930C7B5" CornerRadius="15">
 
         </Border>
 
-        <ItemsControl Margin="40" ItemsSource="{Binding CategoryView}">
+        <ItemsControl Margin="20" ItemsSource="{Binding CategoryView}">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <UniformGrid Columns="4"/>
@@ -27,26 +23,26 @@
             </ItemsControl.ItemsPanel>
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <Button Name="btn" Command="{Binding}" Margin="10">
+                    <Button Name="btn" Command="{Binding}" Margin="5">
                         <Button.Style>
                             <Style TargetType="{x:Type Button}">
                                 <Setter Property="Template">
                                     <Setter.Value>
                                         <ControlTemplate TargetType="{x:Type Button}">
                                             <Grid x:Name="ContentGrid">
-                                                <Border BorderBrush="#270C0C41" BorderThickness="5" CornerRadius="8">
+                                                <Border BorderBrush="#270C0C41" BorderThickness="1" CornerRadius="8">
                                                     <Border.Background>
                                                         <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                                                            <GradientStop Color="#6930C7B5" Offset="0" />
-                                                            <GradientStop Color="#FF0C2258" Offset="1" />
+                                                            <GradientStop Color="white" Offset="0" />
+                                                            <GradientStop Color="#004EFF" Offset="1" />
                                                         </LinearGradientBrush>
                                                     </Border.Background>
                                                 </Border>
-                                                <Border Margin="5" BorderThickness="1" CornerRadius="5" Background="Transparent">
+                                                <Border Margin="5" BorderThickness="1" CornerRadius="1" Background="Transparent">
                                                     <Border.BorderBrush>
                                                         <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                                                            <GradientStop Color="#6930C7B5" Offset="0" />
-                                                            <GradientStop Color="#FF0C2258" Offset="1" />
+                                                            <GradientStop Color="white" Offset="0" />
+                                                            <GradientStop Color="#004EFF" Offset="1" />
                                                         </LinearGradientBrush>
                                                     </Border.BorderBrush>
                                                 </Border>

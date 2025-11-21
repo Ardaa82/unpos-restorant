@@ -1609,7 +1609,7 @@ Gizlemek için pin kodunu değiştirin</value>
     <value>Küçüktür</value>
   </data>
   <data name="Tickets" xml:space="preserve">
-    <value>Adisyonlar</value>
+    <value>Satış Fişleri</value>
   </data>
   <data name="EntityStateUpdated" xml:space="preserve">
     <value>Varlık Durumu Güncellendi</value>

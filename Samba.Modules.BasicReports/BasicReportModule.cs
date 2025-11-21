@@ -54,8 +54,7 @@ namespace Samba.Modules.BasicReports
 
         protected override bool CanNavigate(string arg)
         {
-            return (_userService.IsUserPermittedFor(PermissionNames.OpenReports)
-                && ReportContext.ApplicationState.CurrentWorkPeriod != null);
+            return _userService.IsUserPermittedFor(PermissionNames.OpenReports);
         }
 
         protected override void OnNavigate(string obj)

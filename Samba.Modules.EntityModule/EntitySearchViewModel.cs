@@ -306,10 +306,11 @@ namespace Samba.Modules.EntityModule
         {
             return
                 SelectedEntity != null
-                && _applicationState.IsCurrentWorkPeriodOpen
                 && _applicationState.CurrentDepartment != null
                 && !string.IsNullOrEmpty(SelectedEntity.Name);
         }
+
+
 
         private void OnSelectEntity(string obj)
         {

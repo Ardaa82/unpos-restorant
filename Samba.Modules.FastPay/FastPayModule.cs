@@ -37,7 +37,7 @@ namespace Samba.Modules.FastPayModule
             FastTicketTypeListView ticketTypeListView)
             : base(regionManager, AppScreens.FastPayView)
         {
-            SetNavigationCommand(Resources.FastPay, Resources.Common, "Images/sepet512.png", 80);
+            SetNavigationCommand(Resources.FastPay, Resources.Common, "Images/sepet512.png", 20);
 
             _fastPayView = fastPayView;
             _menuItemSelectorView = menuItemSelectorView;
@@ -88,10 +88,6 @@ namespace Samba.Modules.FastPayModule
             _regionManager.RegisterViewWithRegion(RegionNames.FastTicketTotalsRegion, typeof(FastTicketTotalsView));
         }
 
-        protected override bool CanNavigate(string arg)
-        {
-            return _applicationState.IsCurrentWorkPeriodOpen;
-        }
 
         protected override void OnNavigate(string obj)
         {

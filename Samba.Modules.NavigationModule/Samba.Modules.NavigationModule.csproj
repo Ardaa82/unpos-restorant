@@ -149,6 +149,12 @@
   <ItemGroup>
     <Resource Include="Images\depo512.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\satisFisleri512.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\hesaplar512.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>IF NOT "$(ConfigurationName)"=="Release" GOTO End

@@ -86,8 +86,9 @@ namespace Samba.Modules.InventoryModule
 
         protected override bool CanSave(string arg)
         {
-            return _applicationState.IsCurrentWorkPeriodOpen && _applicationState.CurrentWorkPeriod.StartDate < Model.Date && base.CanSave(arg);
+            return base.CanSave(arg);
         }
+
 
         private void OnAddTransactionItem(string obj)
         {
@@ -158,10 +159,7 @@ namespace Samba.Modules.InventoryModule
     {
         public TransactionValidator(IApplicationState applicationState)
         {
-            var startDate = applicationState.IsCurrentWorkPeriodOpen
-                                ? applicationState.CurrentWorkPeriod.StartDate
-                                : DateTime.Now;
-            RuleFor(x => x.Date).GreaterThan(startDate);
+            RuleFor(x => x.Date).NotNull();
             RuleFor(x => x.TransactionItems).Must(x => x.Count > 0).WithMessage(Resources.TransactionsEmptyError)
             .Must(x => x.Count(y => y.Quantity == 0) == 0).WithMessage(Resources.TranactionsZeroQuantityError)
             .Must(x => x.Count(y => y.Multiplier == 0) == 0).WithMessage(Resources.TransactionMultiplierError)

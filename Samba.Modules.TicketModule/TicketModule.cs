@@ -54,7 +54,7 @@ namespace Samba.Modules.TicketModule
             PermissionRegistry.RegisterPermission(PermissionNames.ChangeExtraProperty, PermissionCategories.Ticket, Resources.CanUpdateExtraModifiers);
             PermissionRegistry.RegisterPermission(PermissionNames.DisplayOtherWaitersTickets, PermissionCategories.Ticket, Resources.CanDisplayOtherWaitersTickets);
 
-            SetNavigationCommand(Resources.Tickets, Resources.Common, "Images/adisyonlar.png", 20);
+            SetNavigationCommand(Resources.Tickets, Resources.Common, "Images/satisFisleri512.png", 20);
 
             ticketExplorerView.DataContext = ticketExplorerViewModel;
         }

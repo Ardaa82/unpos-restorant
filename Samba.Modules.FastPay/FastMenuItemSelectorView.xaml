@@ -5,9 +5,52 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:FxButton="clr-namespace:FlexButton;assembly=FlexButton"
              xmlns:UIControls="clr-namespace:Samba.Presentation.Controls.UIControls;assembly=Samba.Presentation.Controls"
-             mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300">
+             mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
+             
+             >
 
-	<Grid>
+    <UserControl.Resources>
+        <Style x:Key="CategoryButtonStyle" TargetType="{x:Type FxButton:FlexButton}">
+            <Setter Property="BorderBrush" Value="#333"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="10"/>
+
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type FxButton:FlexButton}">
+                        <Border 
+                        x:Name="border"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="0">
+
+                            <ContentPresenter 
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"/>
+                        </Border>
+
+                        <ControlTemplate.Triggers>
+                            <!-- Hover -->
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#626069"/>
+                                <Setter TargetName="border" Property="BorderBrush" Value="#626069"/>
+                            </Trigger>
+
+                            <!-- Pressed -->
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#626069"/>
+                                <Setter TargetName="border" Property="BorderBrush" Value="#666"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+
+    <Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="auto" />
 			<RowDefinition Height="*" />
@@ -48,7 +91,6 @@
 			<!-- Kategoriler -->
 			<ScrollViewer Grid.RowSpan="4"
                           Grid.Column="0"
-                          Margin="3,0,4,1"
                           UIControls:KineticBehaviour.HandleKineticScrolling="True"
                           VerticalScrollBarVisibility="Auto">
 				<ItemsControl ItemsSource="{Binding Categories,NotifyOnTargetUpdated=True}"
@@ -62,12 +104,12 @@
 					<ItemsControl.ItemTemplate>
 						<DataTemplate>
 							<FxButton:FlexButton FontSize="{Binding FontSize}"
+                                                    Style="{StaticResource CategoryButtonStyle}"
                                                  Content="{Binding Caption}"
                                                  Focusable="False"
                                                  Command="{Binding ButtonCommand}"
                                                  CommandParameter="{Binding Category}"
                                                  Height="{Binding MButtonHeight}"
-                                                 Margin="0,1,1,1"
                                                  ButtonImage="{Binding ImagePath}"
                                                  ButtonColor="{Binding MButtonColor,Converter={StaticResource NullBrushConverter}}" />
 						</DataTemplate>
@@ -305,7 +347,7 @@
                                          Grid.Row="0"
                                          Content="C"
                                          Command="{Binding ClearNumeratorCommand}"
-                                         Margin="2,0,0,2"
+                                         Margin="2"
                                          Focusable="False" />
 				</Grid>
 
@@ -317,29 +359,29 @@
                              Columns="3"
                              Grid.ColumnSpan="2">
 					<FxButton:FlexButton Content="1" Command="{Binding TypeValueCommand}" CommandParameter="1"
-                                         Margin="0,0,2,2" Focusable="False" />
+                                          Focusable="False" />
 					<FxButton:FlexButton Content="2" Command="{Binding TypeValueCommand}" CommandParameter="2"
-                                         Margin="0,0,2,2" Focusable="False" />
+                                          Focusable="False" />
 					<FxButton:FlexButton Content="3" Command="{Binding TypeValueCommand}" CommandParameter="3"
-                                         Margin="0,0,2,2" Focusable="False" />
+                                          Focusable="False" />
 					<FxButton:FlexButton Content="4" Command="{Binding TypeValueCommand}" CommandParameter="4"
-                                         Margin="0,0,2,2" Focusable="False" />
+                                          Focusable="False" />
 					<FxButton:FlexButton Content="5" Command="{Binding TypeValueCommand}" CommandParameter="5"
-                                         Margin="0,0,2,2" Focusable="False" />
+                                          Focusable="False" />
 					<FxButton:FlexButton Content="6" Command="{Binding TypeValueCommand}" CommandParameter="6"
-                                         Margin="0,0,2,2" Focusable="False" />
+                                          Focusable="False" />
 					<FxButton:FlexButton Content="7" Command="{Binding TypeValueCommand}" CommandParameter="7"
-                                         Margin="0,0,2,2" Focusable="False" />
+                                          Focusable="False" />
 					<FxButton:FlexButton Content="8" Command="{Binding TypeValueCommand}" CommandParameter="8"
-                                         Margin="0,0,2,2" Focusable="False" />
+                                          Focusable="False" />
 					<FxButton:FlexButton Content="9" Command="{Binding TypeValueCommand}" CommandParameter="9"
-                                         Margin="0,0,2,2" Focusable="False" />
+                                          Focusable="False" />
 					<FxButton:FlexButton Content="," Command="{Binding TypeValueCommand}" CommandParameter=","
-                                         Margin="0,0,2,2" Focusable="False" />
+                                          Focusable="False" />
 					<FxButton:FlexButton Content="0" Command="{Binding TypeValueCommand}" CommandParameter="0"
-                                         Margin="0,0,2,2" Focusable="False" />
+                                          Focusable="False" />
 					<FxButton:FlexButton Content="x" Command="{Binding TypeValueCommand}" CommandParameter="x"
-                                         Margin="0,0,2,2" Focusable="False" />
+                                          Focusable="False" />
 				</UniformGrid>
 
 				<!-- Alfa tuşları -->

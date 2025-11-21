@@ -54,7 +54,7 @@ namespace Samba.Modules.AccountModule
             PermissionRegistry.RegisterPermission(PermissionNames.NavigateAccountView, PermissionCategories.Navigation, Resources.CanNavigateCash);
             PermissionRegistry.RegisterPermission(PermissionNames.CreateAccount, PermissionCategories.Account, Resources.CanCreateAccount);
 
-            SetNavigationCommand(Resources.Accounts, Resources.Common, "Images/hesaplar.png", 30);
+            SetNavigationCommand(Resources.Accounts, Resources.Common, "Images/hesaplar512.png", 30);
         }
 
         protected override void OnInitialization()
@@ -129,8 +129,9 @@ namespace Samba.Modules.AccountModule
 
         protected override bool CanNavigate(string arg)
         {
-            return _userService.IsUserPermittedFor(PermissionNames.NavigateAccountView) && _applicationState.CurrentWorkPeriod != null;
+            return _userService.IsUserPermittedFor(PermissionNames.NavigateAccountView);
         }
+
 
         protected override void OnNavigate(string obj)
         {

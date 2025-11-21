@@ -94,7 +94,7 @@
                                 <ItemsControl ItemsSource="{Binding Details}" BorderThickness="0" Background="Transparent"/>
                             </ScrollViewer>
                         </Border>
-                        <UniformGrid Rows="2" Grid.Column="1">
+                        <UniformGrid Margin="8" Grid.Column="1">
                             <FlexButton:FlexButton 
                                 Command="{Binding DataContext.DisplayTicketCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ItemsControl}}}" 
                                 Content="{Binding DataContext.DisplayTicketCommand.Caption,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ItemsControl}}}"/>

@@ -70,11 +70,6 @@ namespace Samba.Modules.PosModule
             _regionManager.RegisterViewWithRegion(RegionNames.TicketTotalsRegion, typeof(TicketTotalsView));
         }
 
-        protected override bool CanNavigate(string arg)
-        {
-            return _applicationState.IsCurrentWorkPeriodOpen;
-        }
-
         protected override void OnNavigate(string obj)
         {
             base.OnNavigate(obj);

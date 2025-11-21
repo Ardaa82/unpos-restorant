@@ -35,11 +35,9 @@ namespace Samba.Modules.InventoryModule
 
         protected override string CanDeleteItem(PeriodicConsumption model)
         {
-            if (model.WorkPeriodId != _applicationState.CurrentWorkPeriod.Id
-                || !_applicationState.IsCurrentWorkPeriodOpen)
-                return Resources.CantDeletePastEndOfDayRecords;
             return base.CanDeleteItem(model);
         }
+
 
         //protected override System.Collections.Generic.IEnumerable<PeriodicConsumption> SelectItems()
         //{

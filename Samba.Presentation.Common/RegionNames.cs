@@ -1,6 +1,4 @@
-﻿using System.Net.NetworkInformation;
-
-namespace Samba.Presentation.Common
+﻿namespace Samba.Presentation.Common
 {
     public static class RegionNames
     {
@@ -22,13 +20,11 @@ namespace Samba.Presentation.Common
         public const string PaymentTotalsRegion = "PaymentTotalsRegion";
         public const string PaymentTenderedValueRegion = "PaymentTenderedValueRegion";
 
-
-
-        public static string FastPayMainRegion = "FastPayMainRegion";
-        public static string FastPaySubRegion = "FastPaySubRegion";
-        public static string FastTicketOrdersRegion = "FastTicketOrdersRegion";
-        public static string FastTicketInfoRegion = "FastTicketInfoRegion";
-        public static string FastTicketTotalsRegion = "FastTicketTotalsRegion";
-
+        // Hızlı satış:
+        public const string FastPayMainRegion = "FastPayMainRegion";
+        public const string FastPaySubRegion = "FastPaySubRegion";
+        public const string FastTicketOrdersRegion = "FastTicketOrdersRegion";
+        public const string FastTicketInfoRegion = "FastTicketInfoRegion";
+        public const string FastTicketTotalsRegion = "FastTicketTotalsRegion";
     }
 }

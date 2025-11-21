@@ -116,7 +116,6 @@ namespace Samba.Presentation
             }
 
             var rm = Container.GetExportedValue<IRegionManager>();
-            rm.RegisterViewWithRegion("MessageRegion", typeof(WorkPeriodStatusView));
             rm.RegisterViewWithRegion("MessageRegion", typeof(MessageClientStatusView));
 
             Application.Current.MainWindow = (Shell)Shell;

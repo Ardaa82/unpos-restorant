@@ -68,8 +68,9 @@ namespace Samba.Modules.DepartmentModule
 
         public bool CanChangeDepartment
         {
-            get { return !_applicationState.IsLocked && _applicationState.IsCurrentWorkPeriodOpen; }
+            get { return !_applicationState.IsLocked; }
         }
+
 
         private void OnWorkPeriodChanged(EventParameters<WorkPeriod> obj)
         {
