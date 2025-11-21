@@ -302,6 +302,9 @@ namespace Samba.Modules.FastPay
                 // Mevcut ticket'ı BOŞALT
                 SelectedTicket.RemoveData();
                 _ticketService.RecalculateTicket(SelectedTicket);
+                SelectedTicket = SelectedTicket;   // setter yeniden çalışsın
+                RefreshVisuals();                  // _totals.Refresh + diğer property changed
+                ClearSelectedItems();              // eski seçimler temizlensin (opsiyonel ama mantıklı)
 
                 // UI'YI YENİLE
                 RefreshSelectedOrders(); // ← 1. adımda düzelttiğimiz metod
@@ -348,6 +351,9 @@ namespace Samba.Modules.FastPay
 
             // UI'YI YENİLE
             RefreshSelectedOrders();   // ← yine bu
+            SelectedTicket = SelectedTicket;   // setter yeniden çalışsın
+            RefreshVisuals();                  // _totals.Refresh + diğer property changed
+            ClearSelectedItems();              // eski seçimler temizlensin (opsiyonel ama mantıklı)
 
             InteractionService.UserIntraction.GiveFeedback("Bekletilen belge çağrıldı.");
 

@@ -65,39 +65,45 @@
 
 
 
-    <Grid Name="MainGrid" Margin="3,0,0,0" >
+    <Grid Name="MainGrid" Margin="3,0,0,0">
         <Grid.RowDefinitions>
-            <RowDefinition Height="auto"/>
+            <RowDefinition Height="Auto"/>
+            <!-- 0: Title -->
             <RowDefinition Height="8*"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
+            <!-- 1: Orders -->
+            <RowDefinition Height="Auto"/>
+            <!-- 2: Info -->
+            <RowDefinition Height="Auto"/>
+            <!-- 3: Totals -->
+            <RowDefinition Height="Auto"/>
+            <!-- 4: Payments row 1 -->
+            <RowDefinition Height="Auto"/>
+            <!-- 5: Payments row 2 -->
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Name="Column1" Width="2*" />
             <ColumnDefinition Name="Column2" Width="17*" />
         </Grid.ColumnDefinitions>
 
-        <!--TITLE AREA-->
+        <!-- TITLE AREA -->
         <Label Name="TitleLabel" Grid.Row="0" Grid.Column="1" Content="{Binding SelectedTicketTitle}" Margin="0,0,3,0"
-               FontWeight="Bold" FontSize="18" Background="DarkGray" Foreground="WhiteSmoke" BorderThickness="0"/>
+           FontWeight="Bold" FontSize="18" Background="DarkGray" Foreground="WhiteSmoke" BorderThickness="0"/>
 
-        <!--ORDERS AREA-->
+        <!-- ORDERS AREA -->
         <ContentControl Grid.Row="1" Grid.Column="1" Margin="0,0,3,0"
-                        cal:RegionManager.RegionName="{x:Static cmn:RegionNames.FastTicketOrdersRegion}"/>
+                    cal:RegionManager.RegionName="{x:Static cmn:RegionNames.FastTicketOrdersRegion}"/>
 
-        <!--TICKET INFO AREA-->
+        <!-- TICKET INFO AREA -->
         <ContentControl Grid.Row="2" Grid.Column="1" Margin="0,0,3,0"
-                        cal:RegionManager.RegionName="{x:Static cmn:RegionNames.FastTicketInfoRegion}" Grid.RowSpan="4"/>
+                    cal:RegionManager.RegionName="{x:Static cmn:RegionNames.FastTicketInfoRegion}"/>
 
-        <!--TICKET TOTALS AREA-->
+        <!-- TICKET TOTALS AREA -->
         <ContentControl Grid.Row="3" Grid.Column="1" Margin="0,0,3,0"
-                        cal:RegionManager.RegionName="{x:Static cmn:RegionNames.FastTicketTotalsRegion}" Grid.RowSpan="3"/>
+                    cal:RegionManager.RegionName="{x:Static cmn:RegionNames.FastTicketTotalsRegion}"/>
 
-        <!--PAYMENT BUTTONS AREA (ROW 1)-->
+        <!-- PAYMENT BUTTONS AREA (ROW 1) -->
         <ItemsControl Grid.Row="4" Grid.Column="1"
-                      ItemsSource="{Binding UnderTicketAutomationCommands,NotifyOnTargetUpdated=True}" Grid.RowSpan="2">
+                  ItemsSource="{Binding UnderTicketAutomationCommands,NotifyOnTargetUpdated=True}">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <UniformGrid Rows="1"/>
@@ -106,18 +112,18 @@
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <FxButton:FlexButton Height="65" Margin="0,0,3,3"
-                                         Command="{Binding DataContext.ExecuteAutomationCommnand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ItemsControl}}}"
-                                         CommandParameter="{Binding .}" Content="{Binding Display}"
-                                         FontSize="{Binding FontSize}"
-                                         ButtonColor="{Binding Color,Converter={StaticResource NullBrushConverter}}"
-                                         Visibility="{Binding IsVisible,Converter={StaticResource VisibilityConverter}}"/>
+                                     Command="{Binding DataContext.ExecuteAutomationCommnand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ItemsControl}}}"
+                                     CommandParameter="{Binding .}" Content="{Binding Display}"
+                                     FontSize="{Binding FontSize}"
+                                     ButtonColor="{Binding Color,Converter={StaticResource NullBrushConverter}}"
+                                     Visibility="{Binding IsVisible,Converter={StaticResource VisibilityConverter}}"/>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>
 
-        <!--PAYMENT BUTTONS AREA (ROW 2)-->
+        <!-- PAYMENT BUTTONS AREA (ROW 2) -->
         <ItemsControl Grid.Row="5" Grid.Column="1"
-                      ItemsSource="{Binding UnderTicketRow2AutomationCommands,NotifyOnTargetUpdated=True}">
+                  ItemsSource="{Binding UnderTicketRow2AutomationCommands,NotifyOnTargetUpdated=True}">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <UniformGrid Rows="1"/>
@@ -126,22 +132,21 @@
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <FxButton:FlexButton Height="65" Margin="0,0,3,3"
-                                         Command="{Binding DataContext.ExecuteAutomationCommnand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ItemsControl}}}"
-                                         CommandParameter="{Binding .}" Content="{Binding Display}"
-                                         FontSize="{Binding FontSize}"
-                                         ButtonColor="{Binding Color,Converter={StaticResource NullBrushConverter}}"
-                                         Visibility="{Binding IsVisible,Converter={StaticResource VisibilityConverter}}"/>
+                                     Command="{Binding DataContext.ExecuteAutomationCommnand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ItemsControl}}}"
+                                     CommandParameter="{Binding .}" Content="{Binding Display}"
+                                     FontSize="{Binding FontSize}"
+                                     ButtonColor="{Binding Color,Converter={StaticResource NullBrushConverter}}"
+                                     Visibility="{Binding IsVisible,Converter={StaticResource VisibilityConverter}}"/>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>
 
-        <!--COMMAND BUTTONS AREA-->
+        <!-- COMMAND BUTTONS AREA -->
         <StackPanel Name="CommandButtonsColumn"
-            Grid.Column="0"
-            Grid.Row="0"
-            Grid.RowSpan="7"
-            VerticalAlignment="Top"
-            Height="880">
+                Grid.Column="0"
+                Grid.Row="0"
+                Grid.RowSpan="6"
+                VerticalAlignment="Top">
 
             <StackPanel.Resources>
                 <Style TargetType="FxButton:FlexButton">

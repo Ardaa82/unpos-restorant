@@ -3,12 +3,12 @@
   "WorkspaceRootPath": "C:\\Users\\Admin\\Desktop\\unpos-resto\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{6B09228C-C411-4E88-A8FE-A2E2C4D513F7}|Samba.Modules.FastPay\\Samba.Modules.FastpayModule.csproj|c:\\users\\admin\\desktop\\unpos-resto\\samba.modules.fastpay\\fastticketviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{6B09228C-C411-4E88-A8FE-A2E2C4D513F7}|Samba.Modules.FastPay\\Samba.Modules.FastpayModule.csproj|solutionrelative:samba.modules.fastpay\\fastticketviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{6B09228C-C411-4E88-A8FE-A2E2C4D513F7}|Samba.Modules.FastPay\\Samba.Modules.FastpayModule.csproj|C:\\Users\\Admin\\Desktop\\unpos-resto\\samba.modules.fastpay\\fastticketview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
       "RelativeMoniker": "D:0:0:{6B09228C-C411-4E88-A8FE-A2E2C4D513F7}|Samba.Modules.FastPay\\Samba.Modules.FastpayModule.csproj|solutionrelative:samba.modules.fastpay\\fastticketview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6B09228C-C411-4E88-A8FE-A2E2C4D513F7}|Samba.Modules.FastPay\\Samba.Modules.FastpayModule.csproj|c:\\users\\admin\\desktop\\unpos-resto\\samba.modules.fastpay\\fastticketviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6B09228C-C411-4E88-A8FE-A2E2C4D513F7}|Samba.Modules.FastPay\\Samba.Modules.FastpayModule.csproj|solutionrelative:samba.modules.fastpay\\fastticketviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -18,28 +18,29 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 0,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 0,
               "Title": "FastTicketView.xaml",
               "DocumentMoniker": "C:\\Users\\Admin\\Desktop\\unpos-resto\\Samba.Modules.FastPay\\FastTicketView.xaml",
               "RelativeDocumentMoniker": "Samba.Modules.FastPay\\FastTicketView.xaml",
               "ToolTip": "C:\\Users\\Admin\\Desktop\\unpos-resto\\Samba.Modules.FastPay\\FastTicketView.xaml",
               "RelativeToolTip": "Samba.Modules.FastPay\\FastTicketView.xaml",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2025-11-21T13:00:17.714Z"
+              "WhenOpened": "2025-11-21T13:00:17.714Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "FastTicketViewModel.cs",
               "DocumentMoniker": "C:\\Users\\Admin\\Desktop\\unpos-resto\\Samba.Modules.FastPay\\FastTicketViewModel.cs",
               "RelativeDocumentMoniker": "Samba.Modules.FastPay\\FastTicketViewModel.cs",
               "ToolTip": "C:\\Users\\Admin\\Desktop\\unpos-resto\\Samba.Modules.FastPay\\FastTicketViewModel.cs",
               "RelativeToolTip": "Samba.Modules.FastPay\\FastTicketViewModel.cs",
-              "ViewState": "AgIAAHADAAAAAAAAAAAzwGQBAAAJAAAAAAAAAA==",
+              "ViewState": "AgIAAD8BAAAAAAAAAAAQwGMBAABkAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-11-21T12:34:42.2Z",
               "EditorCaption": ""
