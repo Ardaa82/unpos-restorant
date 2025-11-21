@@ -143,6 +143,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Samba.Modules.FastpayModule
 		{B184E8F8-A507-4C3D-B580-184E3776A95C} = {B184E8F8-A507-4C3D-B580-184E3776A95C}
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Samba.Modules.PackageServiceModule", "Samba.Modules.PackageServiceModule\Samba.Modules.PackageServiceModule.csproj", "{FBEF8B63-476D-4A6E-81F6-C73666E16F5F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -787,6 +789,22 @@ Global
 		{6B09228C-C411-4E88-A8FE-A2E2C4D513F7}.Release|x64.Build.0 = Release|Any CPU
 		{6B09228C-C411-4E88-A8FE-A2E2C4D513F7}.Release|x86.ActiveCfg = Release|Any CPU
 		{6B09228C-C411-4E88-A8FE-A2E2C4D513F7}.Release|x86.Build.0 = Release|Any CPU
+		{FBEF8B63-476D-4A6E-81F6-C73666E16F5F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FBEF8B63-476D-4A6E-81F6-C73666E16F5F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FBEF8B63-476D-4A6E-81F6-C73666E16F5F}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{FBEF8B63-476D-4A6E-81F6-C73666E16F5F}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{FBEF8B63-476D-4A6E-81F6-C73666E16F5F}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{FBEF8B63-476D-4A6E-81F6-C73666E16F5F}.Debug|x64.Build.0 = Debug|Any CPU
+		{FBEF8B63-476D-4A6E-81F6-C73666E16F5F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{FBEF8B63-476D-4A6E-81F6-C73666E16F5F}.Debug|x86.Build.0 = Debug|Any CPU
+		{FBEF8B63-476D-4A6E-81F6-C73666E16F5F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FBEF8B63-476D-4A6E-81F6-C73666E16F5F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FBEF8B63-476D-4A6E-81F6-C73666E16F5F}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{FBEF8B63-476D-4A6E-81F6-C73666E16F5F}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{FBEF8B63-476D-4A6E-81F6-C73666E16F5F}.Release|x64.ActiveCfg = Release|Any CPU
+		{FBEF8B63-476D-4A6E-81F6-C73666E16F5F}.Release|x64.Build.0 = Release|Any CPU
+		{FBEF8B63-476D-4A6E-81F6-C73666E16F5F}.Release|x86.ActiveCfg = Release|Any CPU
+		{FBEF8B63-476D-4A6E-81F6-C73666E16F5F}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -840,6 +858,7 @@ Global
 		{E8EB13B7-CEAA-45D4-9B4F-0728D4FB3BF0} = {4E2BB083-56B6-4323-9620-3F53F0774609}
 		{7519CB8C-3C25-4F74-8946-93ECB7450C31} = {BF4FA34A-A4C9-4BEC-90C4-AA09483582BB}
 		{6B09228C-C411-4E88-A8FE-A2E2C4D513F7} = {99E9B82C-E727-4EB2-B6E3-9A9DC955F3F6}
+		{FBEF8B63-476D-4A6E-81F6-C73666E16F5F} = {99E9B82C-E727-4EB2-B6E3-9A9DC955F3F6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FAD83700-1912-4BB2-9BB6-CEDA6EA10A32}
