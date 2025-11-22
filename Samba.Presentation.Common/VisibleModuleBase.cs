@@ -20,6 +20,10 @@ namespace Samba.Presentation.Common
             _appScreen = appScreen;
         }
 
+        protected VisibleModuleBase(IRegionManager regionManager, string screenName)
+        {
+        }
+
         public void Activate()
         {
             _applicationStateSetter.SetCurrentApplicationScreen(_appScreen);

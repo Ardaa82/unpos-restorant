@@ -55,7 +55,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="PackageServiceModel.cs" />
+    <Compile Include="PackageServiceModule.cs" />
     <Compile Include="PackageServiceView.xaml.cs">
       <DependentUpon>PackageServiceView.xaml</DependentUpon>
     </Compile>
@@ -65,7 +65,7 @@
   <ItemGroup>
     <Page Include="PackageServiceView.xaml">
       <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
+      <Generator>XamlIntelliSenseFileGenerator</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>

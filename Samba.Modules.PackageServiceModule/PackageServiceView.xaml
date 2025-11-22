@@ -1,12 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
 <UserControl x:Class="Samba.Modules.PackageServiceModule.PackageServiceView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:Samba.Modules.PackageServiceModule"
-             xmlns:cal="clr-namespace:Microsoft.Practices.Prism.Regions;assembly=Microsoft.Practices.Prism"
              mc:Ignorable="d"
-             d:DesignHeight="600" d:DesignWidth="800"
+             d:DesignHeight="600"
+             d:DesignWidth="1000"
              d:DataContext="{d:DesignInstance Type=local:PackageServiceViewModel}">
 
     <Grid Margin="10">
@@ -16,27 +17,198 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
+        <!-- Baslik -->
         <TextBlock Grid.Row="0"
                    Text="{Binding HeaderText}"
                    FontSize="32"
                    FontWeight="Bold"
-                   Foreground="#FF2B2B2B"
                    Margin="0,0,0,5" />
 
+        <!-- Aciklama -->
         <TextBlock Grid.Row="1"
                    Text="{Binding Description}"
                    TextWrapping="Wrap"
-                   Foreground="#FF4B4B4B"
-                   Margin="0,0,0,15" />
+                   Margin="0,0,0,10" />
 
-        <Border Grid.Row="2"
-                BorderBrush="#33000000"
-                BorderThickness="1"
-                CornerRadius="8"
-                Padding="10"
-                Background="#0F000000">
-            <!--  ViewModel'den view ,  bir Prism region -->
-            <ContentControl cal:RegionManager.RegionName="PackageServiceEntityRegion" />
-        </Border>
+        <!-- Ana sekmeler -->
+        <TabControl Grid.Row="2"
+                    SelectedIndex="{Binding SelectedTabIndex}">
+            <!-- Sekme 1: Siparis & Atama -->
+            <TabItem Header="Siparis &amp; Atama">
+                <Grid Margin="5">
+                    <Grid.ColumnDefinitions>
+                        <!-- Sol: musteri + bekleyen siparisler -->
+                        <ColumnDefinition Width="3*" />
+                        <!-- Sag: paketciler -->
+                        <ColumnDefinition Width="2*" />
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Sol taraf -->
+                    <Grid Grid.Column="0" Margin="0,0,5,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="2*" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="3*" />
+                        </Grid.RowDefinitions>
+
+                        <!-- Musteri arama -->
+                        <StackPanel Grid.Row="0"
+                                    Orientation="Horizontal"
+                                    Margin="0,0,0,5">
+                            <TextBlock Text="Musteri:"
+                                       VerticalAlignment="Center"
+                                       Margin="0,0,5,0" />
+                            <TextBox Width="200"
+                                     Text="{Binding CustomerSearchText, UpdateSourceTrigger=PropertyChanged}"
+                                     Margin="0,0,5,0" />
+                            <Button Content="Ara"
+                                    Command="{Binding SearchCustomersCommand}"
+                                    Margin="0,0,5,0" />
+                            <Button Content="Secili Musteriye Siparis Ekle"
+                                    Command="{Binding AddTicketForSelectedCustomerCommand}" />
+                        </StackPanel>
+
+                        <!-- Bulunan musteriler -->
+                        <GroupBox Grid.Row="1"
+                                  Header="Bulunan Musteriler"
+                                  Margin="0,0,0,5">
+                            <ListBox ItemsSource="{Binding FoundCustomers}"
+                                     SelectedItem="{Binding SelectedCustomer}"
+                                     DisplayMemberPath="Name" />
+                        </GroupBox>
+
+                        <TextBlock Grid.Row="2"
+                                   Text="Bekleyen Siparisler"
+                                   FontWeight="Bold"
+                                   Margin="0,5,0,2" />
+
+                        <!-- Bekleyen siparisler listesi -->
+                        <ListBox Grid.Row="3"
+                                 ItemsSource="{Binding PendingTickets}">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Padding="4"
+                                            Margin="0,0,0,3"
+                                            BorderThickness="0,0,0,1"
+                                            BorderBrush="#22000000">
+                                        <DockPanel>
+                                            <CheckBox IsChecked="{Binding IsSelected}"
+                                                      Margin="0,0,5,0"
+                                                      VerticalAlignment="Center" />
+                                            <StackPanel>
+                                                <TextBlock Text="{Binding DisplayText}"
+                                                           FontWeight="SemiBold" />
+                                                <TextBlock Text="{Binding State}"
+                                                           FontSize="11"
+                                                           Foreground="Gray" />
+                                            </StackPanel>
+                                        </DockPanel>
+                                    </Border>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </Grid>
+
+                    <!-- Sag taraf: Paketciler -->
+                    <Grid Grid.Column="1" Margin="5,0,0,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <!-- Paketci arama -->
+                        <StackPanel Grid.Row="0"
+                                    Orientation="Horizontal"
+                                    Margin="0,0,0,5">
+                            <TextBlock Text="Paketci:"
+                                       VerticalAlignment="Center"
+                                       Margin="0,0,5,0" />
+                            <TextBox Width="150"
+                                     Text="{Binding CourierSearchText, UpdateSourceTrigger=PropertyChanged}"
+                                     Margin="0,0,5,0" />
+                            <Button Content="Ara"
+                                    Command="{Binding SearchCouriersCommand}" />
+                        </StackPanel>
+
+                        <!-- Paketci listesi -->
+                        <GroupBox Grid.Row="1"
+                                  Header="Paketciler"
+                                  Margin="0,0,0,5">
+                            <ListBox ItemsSource="{Binding Couriers}"
+                                     SelectedItem="{Binding SelectedCourier}">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel>
+                                            <TextBlock Text="{Binding Name}"
+                                                       FontWeight="SemiBold" />
+                                            <TextBlock Text="{Binding Region}"
+                                                       FontSize="11"
+                                                       Foreground="Gray" />
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </GroupBox>
+
+                        <!-- Atama butonu -->
+                        <Button Grid.Row="2"
+                                Content="Secili Siparisleri Bu Paketciye Ata ve Yola Cikar"
+                                Command="{Binding AssignTicketsToCourierCommand}"
+                                HorizontalAlignment="Stretch"
+                                Height="40" />
+                    </Grid>
+                </Grid>
+            </TabItem>
+
+            <!-- Sekme 2: Yoldaki siparisler -->
+            <TabItem Header="Yoldaki Siparisler">
+                <Grid Margin="5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <GroupBox Grid.Row="0"
+                              Header="Paketciye Atanmis Siparisler">
+                        <ListBox ItemsSource="{Binding InTransitTickets}"
+                                 SelectedItem="{Binding SelectedInTransitTicket}">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Padding="4"
+                                            Margin="0,0,0,3"
+                                            BorderThickness="0,0,0,1"
+                                            BorderBrush="#22000000">
+                                        <StackPanel>
+                                            <TextBlock Text="{Binding DisplayText}"
+                                                       FontWeight="SemiBold" />
+                                            <TextBlock>
+                                                <Run Text="Paketci: " />
+                                                <Run Text="{Binding CourierName}" />
+                                            </TextBlock>
+                                            <TextBlock Text="{Binding State}"
+                                                       FontSize="11"
+                                                       Foreground="Gray" />
+                                        </StackPanel>
+                                    </Border>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </GroupBox>
+
+                    <StackPanel Grid.Row="1"
+                                Orientation="Horizontal"
+                                HorizontalAlignment="Right"
+                                Margin="0,5,0,0">
+                        <Button Content="Adisyona Git / Tahsilat"
+                                Command="{Binding OpenTicketCommand}"
+                                Margin="0,0,5,0" />
+                        <Button Content="Teslim Edildi Olarak Isaretle"
+                                Command="{Binding MarkAsDeliveredCommand}" />
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+        </TabControl>
     </Grid>
 </UserControl>
