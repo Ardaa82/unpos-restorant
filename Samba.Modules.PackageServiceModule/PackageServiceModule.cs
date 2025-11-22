@@ -20,13 +20,13 @@ namespace Samba.Modules.PackageServiceModule
             _regionManager = regionManager;
             _packageServiceView = packageServiceView;
 
-            // Navigasyonda "Paket Servis" sekmesi
+            // Navigasyon menüsündeki buton
             SetNavigationCommand("Paket Servis", Resources.Common, "Images/sepet512.png", 15);
         }
 
         protected override void OnInitialization()
         {
-            // Bu modülün ana görünümünü MainRegion'a ekle
+            // Ana view’i MainRegion’a ekle
             _regionManager.Regions[RegionNames.MainRegion]
                 .Add(_packageServiceView, "PackageServiceView");
         }

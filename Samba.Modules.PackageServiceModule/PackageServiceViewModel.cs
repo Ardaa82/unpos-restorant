@@ -2,141 +2,137 @@ using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.Linq;
+using System.Windows.Input;
 using Microsoft.Practices.Prism.Commands;
 using Samba.Domain.Models.Entities;
 using Samba.Presentation.Common;
-using Samba.Presentation.Services;
 using Samba.Services;
 
 namespace Samba.Modules.PackageServiceModule
 {
-    // Basit ticket item VM (sadece bu ekran için)
-    public class PackageTicketItemViewModel : ObservableObject
-    {
-        private bool _isSelected;
-        private string _state;
-        private string _courierName;
-
-        public int TicketId { get; set; }
-        public string CustomerName { get; set; }
-        public decimal Total { get; set; }
-
-        public string State
-        {
-            get { return _state; }
-            set { _state = value; RaisePropertyChanged(() => State); }
-        }
-
-        public string CourierName
-        {
-            get { return _courierName; }
-            set { _courierName = value; RaisePropertyChanged(() => CourierName); }
-        }
-
-        public bool IsSelected
-        {
-            get { return _isSelected; }
-            set { _isSelected = value; RaisePropertyChanged(() => IsSelected); }
-        }
-
-        public string DisplayText
-        {
-            get
-            {
-                // Örn: #15 - Ali Yılmaz - 120,00
-                return string.Format("#{0} - {1} - {2:N2}", TicketId, CustomerName, Total);
-            }
-        }
-    }
-
-    // Basit paketçi item VM (sadece bu ekran için)
-    public class PackageCourierItemViewModel : ObservableObject
-    {
-        public int EntityId { get; set; }
-        public string Name { get; set; }
-        public string Region { get; set; }
-    }
-
+    /// <summary>
+    /// Paket Servis özel ekran VM’i.
+    /// TAB 1: Müşteri arama + "Seçili müşteriye sipariş ekle"
+    /// TAB 2: Paketçi listesi + Bekleyen/Yoldaki sipariş listeleri.
+    /// 
+    /// Ticket oluşturma / adisyon açma / state değiştirme işleri
+    /// özellikle TODO bırakıldı; bunları tutorial’daki Automation Action + Rule
+    /// tarafına bağlaman gerekecek.
+    /// </summary>
     [Export]
     public class PackageServiceViewModel : ObservableObject
     {
-        private readonly IApplicationState _applicationState;
-        private readonly ICacheService _cacheService;
         private readonly IEntityService _entityService;
-        private readonly ITicketService _ticketService;
+        private readonly ICacheService _cacheService;
 
-        private EntityType _customerEntityType;
-        private EntityType _courierEntityType;
-
-        private int _tempTicketCounter = 1;
+        private readonly EntityType _customerEntityType;
+        private readonly EntityType _courierEntityType;
 
         private string _customerSearchText;
         private string _courierSearchText;
+
         private Entity _selectedCustomer;
-        private PackageCourierItemViewModel _selectedCourier;
-        private PackageTicketItemViewModel _selectedInTransitTicket;
-        private int _selectedTabIndex;
+        private Entity _selectedCourier;
 
-        public ObservableCollection<Entity> FoundCustomers { get; private set; }
-        public ObservableCollection<PackageTicketItemViewModel> PendingTickets { get; private set; }
-        public ObservableCollection<PackageCourierItemViewModel> Couriers { get; private set; }
-        public ObservableCollection<PackageTicketItemViewModel> InTransitTickets { get; private set; }
+        private PackageOrderInfo _selectedPendingOrder;
+        private PackageOrderInfo _selectedOnTheWayOrder;
 
-        public DelegateCommand SearchCustomersCommand { get; private set; }
-        public DelegateCommand AddTicketForSelectedCustomerCommand { get; private set; }
-        public DelegateCommand SearchCouriersCommand { get; private set; }
-        public DelegateCommand AssignTicketsToCourierCommand { get; private set; }
-        public DelegateCommand OpenTicketCommand { get; private set; }
-        public DelegateCommand MarkAsDeliveredCommand { get; private set; }
+        // DelegateCommand referansları (ObservesProperty yerine RaiseCanExecuteChanged kullanacağız)
+        private readonly DelegateCommand _searchCustomersCommand;
+        private readonly DelegateCommand _searchCouriersCommand;
+        private readonly DelegateCommand _addOrderForSelectedCustomerCommand;
+        private readonly DelegateCommand _assignCourierToSelectedOrdersCommand;
+        private readonly DelegateCommand _goToTicketCommand;
+        private readonly DelegateCommand _markDeliveredCommand;
 
         [ImportingConstructor]
-        public PackageServiceViewModel(
-            IApplicationState applicationState,
-            ICacheService cacheService,
-            IEntityService entityService,
-            ITicketService ticketService)
+        public PackageServiceViewModel(IEntityService entityService, ICacheService cacheService)
         {
-            _applicationState = applicationState;
-            _cacheService = cacheService;
             _entityService = entityService;
-            _ticketService = ticketService;
+            _cacheService = cacheService;
 
-            FoundCustomers = new ObservableCollection<Entity>();
-            PendingTickets = new ObservableCollection<PackageTicketItemViewModel>();
-            Couriers = new ObservableCollection<PackageCourierItemViewModel>();
-            InTransitTickets = new ObservableCollection<PackageTicketItemViewModel>();
+            CustomerResults = new ObservableCollection<Entity>();
+            CourierResults = new ObservableCollection<Entity>();
+            PendingOrders = new ObservableCollection<PackageOrderInfo>();
+            OnTheWayOrders = new ObservableCollection<PackageOrderInfo>();
 
-            InitializeEntityTypes();
-            InitializeCommands();
-            LoadInitialCouriers();
-            // İstersen burada gerçek bekleyen / yoldaki adisyonları da çekebilirsin.
-            // LoadPendingTicketsFromSystem();
+            // Komutların oluşturulması
+            _searchCustomersCommand = new DelegateCommand(RefreshCustomers, CanSearchCustomers);
+            _searchCouriersCommand = new DelegateCommand(RefreshCouriers, CanSearchCouriers);
+            _addOrderForSelectedCustomerCommand = new DelegateCommand(OnAddOrderForSelectedCustomer, CanAddOrderForSelectedCustomer);
+            _assignCourierToSelectedOrdersCommand = new DelegateCommand(OnAssignCourierToSelectedOrders, CanAssignCourierToSelectedOrders);
+            _goToTicketCommand = new DelegateCommand(OnGoToTicket, CanGoToTicket);
+            _markDeliveredCommand = new DelegateCommand(OnMarkDelivered, CanMarkDelivered);
+
+            // Tutorial’deki isimler:
+            //  - "Müşteri" EntityType => müşteri
+            //  - "Paketçi" EntityType => kurye
+            _customerEntityType = FindEntityTypeByName("Müşteri");
+            _courierEntityType = FindEntityTypeByName("Paketçi");
         }
 
-        public string HeaderText
+        private EntityType FindEntityTypeByName(string name)
         {
-            get { return "Paket Servis"; }
+            // Bulamazsa null döner; arama fonksiyonları null’da hiç çalışmayacak
+            return _cacheService.GetEntityTypes().FirstOrDefault(x => x.Name == name);
         }
 
-        public string Description
-        {
-            get
-            {
-                return "Telefonla gelen siparişleri müşteriler ve paketçiler arasında " +
-                       "hızlıca dağıtmak için özel paket servis ekranı. " +
-                       "İlk sekmede atama, ikinci sekmede yoldaki siparişler takip edilir.";
-            }
-        }
+        #region Koleksiyonlar / seçimler
 
-        public int SelectedTabIndex
+        public ObservableCollection<Entity> CustomerResults { get; private set; }
+        public ObservableCollection<Entity> CourierResults { get; private set; }
+
+        public ObservableCollection<PackageOrderInfo> PendingOrders { get; private set; }
+        public ObservableCollection<PackageOrderInfo> OnTheWayOrders { get; private set; }
+
+        public Entity SelectedCustomer
         {
-            get { return _selectedTabIndex; }
+            get { return _selectedCustomer; }
             set
             {
-                _selectedTabIndex = value;
-                RaisePropertyChanged(() => SelectedTabIndex);
+                _selectedCustomer = value;
+                RaisePropertyChanged(() => SelectedCustomer);
+                _addOrderForSelectedCustomerCommand.RaiseCanExecuteChanged();
             }
         }
+
+        public Entity SelectedCourier
+        {
+            get { return _selectedCourier; }
+            set
+            {
+                _selectedCourier = value;
+                RaisePropertyChanged(() => SelectedCourier);
+                _assignCourierToSelectedOrdersCommand.RaiseCanExecuteChanged();
+            }
+        }
+
+        public PackageOrderInfo SelectedPendingOrder
+        {
+            get { return _selectedPendingOrder; }
+            set
+            {
+                _selectedPendingOrder = value;
+                RaisePropertyChanged(() => SelectedPendingOrder);
+                _assignCourierToSelectedOrdersCommand.RaiseCanExecuteChanged();
+            }
+        }
+
+        public PackageOrderInfo SelectedOnTheWayOrder
+        {
+            get { return _selectedOnTheWayOrder; }
+            set
+            {
+                _selectedOnTheWayOrder = value;
+                RaisePropertyChanged(() => SelectedOnTheWayOrder);
+                _goToTicketCommand.RaiseCanExecuteChanged();
+                _markDeliveredCommand.RaiseCanExecuteChanged();
+            }
+        }
+
+        #endregion
+
+        #region Arama metinleri
 
         public string CustomerSearchText
         {
@@ -145,7 +141,7 @@ namespace Samba.Modules.PackageServiceModule
             {
                 _customerSearchText = value;
                 RaisePropertyChanged(() => CustomerSearchText);
-                SearchCustomersCommand.RaiseCanExecuteChanged();
+                _searchCustomersCommand.RaiseCanExecuteChanged();
             }
         }
 
@@ -156,234 +152,219 @@ namespace Samba.Modules.PackageServiceModule
             {
                 _courierSearchText = value;
                 RaisePropertyChanged(() => CourierSearchText);
-                SearchCouriersCommand.RaiseCanExecuteChanged();
+                _searchCouriersCommand.RaiseCanExecuteChanged();
             }
         }
 
-        public Entity SelectedCustomer
-        {
-            get { return _selectedCustomer; }
-            set
-            {
-                _selectedCustomer = value;
-                RaisePropertyChanged(() => SelectedCustomer);
-                AddTicketForSelectedCustomerCommand.RaiseCanExecuteChanged();
-            }
-        }
+        #endregion
 
-        public PackageCourierItemViewModel SelectedCourier
-        {
-            get { return _selectedCourier; }
-            set
-            {
-                _selectedCourier = value;
-                RaisePropertyChanged(() => SelectedCourier);
-                AssignTicketsToCourierCommand.RaiseCanExecuteChanged();
-            }
-        }
+        #region Komutlar (ICommand olarak expose)
 
-        public PackageTicketItemViewModel SelectedInTransitTicket
-        {
-            get { return _selectedInTransitTicket; }
-            set
-            {
-                _selectedInTransitTicket = value;
-                RaisePropertyChanged(() => SelectedInTransitTicket);
-                OpenTicketCommand.RaiseCanExecuteChanged();
-                MarkAsDeliveredCommand.RaiseCanExecuteChanged();
-            }
-        }
+        public ICommand SearchCustomersCommand { get { return _searchCustomersCommand; } }
+        public ICommand SearchCouriersCommand { get { return _searchCouriersCommand; } }
 
-        private void InitializeEntityTypes()
-        {
-            var allTypes = _cacheService.GetEntityTypes().ToList();
+        public ICommand AddOrderForSelectedCustomerCommand { get { return _addOrderForSelectedCustomerCommand; } }
+        public ICommand AssignCourierToSelectedOrdersCommand { get { return _assignCourierToSelectedOrdersCommand; } }
 
-            // Burada isimleri kendi sistemindeki EntityName / Name ile eşleştir.
-            _customerEntityType = allTypes.FirstOrDefault(x =>
-                string.Equals(x.EntityName, "Müşteri", StringComparison.CurrentCultureIgnoreCase) ||
-                string.Equals(x.Name, "Müşteri", StringComparison.CurrentCultureIgnoreCase));
+        public ICommand GoToTicketCommand { get { return _goToTicketCommand; } }
+        public ICommand MarkDeliveredCommand { get { return _markDeliveredCommand; } }
 
-            _courierEntityType = allTypes.FirstOrDefault(x =>
-                string.Equals(x.EntityName, "Paketçi", StringComparison.CurrentCultureIgnoreCase) ||
-                string.Equals(x.Name, "Paketçi", StringComparison.CurrentCultureIgnoreCase));
+        #endregion
 
-            // Eğer farklı isimler kullanıyorsan burayı kendine göre değiştirmen gerekecek.
-        }
-
-        private void InitializeCommands()
-        {
-            SearchCustomersCommand = new DelegateCommand(OnSearchCustomers, CanSearchCustomers);
-            AddTicketForSelectedCustomerCommand = new DelegateCommand(OnAddTicketForSelectedCustomer, CanAddTicketForSelectedCustomer);
-            SearchCouriersCommand = new DelegateCommand(OnSearchCouriers, CanSearchCouriers);
-            AssignTicketsToCourierCommand = new DelegateCommand(OnAssignTicketsToCourier, CanAssignTicketsToCourier);
-            OpenTicketCommand = new DelegateCommand(OnOpenTicket, CanOpenTicket);
-            MarkAsDeliveredCommand = new DelegateCommand(OnMarkAsDelivered, CanMarkAsDelivered);
-        }
-
-        private void LoadInitialCouriers()
-        {
-            Couriers.Clear();
-
-            if (_courierEntityType == null)
-                return;
-
-            // Basit: tüm paketçileri çek. İstersen filtre, durum vs. ekleyebilirsin.
-            var couriers = _entityService.SearchEntities(_courierEntityType, "", null);
-
-            foreach (var e in couriers)
-            {
-                var region = e.CustomData != null
-                    ? e.CustomData
-                    : ""; // EntityCustomField'leri ihtiyacına göre işle.
-
-                Couriers.Add(new PackageCourierItemViewModel
-                {
-                    EntityId = e.Id,
-                    Name = e.Name,
-                    Region = region
-                });
-            }
-        }
-
-        #region Müşteri Arama & Sipariş Ekle
+        #region Komut implementasyonları
 
         private bool CanSearchCustomers()
         {
-            return _customerEntityType != null && !string.IsNullOrWhiteSpace(CustomerSearchText);
+            return !string.IsNullOrWhiteSpace(CustomerSearchText) && _customerEntityType != null;
         }
 
-        private void OnSearchCustomers()
+        private void RefreshCustomers()
         {
-            FoundCustomers.Clear();
-            if (_customerEntityType == null) return;
+            CustomerResults.Clear();
 
-            var customers = _entityService.SearchEntities(_customerEntityType, CustomerSearchText, null);
-            foreach (var c in customers)
-                FoundCustomers.Add(c);
+            if (!CanSearchCustomers())
+                return;
+
+            var term = CustomerSearchText.Trim();
+
+            // EntitySearchViewModel ile aynı backend, ama stateFilter NULL DEĞİL.
+            var entities = _entityService.SearchEntities(_customerEntityType, term, string.Empty);
+
+            foreach (var e in entities)
+            {
+                CustomerResults.Add(e);
+            }
         }
 
-        private bool CanAddTicketForSelectedCustomer()
+        private bool CanSearchCouriers()
+        {
+            return !string.IsNullOrWhiteSpace(CourierSearchText) && _courierEntityType != null;
+        }
+
+        private void RefreshCouriers()
+        {
+            CourierResults.Clear();
+
+            if (!CanSearchCouriers())
+                return;
+
+            var term = CourierSearchText.Trim();
+            var entities = _entityService.SearchEntities(_courierEntityType, term, string.Empty);
+
+            foreach (var e in entities)
+            {
+                CourierResults.Add(e);
+            }
+        }
+
+        private bool CanAddOrderForSelectedCustomer()
         {
             return SelectedCustomer != null;
         }
 
-        // Şu an sadece ekranda sahte bir "Bekliyor" ticket oluşturuyor.
-        // Gerçek kullanımda burada ITicketService ile ticket oluşturup state'leri ayarlayacaksın.
-        private void OnAddTicketForSelectedCustomer()
+        private void OnAddOrderForSelectedCustomer()
         {
-            if (SelectedCustomer == null) return;
+            if (SelectedCustomer == null)
+                return;
 
-            var item = new PackageTicketItemViewModel
-            {
-                TicketId = _tempTicketCounter++, // geçici ID
-                CustomerName = SelectedCustomer.Name,
-                Total = 0m,
-                State = "Bekliyor",
-                CourierName = ""
-            };
+            // BURASI BİLEREK BOŞ: 
+            //  - Yeni ticket açma
+            //  - Müşteri entity’sini ticket’a bağlama
+            //  - TicketView’e gitme
+            //  - Ticket kapatılınca bu ekrana dönme
+            //
+            // Bunları tutorial’deki gibi Automation Command + Action + Rule ile çözmen gerekiyor:
+            //  * "Belge Oluşturuldu" / CreateTicket
+            //  * "Belge Durumunu Değiştir" => PStatus = "Bekliyor-1"
+            //  * "Belge Varlığını Değiştir" => Müşteri entity’sini ekle
+        }
 
-            PendingTickets.Add(item);
+        private bool CanAssignCourierToSelectedOrders()
+        {
+            return SelectedCourier != null && SelectedPendingOrder != null;
+        }
+
+        private void OnAssignCourierToSelectedOrders()
+        {
+            if (SelectedCourier == null || SelectedPendingOrder == null)
+                return;
+
+            // Asıl doğrusu:
+            //  - Her seçili pending ticket için "Belge Varlığını Değiştir" ile Paketçi ekle
+            //  - PStatus = "Yolda" yap
+            //
+            // Şimdilik sadece VM içi modelde güncelliyorum, UI akışı otursun diye.
+
+            SelectedPendingOrder.CourierName = SelectedCourier.Name;
+            SelectedPendingOrder.State = "Yolda";
+
+            OnTheWayOrders.Add(SelectedPendingOrder);
+            PendingOrders.Remove(SelectedPendingOrder);
+
+            SelectedPendingOrder = null;
+        }
+
+        private bool CanGoToTicket()
+        {
+            return SelectedOnTheWayOrder != null;
+        }
+
+        private void OnGoToTicket()
+        {
+            if (SelectedOnTheWayOrder == null)
+                return;
+
+            // Asıl akış:
+            //  - Tutorial’deki "Adisyonu Görüntüle" action + rule ile aynı işi yap
+            //  - TicketId => [:Value] üzerinden gönderiliyor
+            //
+            // Buradan ilgili Automation Command’ı tetikleyip
+            // TicketView’e geçişi aynı hat üzerinden kurmalısın.
+        }
+
+        private bool CanMarkDelivered()
+        {
+            return SelectedOnTheWayOrder != null;
+        }
+
+        private void OnMarkDelivered()
+        {
+            if (SelectedOnTheWayOrder == null)
+                return;
+
+            // Asıl akış:
+            //  - Belge Durumunu Değiştir => "Teslim"
+            //  - Gerekirse tahsilat / ödeme / adisyon kapatma
+            SelectedOnTheWayOrder.State = "Teslim";
+
+            // İstersen listeden tamamen kaldırmayıp state’e göre filtreleyebilirsin.
+            OnTheWayOrders.Remove(SelectedOnTheWayOrder);
+            SelectedOnTheWayOrder = null;
         }
 
         #endregion
+    }
 
-        #region Paketçi Arama & Atama
+    /// <summary>
+    /// Ekranda gösterilen paket servis satırı: TicketId + müşteri + paketçi + toplam + durum.
+    /// Ticket domain modelinden ayrı, sadece UI için hafif bir model.
+    /// </summary>
+    public class PackageOrderInfo : ObservableObject
+    {
+        private int _ticketId;
+        private string _customerName;
+        private string _courierName;
+        private decimal _total;
+        private string _state;
 
-        private bool CanSearchCouriers()
+        public int TicketId
         {
-            return _courierEntityType != null; // İstersen burada text şartı da koy.
-        }
-
-        private void OnSearchCouriers()
-        {
-            Couriers.Clear();
-            if (_courierEntityType == null) return;
-
-            var text = CourierSearchText ?? "";
-            var couriers = _entityService.SearchEntities(_courierEntityType, text, null);
-
-            foreach (var e in couriers)
+            get { return _ticketId; }
+            set
             {
-                var region = e.CustomData != null
-                    ? e.CustomData
-                    : "";
-
-                Couriers.Add(new PackageCourierItemViewModel
-                {
-                    EntityId = e.Id,
-                    Name = e.Name,
-                    Region = region
-                });
+                _ticketId = value;
+                RaisePropertyChanged(() => TicketId);
             }
         }
 
-        private bool CanAssignTicketsToCourier()
+        public string CustomerName
         {
-            return SelectedCourier != null &&
-                   PendingTickets.Any(x => x.IsSelected);
-        }
-
-        private void OnAssignTicketsToCourier()
-        {
-            if (SelectedCourier == null) return;
-
-            var selectedTickets = PendingTickets.Where(x => x.IsSelected).ToList();
-            if (!selectedTickets.Any()) return;
-
-            foreach (var t in selectedTickets)
+            get { return _customerName; }
+            set
             {
-                t.CourierName = SelectedCourier.Name;
-                t.State = "Yolda";
-                t.IsSelected = false;
-
-                PendingTickets.Remove(t);
-                InTransitTickets.Add(t);
-
-                // Gerçek sistemde:
-                // - ticket'i yükle (ITicketService.LoadTicket / OpenTicket vs.)
-                // - entity "Paketçi" varlığını değiştir
-                // - state "Yolda" yap
-                // - ticket'i kaydet ve kapat
+                _customerName = value;
+                RaisePropertyChanged(() => CustomerName);
             }
-
-            // Atama sonrası otomatik olarak 2. sekmeye geç
-            SelectedTabIndex = 1;
         }
 
-        #endregion
-
-        #region Yoldaki Siparişler: Tahsilat & Teslim
-
-        private bool CanOpenTicket()
+        public string CourierName
         {
-            return SelectedInTransitTicket != null;
+            get { return _courierName; }
+            set
+            {
+                _courierName = value;
+                RaisePropertyChanged(() => CourierName);
+            }
         }
 
-        private void OnOpenTicket()
+        public decimal Total
         {
-            if (SelectedInTransitTicket == null) return;
-
-            // Gerçek kullanımda burada ilgili TicketId ile POS ekranını açman gerekiyor.
-            // Ör: _ticketService.OpenTicket(SelectedInTransitTicket.TicketId); + event publish.
+            get { return _total; }
+            set
+            {
+                _total = value;
+                RaisePropertyChanged(() => Total);
+            }
         }
 
-        private bool CanMarkAsDelivered()
+        public string State
         {
-            return SelectedInTransitTicket != null;
+            get { return _state; }
+            set
+            {
+                _state = value;
+                RaisePropertyChanged(() => State);
+            }
         }
-
-        private void OnMarkAsDelivered()
-        {
-            if (SelectedInTransitTicket == null) return;
-
-            // Sadece ekrandaki state'i güncelliyor;
-            // Gerçek sistemde ticket state + ödeme + kapatma yapman gerekir.
-            SelectedInTransitTicket.State = "Teslim";
-
-            // İstersen listeden de düşebilirsin:
-            // InTransitTickets.Remove(SelectedInTransitTicket);
-        }
-
-        #endregion
     }
 }

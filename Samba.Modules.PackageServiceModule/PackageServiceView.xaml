@@ -7,14 +7,14 @@
              xmlns:local="clr-namespace:Samba.Modules.PackageServiceModule"
              mc:Ignorable="d"
              d:DesignHeight="600"
-             d:DesignWidth="1000"
+             d:DesignWidth="900"
              d:DataContext="{d:DesignInstance Type=local:PackageServiceViewModel}">
 
     <Grid Margin="10">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
         <!-- Baslik -->
@@ -22,174 +22,197 @@
                    Text="{Binding HeaderText}"
                    FontSize="32"
                    FontWeight="Bold"
-                   Margin="0,0,0,5" />
+                   Foreground="#FF2B2B2B"
+                   Margin="0,0,0,5"/>
 
         <!-- Aciklama -->
         <TextBlock Grid.Row="1"
                    Text="{Binding Description}"
                    TextWrapping="Wrap"
-                   Margin="0,0,0,10" />
+                   Foreground="#FF4B4B4B"
+                   Margin="0,0,0,15"/>
 
-        <!-- Ana sekmeler -->
-        <TabControl Grid.Row="2"
-                    SelectedIndex="{Binding SelectedTabIndex}">
-            <!-- Sekme 1: Siparis & Atama -->
-            <TabItem Header="Siparis &amp; Atama">
+        <!-- Ana icerik: TabControl -->
+        <TabControl Grid.Row="2">
+
+            <!-- TAB 1: Yeni Siparis (Musteri arama + siparis ekleme) -->
+            <TabItem Header="Yeni Siparis">
+                <Grid Margin="5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Arama satiri -->
+                    <StackPanel Grid.Row="0"
+                                Orientation="Horizontal"
+                                Margin="0,0,0,10">
+                        <TextBlock Text="Musteri ara:"
+                                   VerticalAlignment="Center"
+                                   Margin="0,0,5,0"/>
+                        <TextBox Width="220"
+                                 Margin="0,0,5,0"
+                                 Text="{Binding CustomerSearchText, UpdateSourceTrigger=PropertyChanged}"/>
+                        <Button Content="Ara"
+                                Padding="10,3"
+                                Command="{Binding SearchCustomersCommand}"/>
+                    </StackPanel>
+
+                    <!-- Bulunan Musteriler listesi -->
+                    <GroupBox Grid.Row="1"
+                              Header="Bulunan Musteriler">
+                        <ListBox ItemsSource="{Binding CustomerResults}"
+                                 SelectedItem="{Binding SelectedCustomer}"
+                                 DisplayMemberPath="Name"/>
+                    </GroupBox>
+
+                    <!-- Secili musteriy e siparis ekle butonu -->
+                    <StackPanel Grid.Row="2"
+                                Orientation="Horizontal"
+                                HorizontalAlignment="Right"
+                                Margin="0,10,0,0">
+                        <Button Content="Secili Musteriye Siparis Ekle"
+                                Padding="12,4"
+                                Command="{Binding AddOrderForSelectedCustomerCommand}"/>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+
+            <!-- TAB 2: Paketci Atama (Paketci arama + Bekleyen Siparis atama) -->
+            <TabItem Header="Paketci Atama">
                 <Grid Margin="5">
                     <Grid.ColumnDefinitions>
-                        <!-- Sol: musteri + bekleyen siparisler -->
-                        <ColumnDefinition Width="3*" />
-                        <!-- Sag: paketciler -->
-                        <ColumnDefinition Width="2*" />
+                        <ColumnDefinition Width="260"/>
+                        <ColumnDefinition Width="10"/>
+                        <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
-                    <!-- Sol taraf -->
-                    <Grid Grid.Column="0" Margin="0,0,5,0">
+                    <!-- Sol taraf: Paketci arama ve listesi -->
+                    <Grid Grid.Column="0">
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="2*" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="3*" />
-                        </Grid.RowDefinitions>
-
-                        <!-- Musteri arama -->
-                        <StackPanel Grid.Row="0"
-                                    Orientation="Horizontal"
-                                    Margin="0,0,0,5">
-                            <TextBlock Text="Musteri:"
-                                       VerticalAlignment="Center"
-                                       Margin="0,0,5,0" />
-                            <TextBox Width="200"
-                                     Text="{Binding CustomerSearchText, UpdateSourceTrigger=PropertyChanged}"
-                                     Margin="0,0,5,0" />
-                            <Button Content="Ara"
-                                    Command="{Binding SearchCustomersCommand}"
-                                    Margin="0,0,5,0" />
-                            <Button Content="Secili Musteriye Siparis Ekle"
-                                    Command="{Binding AddTicketForSelectedCustomerCommand}" />
-                        </StackPanel>
-
-                        <!-- Bulunan musteriler -->
-                        <GroupBox Grid.Row="1"
-                                  Header="Bulunan Musteriler"
-                                  Margin="0,0,0,5">
-                            <ListBox ItemsSource="{Binding FoundCustomers}"
-                                     SelectedItem="{Binding SelectedCustomer}"
-                                     DisplayMemberPath="Name" />
-                        </GroupBox>
-
-                        <TextBlock Grid.Row="2"
-                                   Text="Bekleyen Siparisler"
-                                   FontWeight="Bold"
-                                   Margin="0,5,0,2" />
-
-                        <!-- Bekleyen siparisler listesi -->
-                        <ListBox Grid.Row="3"
-                                 ItemsSource="{Binding PendingTickets}">
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <Border Padding="4"
-                                            Margin="0,0,0,3"
-                                            BorderThickness="0,0,0,1"
-                                            BorderBrush="#22000000">
-                                        <DockPanel>
-                                            <CheckBox IsChecked="{Binding IsSelected}"
-                                                      Margin="0,0,5,0"
-                                                      VerticalAlignment="Center" />
-                                            <StackPanel>
-                                                <TextBlock Text="{Binding DisplayText}"
-                                                           FontWeight="SemiBold" />
-                                                <TextBlock Text="{Binding State}"
-                                                           FontSize="11"
-                                                           Foreground="Gray" />
-                                            </StackPanel>
-                                        </DockPanel>
-                                    </Border>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
-                    </Grid>
-
-                    <!-- Sag taraf: Paketciler -->
-                    <Grid Grid.Column="1" Margin="5,0,0,0">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="*" />
-                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
 
                         <!-- Paketci arama -->
                         <StackPanel Grid.Row="0"
                                     Orientation="Horizontal"
-                                    Margin="0,0,0,5">
-                            <TextBlock Text="Paketci:"
+                                    Margin="0,0,0,10">
+                            <TextBlock Text="Paketci ara:"
                                        VerticalAlignment="Center"
-                                       Margin="0,0,5,0" />
-                            <TextBox Width="150"
-                                     Text="{Binding CourierSearchText, UpdateSourceTrigger=PropertyChanged}"
-                                     Margin="0,0,5,0" />
+                                       Margin="0,0,5,0"/>
+                            <TextBox Width="140"
+                                     Margin="0,0,5,0"
+                                     Text="{Binding CourierSearchText, UpdateSourceTrigger=PropertyChanged}"/>
                             <Button Content="Ara"
-                                    Command="{Binding SearchCouriersCommand}" />
+                                    Padding="8,3"
+                                    Command="{Binding SearchCouriersCommand}"/>
                         </StackPanel>
 
                         <!-- Paketci listesi -->
                         <GroupBox Grid.Row="1"
-                                  Header="Paketciler"
-                                  Margin="0,0,0,5">
-                            <ListBox ItemsSource="{Binding Couriers}"
-                                     SelectedItem="{Binding SelectedCourier}">
+                                  Header="Paketciler">
+                            <ListBox ItemsSource="{Binding CourierResults}"
+                                     SelectedItem="{Binding SelectedCourier}"
+                                     DisplayMemberPath="Name"/>
+                        </GroupBox>
+                    </Grid>
+
+                    <!-- Sag taraf: Bekleyen siparisler -->
+                    <Grid Grid.Column="2">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <GroupBox Grid.Row="0"
+                                  Header="Bekleyen Siparisler"
+                                  Margin="0,0,0,10">
+                            <ListBox ItemsSource="{Binding PendingOrders}"
+                                     SelectedItem="{Binding SelectedPendingOrder}">
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
-                                        <StackPanel>
-                                            <TextBlock Text="{Binding Name}"
-                                                       FontWeight="SemiBold" />
-                                            <TextBlock Text="{Binding Region}"
-                                                       FontSize="11"
-                                                       Foreground="Gray" />
-                                        </StackPanel>
+                                        <Border Margin="2"
+                                                Padding="4"
+                                                BorderBrush="#33000000"
+                                                BorderThickness="1">
+                                            <StackPanel>
+                                                <TextBlock Text="{Binding CustomerName}"
+                                                           FontWeight="Bold"/>
+                                                <TextBlock>
+                                                    <Run Text="Tutar: "/>
+                                                    <Run Text="{Binding Total, StringFormat={}{0:C}}"/>
+                                                </TextBlock>
+                                                <TextBlock>
+                                                    <Run Text="Durum: "/>
+                                                    <Run Text="{Binding State}"/>
+                                                </TextBlock>
+                                                <TextBlock>
+                                                    <Run Text="Paketci: "/>
+                                                    <Run Text="{Binding CourierName}"/>
+                                                </TextBlock>
+                                                <TextBlock FontSize="10"
+                                                           Foreground="Gray">
+                                                    <Run Text="TicketId: "/>
+                                                    <Run Text="{Binding TicketId}"/>
+                                                </TextBlock>
+                                            </StackPanel>
+                                        </Border>
                                     </DataTemplate>
                                 </ListBox.ItemTemplate>
                             </ListBox>
                         </GroupBox>
 
-                        <!-- Atama butonu -->
-                        <Button Grid.Row="2"
-                                Content="Secili Siparisleri Bu Paketciye Ata ve Yola Cikar"
-                                Command="{Binding AssignTicketsToCourierCommand}"
-                                HorizontalAlignment="Stretch"
-                                Height="40" />
+                        <StackPanel Grid.Row="1"
+                                    Orientation="Horizontal"
+                                    HorizontalAlignment="Right">
+                            <Button Content="Secili Bekleyen Siparise Secili Paketciyi Ata"
+                                    Padding="12,4"
+                                    Command="{Binding AssignCourierToSelectedOrdersCommand}"/>
+                        </StackPanel>
                     </Grid>
                 </Grid>
             </TabItem>
 
-            <!-- Sekme 2: Yoldaki siparisler -->
+            <!-- TAB 3: Yoldaki Siparisler -->
             <TabItem Header="Yoldaki Siparisler">
                 <Grid Margin="5">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="*" />
-                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
                     <GroupBox Grid.Row="0"
-                              Header="Paketciye Atanmis Siparisler">
-                        <ListBox ItemsSource="{Binding InTransitTickets}"
-                                 SelectedItem="{Binding SelectedInTransitTicket}">
+                              Header="Yoldaki Siparisler">
+                        <ListBox ItemsSource="{Binding OnTheWayOrders}"
+                                 SelectedItem="{Binding SelectedOnTheWayOrder}">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
-                                    <Border Padding="4"
-                                            Margin="0,0,0,3"
-                                            BorderThickness="0,0,0,1"
-                                            BorderBrush="#22000000">
+                                    <Border Margin="2"
+                                            Padding="4"
+                                            BorderBrush="#33000000"
+                                            BorderThickness="1">
                                         <StackPanel>
-                                            <TextBlock Text="{Binding DisplayText}"
-                                                       FontWeight="SemiBold" />
+                                            <TextBlock Text="{Binding CustomerName}"
+                                                       FontWeight="Bold"/>
                                             <TextBlock>
-                                                <Run Text="Paketci: " />
-                                                <Run Text="{Binding CourierName}" />
+                                                <Run Text="Tutar: "/>
+                                                <Run Text="{Binding Total, StringFormat={}{0:C}}"/>
                                             </TextBlock>
-                                            <TextBlock Text="{Binding State}"
-                                                       FontSize="11"
-                                                       Foreground="Gray" />
+                                            <TextBlock>
+                                                <Run Text="Paketci: "/>
+                                                <Run Text="{Binding CourierName}"/>
+                                            </TextBlock>
+                                            <TextBlock>
+                                                <Run Text="Durum: "/>
+                                                <Run Text="{Binding State}"/>
+                                            </TextBlock>
+                                            <TextBlock FontSize="10"
+                                                       Foreground="Gray">
+                                                <Run Text="TicketId: "/>
+                                                <Run Text="{Binding TicketId}"/>
+                                            </TextBlock>
                                         </StackPanel>
                                     </Border>
                                 </DataTemplate>
@@ -200,12 +223,14 @@
                     <StackPanel Grid.Row="1"
                                 Orientation="Horizontal"
                                 HorizontalAlignment="Right"
-                                Margin="0,5,0,0">
-                        <Button Content="Adisyona Git / Tahsilat"
-                                Command="{Binding OpenTicketCommand}"
-                                Margin="0,0,5,0" />
-                        <Button Content="Teslim Edildi Olarak Isaretle"
-                                Command="{Binding MarkAsDeliveredCommand}" />
+                                Margin="0,10,0,0">
+                        <Button Content="Adisyona Git"
+                                Padding="12,4"
+                                Margin="0,0,5,0"
+                                Command="{Binding GoToTicketCommand}"/>
+                        <Button Content="Teslim Edildi"
+                                Padding="12,4"
+                                Command="{Binding MarkDeliveredCommand}"/>
                     </StackPanel>
                 </Grid>
             </TabItem>
